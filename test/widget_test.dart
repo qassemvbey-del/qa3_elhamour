@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qa3_elhamour/core/services/citizen_service.dart';
+import 'package:qa3_elhamour/core/services/supabase_service.dart';
+import 'package:qa3_elhamour/features/auth/auth_screen.dart';
 import 'package:qa3_elhamour/features/cafe/fish_cafe_screen.dart';
 import 'package:qa3_elhamour/features/cafe/game_room_screen.dart';
 import 'package:qa3_elhamour/features/cafe/services/cafe_room_service.dart';
@@ -14,13 +16,14 @@ import 'package:qa3_elhamour/features/onboarding/citizen_onboarding_screen.dart'
 import 'package:qa3_elhamour/main.dart';
 
 void main() {
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues({});
-    CitizenService.instance.logoutOrReset();
+    SupabaseService.instance.enableCloudSync = false;
+    await CitizenService.instance.logoutOrReset();
     CafeRoomService.instance.reset();
   });
 
-  testWidgets('App root smoke test loads successfully', (WidgetTester tester) async {
+  testWidgets('App root loads AuthScreen first by default', (WidgetTester tester) async {
     tester.view.physicalSize = const Size(390 * 2, 844 * 2);
     tester.view.devicePixelRatio = 2.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -29,40 +32,26 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
 
     expect(find.byType(Qa3ElhamourApp), findsOneWidget);
-    expect(find.byType(CitizenOnboardingScreen), findsOneWidget);
+    expect(find.byType(AuthScreen), findsOneWidget);
+    expect(find.text('بوابة جمارك قاع الهامور'), findsOneWidget);
   });
 
-  testWidgets('Session persistence recovers citizen on launch / web refresh', (WidgetTester tester) async {
-    tester.view.physicalSize = const Size(390 * 2, 844 * 2);
-    tester.view.devicePixelRatio = 2.0;
-    addTearDown(tester.view.resetPhysicalSize);
-
-    // Register citizen which saves to SharedPreferences
-    CitizenService.instance.registerCitizen(
-      name: 'سبونج بوب المصري',
-      species: CitizenService.availableSpecies.first,
-      job: CitizenService.availableJobs.first,
-      crime: CitizenService.availableCrimes.first,
-    );
-
-    // Simulate app reload / web refresh F5
-    await CitizenService.instance.init();
-
-    await tester.pumpWidget(const Qa3ElhamourApp());
-    await tester.pump(const Duration(milliseconds: 200));
-
-    // Should bypass onboarding and directly show MainShell
-    expect(find.byType(MainShell), findsOneWidget);
-    expect(find.byType(CitizenOnboardingScreen), findsNothing);
-  });
-
-  testWidgets('Onboarding flow registers citizen and opens MainShell', (WidgetTester tester) async {
+  testWidgets('AuthScreen guest bypass opens CitizenOnboardingScreen', (WidgetTester tester) async {
     tester.view.physicalSize = const Size(400 * 2, 850 * 2);
     tester.view.devicePixelRatio = 2.0;
     addTearDown(tester.view.resetPhysicalSize);
 
     await tester.pumpWidget(const Qa3ElhamourApp());
     await tester.pump(const Duration(milliseconds: 200));
+
+    // Tap guest bypass button
+    final guestBtn = find.text('الدخول السريع كزائر بحري مجهول 🤿');
+    expect(guestBtn, findsOneWidget);
+    await tester.tap(guestBtn);
+    await tester.pump(const Duration(milliseconds: 200));
+
+    // Onboarding screen appears
+    expect(find.byType(CitizenOnboardingScreen), findsOneWidget);
 
     // Scroll down to find the issue button
     final issueBtn = find.text('استخرج بطاقة مواطن قاع الهامور 🌊');
@@ -84,6 +73,33 @@ void main() {
 
     // MainShell is visible
     expect(find.byType(MainShell), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('Session persistence recovers citizen on launch / web refresh', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(390 * 2, 844 * 2);
+    tester.view.devicePixelRatio = 2.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    // Register citizen which saves to SharedPreferences
+    await CitizenService.instance.registerCitizen(
+      name: 'سبونج بوب المصري',
+      species: CitizenService.availableSpecies.first,
+      job: CitizenService.availableJobs.first,
+      crime: CitizenService.availableCrimes.first,
+    );
+
+    // Simulate app reload / web refresh F5
+    await CitizenService.instance.init();
+
+    await tester.pumpWidget(const Qa3ElhamourApp());
+    await tester.pump(const Duration(milliseconds: 200));
+
+    // Should bypass auth and onboarding and directly show MainShell
+    expect(find.byType(MainShell), findsOneWidget);
+    expect(find.byType(AuthScreen), findsNothing);
+    expect(find.byType(CitizenOnboardingScreen), findsNothing);
+    await tester.pumpWidget(const SizedBox());
   });
 
   testWidgets('All tabs render without layout overflows on 360px width', (WidgetTester tester) async {
@@ -92,7 +108,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
 
     // Register citizen first
-    CitizenService.instance.registerCitizen(
+    await CitizenService.instance.registerCitizen(
       name: 'سبونج بوب المصري',
       species: CitizenService.availableSpecies.first,
       job: CitizenService.availableJobs.first,
@@ -166,7 +182,7 @@ void main() {
     tester.view.devicePixelRatio = 2.0;
     addTearDown(tester.view.resetPhysicalSize);
 
-    CitizenService.instance.registerCitizen(
+    await CitizenService.instance.registerCitizen(
       name: 'سبونج بوب المصري',
       species: CitizenService.availableSpecies.first,
       job: CitizenService.availableJobs.first,
@@ -214,7 +230,7 @@ void main() {
     tester.view.devicePixelRatio = 2.0;
     addTearDown(tester.view.resetPhysicalSize);
 
-    CitizenService.instance.registerCitizen(
+    await CitizenService.instance.registerCitizen(
       name: 'سبونج بوب المصري',
       species: CitizenService.availableSpecies.first,
       job: CitizenService.availableJobs.first,

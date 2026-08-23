@@ -76,12 +76,16 @@ class CitizenService {
 
   final ValueNotifier<CitizenProfile?> currentProfile = ValueNotifier<CitizenProfile?>(null);
   final ValueNotifier<int> shellsBalance = ValueNotifier<int>(100);
+  final ValueNotifier<bool> isGuestOrAuthenticated = ValueNotifier<bool>(false);
 
   bool get hasProfile => currentProfile.value != null;
 
   /// Auto-restore persisted session on app launch or web refresh (F5)
   Future<void> init() async {
     try {
+      final isBypass = await SupabaseService.instance.getGuestBypass();
+      final hasAuth = SupabaseService.instance.hasAuthSession;
+
       final data = await SupabaseService.instance.loadCitizenProfile();
       if (data != null) {
         final profile = CitizenProfile(
@@ -99,15 +103,23 @@ class CitizenService {
 
         shellsBalance.value = (data['shells'] is int) ? data['shells'] as int : 100;
         currentProfile.value = profile;
+        isGuestOrAuthenticated.value = true;
 
         final numId = int.tryParse(profile.id.replaceAll('#', ''));
         if (numId != null && numId >= _citizenCounter) {
           _citizenCounter = numId + 1;
         }
+      } else if (hasAuth || isBypass) {
+        isGuestOrAuthenticated.value = true;
       }
     } catch (e) {
       if (kDebugMode) print('CitizenService init session recovery error: $e');
     }
+  }
+
+  void setAuthenticatedOrGuest(bool val) {
+    isGuestOrAuthenticated.value = val;
+    SupabaseService.instance.setGuestBypass(val);
   }
 
   /// Deduct shells if balance is sufficient
@@ -203,14 +215,14 @@ class CitizenService {
   ];
 
   /// Register a new citizen and assign sequential ID starting from #0001
-  CitizenProfile registerCitizen({
+  Future<CitizenProfile> registerCitizen({
     required String name,
     required CitizenSpeciesOption species,
     required String job,
     required String crime,
     String? customClan,
     String? bloodType,
-  }) {
+  }) async {
     final sequentialId = '#${_citizenCounter.toString().padLeft(4, '0')}';
     _citizenCounter++;
 
@@ -232,9 +244,10 @@ class CitizenService {
     );
 
     currentProfile.value = profile;
+    isGuestOrAuthenticated.value = true;
 
     // Persist session to local storage & sync to Supabase
-    SupabaseService.instance.saveCitizenProfile(profile, shellsBalance.value);
+    await SupabaseService.instance.saveCitizenProfile(profile, shellsBalance.value);
 
     return profile;
   }
@@ -244,9 +257,10 @@ class CitizenService {
     SupabaseService.instance.saveCitizenProfile(updated, shellsBalance.value);
   }
 
-  void logoutOrReset() {
+  Future<void> logoutOrReset() async {
     currentProfile.value = null;
+    isGuestOrAuthenticated.value = false;
     shellsBalance.value = 100;
-    SupabaseService.instance.clearCitizenProfile();
+    await SupabaseService.instance.signOut();
   }
 }

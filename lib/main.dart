@@ -4,6 +4,7 @@ import 'core/services/citizen_service.dart';
 import 'core/services/supabase_service.dart';
 import 'core/theme/bikini_theme.dart';
 import 'core/widgets/undersea_background.dart';
+import 'features/auth/auth_screen.dart';
 import 'features/navigation/main_shell.dart';
 import 'features/onboarding/citizen_onboarding_screen.dart';
 
@@ -36,13 +37,21 @@ class Qa3ElhamourApp extends StatelessWidget {
       home: Directionality(
         textDirection: TextDirection.rtl,
         child: UnderseaBackground(
-          child: ValueListenableBuilder<CitizenProfile?>(
-            valueListenable: CitizenService.instance.currentProfile,
-            builder: (context, profile, _) {
-              if (profile == null) {
-                return const CitizenOnboardingScreen();
+          child: ValueListenableBuilder<bool>(
+            valueListenable: CitizenService.instance.isGuestOrAuthenticated,
+            builder: (context, isAuth, _) {
+              if (!isAuth) {
+                return const AuthScreen();
               }
-              return const MainShell();
+              return ValueListenableBuilder<CitizenProfile?>(
+                valueListenable: CitizenService.instance.currentProfile,
+                builder: (context, profile, _) {
+                  if (profile == null) {
+                    return const CitizenOnboardingScreen();
+                  }
+                  return const MainShell();
+                },
+              );
             },
           ),
         ),

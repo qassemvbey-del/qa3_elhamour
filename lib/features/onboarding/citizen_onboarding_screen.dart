@@ -41,7 +41,7 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
     super.dispose();
   }
 
-  void _handleIssueId() {
+  void _handleIssueId() async {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -56,7 +56,7 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
       return;
     }
 
-    final profile = CitizenService.instance.registerCitizen(
+    final profile = await CitizenService.instance.registerCitizen(
       name: name,
       species: _selectedSpecies,
       job: _selectedJob,
