@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/avatar/marine_avatar_renderer.dart';
 import '../../../core/services/citizen_service.dart';
 import '../../../core/theme/bikini_theme.dart';
 import '../../../core/widgets/bikini_badge.dart';
@@ -143,31 +144,37 @@ class HeroBentoCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       // Avatar Illustration
-                      Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: BikiniColors.pureWhite,
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: BikiniColors.cartoonBlack,
-                            width: 2.2,
-                          ),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: BikiniColors.cartoonBlack,
-                              offset: Offset(2.5, 2.5),
-                              blurRadius: 0,
+                      hasProfile
+                          ? MarineAvatarRenderer(
+                              config: profile.avatarConfig,
+                              size: 56,
+                              showBackground: true,
+                            )
+                          : Container(
+                              width: 56,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                color: BikiniColors.pureWhite,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                  color: BikiniColors.cartoonBlack,
+                                  width: 2.2,
+                                ),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: BikiniColors.cartoonBlack,
+                                    offset: Offset(2.5, 2.5),
+                                    blurRadius: 0,
+                                  ),
+                                ],
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  '🪪',
+                                  style: TextStyle(fontSize: 28),
+                                ),
+                              ),
                             ),
-                          ],
-                        ),
-                        child: Center(
-                          child: Text(
-                            hasProfile ? profile.speciesEmoji : '🪪',
-                            style: const TextStyle(fontSize: 30),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
 

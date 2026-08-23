@@ -132,6 +132,7 @@ class SupabaseService {
       final map = {
         'id': profile.id,
         'name': profile.name,
+        'handle': profile.handle,
         'species': profile.species,
         'speciesEmoji': profile.speciesEmoji,
         'job': profile.job,
@@ -141,6 +142,7 @@ class SupabaseService {
         'bloodType': profile.bloodType,
         'registeredAt': profile.registeredAt.toIso8601String(),
         'shells': shells,
+        'avatarConfig': profile.avatarConfig.toJson(),
       };
       await prefs.setString(_prefKeyCitizen, jsonEncode(map));
       await prefs.setInt(_prefKeyShells, shells);
@@ -154,6 +156,7 @@ class SupabaseService {
       client!.from('citizens').upsert({
         'national_id': profile.nationalNumber,
         'full_name': profile.name,
+        'handle': profile.handle,
         'job_title': profile.job,
         'shells_balance': shells,
         'species': profile.species,

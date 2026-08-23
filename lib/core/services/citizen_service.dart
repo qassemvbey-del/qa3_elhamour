@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
+import '../avatar/marine_avatar_config.dart';
 import 'supabase_service.dart';
 
 /// Citizen Profile Data Model for "جمهورية قاع الهامور"
 class CitizenProfile {
   final String id; // e.g. #0001
   final String name;
+  final String handle; // e.g. @sponge_0001
   final String species;
   final String speciesEmoji;
   final String job;
@@ -13,10 +15,12 @@ class CitizenProfile {
   final String nationalNumber;
   final String bloodType;
   final DateTime registeredAt;
+  final MarineAvatarConfig avatarConfig;
 
   const CitizenProfile({
     required this.id,
     required this.name,
+    required this.handle,
     required this.species,
     required this.speciesEmoji,
     required this.job,
@@ -25,11 +29,13 @@ class CitizenProfile {
     required this.nationalNumber,
     required this.bloodType,
     required this.registeredAt,
+    this.avatarConfig = const MarineAvatarConfig(),
   });
 
   CitizenProfile copyWith({
     String? id,
     String? name,
+    String? handle,
     String? species,
     String? speciesEmoji,
     String? job,
@@ -38,10 +44,12 @@ class CitizenProfile {
     String? nationalNumber,
     String? bloodType,
     DateTime? registeredAt,
+    MarineAvatarConfig? avatarConfig,
   }) {
     return CitizenProfile(
       id: id ?? this.id,
       name: name ?? this.name,
+      handle: handle ?? this.handle,
       species: species ?? this.species,
       speciesEmoji: speciesEmoji ?? this.speciesEmoji,
       job: job ?? this.job,
@@ -50,6 +58,7 @@ class CitizenProfile {
       nationalNumber: nationalNumber ?? this.nationalNumber,
       bloodType: bloodType ?? this.bloodType,
       registeredAt: registeredAt ?? this.registeredAt,
+      avatarConfig: avatarConfig ?? this.avatarConfig,
     );
   }
 }
@@ -91,6 +100,7 @@ class CitizenService {
         final profile = CitizenProfile(
           id: data['id'] ?? '#0001',
           name: data['name'] ?? 'مواطن مائي',
+          handle: data['handle'] ?? '@citizen_0001',
           species: data['species'] ?? 'إسفنجة بحرية',
           speciesEmoji: data['speciesEmoji'] ?? '🧽',
           job: data['job'] ?? availableJobs.first,
@@ -99,6 +109,9 @@ class CitizenService {
           nationalNumber: data['nationalNumber'] ?? '298071000000000',
           bloodType: data['bloodType'] ?? availableBloodTypes.first,
           registeredAt: DateTime.tryParse(data['registeredAt'] ?? '') ?? DateTime.now(),
+          avatarConfig: data['avatarConfig'] != null
+              ? MarineAvatarConfig.fromJson(Map<String, dynamic>.from(data['avatarConfig']))
+              : MarineAvatarConfig.fromSpeciesName(data['species'] ?? 'إسفنجة'),
         );
 
         shellsBalance.value = (data['shells'] is int) ? data['shells'] as int : 100;
@@ -222,6 +235,7 @@ class CitizenService {
     required String crime,
     String? customClan,
     String? bloodType,
+    String? customHandle,
   }) async {
     final sequentialId = '#${_citizenCounter.toString().padLeft(4, '0')}';
     _citizenCounter++;
@@ -230,9 +244,17 @@ class CitizenService {
     final randomDigits = (100000000 + now.microsecondsSinceEpoch % 900000000).toString();
     final nationalId = '298071$randomDigits';
 
+    final cleanName = name.trim().isEmpty ? 'مواطن مائي مجهول' : name.trim();
+    final autoHandle = customHandle != null && customHandle.trim().isNotEmpty
+        ? (customHandle.startsWith('@') ? customHandle.trim() : '@${customHandle.trim()}')
+        : '@${cleanName.replaceAll(' ', '_')}_${sequentialId.replaceAll('#', '')}';
+
+    final avatar = MarineAvatarConfig.fromSpeciesName(species.name);
+
     final profile = CitizenProfile(
       id: sequentialId,
-      name: name.trim().isEmpty ? 'مواطن مائي مجهول' : name.trim(),
+      name: cleanName,
+      handle: autoHandle,
       species: species.name,
       speciesEmoji: species.emoji,
       job: job,
@@ -241,6 +263,7 @@ class CitizenService {
       nationalNumber: nationalId,
       bloodType: bloodType ?? availableBloodTypes.first,
       registeredAt: now,
+      avatarConfig: avatar,
     );
 
     currentProfile.value = profile;

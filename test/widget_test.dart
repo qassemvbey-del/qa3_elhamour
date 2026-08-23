@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:qa3_elhamour/core/avatar/marine_avatar_renderer.dart';
 import 'package:qa3_elhamour/core/services/citizen_service.dart';
 import 'package:qa3_elhamour/core/services/supabase_service.dart';
 import 'package:qa3_elhamour/features/auth/auth_screen.dart';
@@ -8,6 +9,7 @@ import 'package:qa3_elhamour/features/cafe/fish_cafe_screen.dart';
 import 'package:qa3_elhamour/features/cafe/game_room_screen.dart';
 import 'package:qa3_elhamour/features/cafe/services/cafe_room_service.dart';
 import 'package:qa3_elhamour/features/civil_id/civil_id_screen.dart';
+import 'package:qa3_elhamour/features/civil_id/widgets/egyptian_sea_id_card.dart';
 import 'package:qa3_elhamour/features/home/home_screen.dart';
 import 'package:qa3_elhamour/features/home/widgets/notifications_modal.dart';
 import 'package:qa3_elhamour/features/navigation/main_shell.dart';
@@ -100,6 +102,43 @@ void main() {
     expect(find.byType(AuthScreen), findsNothing);
     expect(find.byType(CitizenOnboardingScreen), findsNothing);
     await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('EgyptianSeaIdCard flips and renders avatar engine cleanly', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(390 * 2, 844 * 2);
+    tester.view.devicePixelRatio = 2.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await CitizenService.instance.registerCitizen(
+      name: 'سبونج بوب المصري',
+      species: CitizenService.availableSpecies.first,
+      job: CitizenService.availableJobs.first,
+      crime: CitizenService.availableCrimes.first,
+    );
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Directionality(
+          textDirection: TextDirection.rtl,
+          child: CivilIdScreen(),
+        ),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    // Verify Sea ID card & Avatar Renderer present
+    expect(find.byType(EgyptianSeaIdCard), findsOneWidget);
+    expect(find.byType(MarineAvatarRenderer), findsWidgets);
+    expect(find.textContaining('بطاقة الرقم القومي البحرية'), findsOneWidget);
+
+    // Tap card to flip
+    await tester.tap(find.byType(EgyptianSeaIdCard));
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pump(const Duration(milliseconds: 100));
+
+    // Verify back side fields
+    expect(find.textContaining('البيانات الرسمية'), findsOneWidget);
   });
 
   testWidgets('All tabs render without layout overflows on 360px width', (WidgetTester tester) async {
