@@ -26,21 +26,21 @@ class BikiniButton extends StatefulWidget {
     this.text,
     this.icon,
     this.customChild,
-    this.backgroundColor = BikiniColors.spongeYellow,
-    this.textColor = BikiniColors.cartoonBlack,
-    this.borderColor = BikiniColors.cartoonBlack,
-    this.shadowColor = BikiniColors.cartoonBlack,
-    this.height = 48.0,
+    this.backgroundColor = BikiniColors.card,
+    this.textColor = BikiniColors.ink,
+    this.borderColor = BikiniColors.ink,
+    this.shadowColor = BikiniColors.ink,
+    this.height = BikiniRadius.minTapHeight,
     this.width,
-    this.borderRadius = 16.0,
-    this.borderWidth = BikiniDecorations.borderWidth,
-    this.shadowOffset = const Offset(3.5, 3.5),
+    this.borderRadius = BikiniRadius.button,
+    this.borderWidth = BikiniRadius.borderWidth,
+    this.shadowOffset = const Offset(3.0, 3.0),
     this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
     this.isFullWidth = false,
     this.textStyle,
   });
 
-  /// Factory for primary action (Yellow Sponge)
+  /// Factory for primary action (Yellow action - exactly ONE per screen)
   factory BikiniButton.primary({
     Key? key,
     required VoidCallback? onPressed,
@@ -54,14 +54,14 @@ class BikiniButton extends StatefulWidget {
       onPressed: onPressed,
       text: text,
       icon: icon,
-      backgroundColor: BikiniColors.spongeYellow,
-      textColor: BikiniColors.cartoonBlack,
+      backgroundColor: BikiniColors.action,
+      textColor: BikiniColors.ink,
       isFullWidth: isFullWidth,
       height: height,
     );
   }
 
-  /// Factory for secondary action (Marine Cyan)
+  /// Factory for secondary action (White card + shadow)
   factory BikiniButton.secondary({
     Key? key,
     required VoidCallback? onPressed,
@@ -75,14 +75,36 @@ class BikiniButton extends StatefulWidget {
       onPressed: onPressed,
       text: text,
       icon: icon,
-      backgroundColor: BikiniColors.marineCyan,
-      textColor: BikiniColors.cartoonBlack,
+      backgroundColor: BikiniColors.card,
+      textColor: BikiniColors.ink,
       isFullWidth: isFullWidth,
       height: height,
     );
   }
 
-  /// Factory for danger/emergency action (Krabs Red)
+  /// Factory for ghost button (no shadow, transparent/card background)
+  factory BikiniButton.ghost({
+    Key? key,
+    required VoidCallback? onPressed,
+    required String text,
+    Widget? icon,
+    bool isFullWidth = false,
+    double height = 48.0,
+  }) {
+    return BikiniButton(
+      key: key,
+      onPressed: onPressed,
+      text: text,
+      icon: icon,
+      backgroundColor: BikiniColors.card,
+      textColor: BikiniColors.ink,
+      shadowOffset: Offset.zero,
+      isFullWidth: isFullWidth,
+      height: height,
+    );
+  }
+
+  /// Factory for danger action (Red danger)
   factory BikiniButton.danger({
     Key? key,
     required VoidCallback? onPressed,
@@ -96,15 +118,15 @@ class BikiniButton extends StatefulWidget {
       onPressed: onPressed,
       text: text,
       icon: icon,
-      backgroundColor: BikiniColors.krabsRed,
-      textColor: BikiniColors.pureWhite,
+      backgroundColor: BikiniColors.danger,
+      textColor: BikiniColors.card,
       isFullWidth: isFullWidth,
       height: height,
     );
   }
 
-  /// Factory for vibrant pink action (Neon Pink)
-  factory BikiniButton.pink({
+  /// Backward compatibility for secondary support button
+  factory BikiniButton.support({
     Key? key,
     required VoidCallback? onPressed,
     required String text,
@@ -117,12 +139,29 @@ class BikiniButton extends StatefulWidget {
       onPressed: onPressed,
       text: text,
       icon: icon,
-      backgroundColor: BikiniColors.neonPink,
-      textColor: BikiniColors.pureWhite,
+      backgroundColor: BikiniColors.support,
+      textColor: BikiniColors.ink,
       isFullWidth: isFullWidth,
       height: height,
     );
   }
+
+  /// Backward compatibility alias for pink
+  factory BikiniButton.pink({
+    Key? key,
+    required VoidCallback? onPressed,
+    required String text,
+    Widget? icon,
+    bool isFullWidth = false,
+    double height = 48.0,
+  }) => BikiniButton.secondary(
+    key: key,
+    onPressed: onPressed,
+    text: text,
+    icon: icon,
+    isFullWidth: isFullWidth,
+    height: height,
+  );
 
   @override
   State<BikiniButton> createState() => _BikiniButtonState();
@@ -170,11 +209,11 @@ class _BikiniButtonState extends State<BikiniButton> {
           ? Text(
               widget.text!,
               style: widget.textStyle ??
-                  BikiniTypography.titleBold(
+                  BikiniTypography.label(
                     color: isEnabled
                         ? widget.textColor
-                        : BikiniColors.cartoonBlack.withValues(alpha: 0.5),
-                  ).copyWith(fontSize: 14),
+                        : BikiniColors.muted,
+                  ),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -212,7 +251,7 @@ class _BikiniButtonState extends State<BikiniButton> {
       decoration: BoxDecoration(
         color: isEnabled
             ? widget.backgroundColor
-            : const Color(0xFFD3D3D3),
+            : BikiniColors.line,
         borderRadius: BorderRadius.circular(widget.borderRadius),
         border: Border.all(
           color: widget.borderColor,
@@ -222,7 +261,7 @@ class _BikiniButtonState extends State<BikiniButton> {
           BoxShadow(
             color: isEnabled
                 ? widget.shadowColor
-                : BikiniColors.cartoonBlack.withValues(alpha: 0.4),
+                : BikiniColors.ink.withValues(alpha: 0.3),
             offset: currentShadow,
             blurRadius: 0,
           ),

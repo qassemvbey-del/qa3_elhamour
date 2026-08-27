@@ -64,16 +64,16 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
     Clipboard.setData(ClipboardData(text: code));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: BikiniColors.cartoonBlack,
+        backgroundColor: BikiniColors.deep,
         duration: const Duration(seconds: 2),
         content: Row(
           children: [
             const Text('📋', style: TextStyle(fontSize: 18)),
-            const SizedBox(width: 8),
+            const SizedBox(width: BikiniSpacing.space8),
             Expanded(
               child: Text(
                 'تم نسخ كود الترابيزة #$code! ابعته لأصحابك في القاع 🌊',
-                style: BikiniTypography.bodyMedium(color: BikiniColors.spongeYellow),
+                style: BikiniTypography.body(color: BikiniColors.card),
               ),
             ),
           ],
@@ -89,15 +89,15 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
       builder: (ctx) => Directionality(
         textDirection: TextDirection.rtl,
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(BikiniSpacing.space16),
           decoration: BoxDecoration(
-            color: BikiniColors.warmSand,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-            border: Border.all(color: BikiniColors.cartoonBlack, width: 3.5),
+            color: BikiniColors.paper,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(BikiniRadius.sheet)),
+            border: Border.all(color: BikiniColors.ink, width: BikiniRadius.borderWidth),
             boxShadow: const [
               BoxShadow(
-                color: BikiniColors.cartoonBlack,
-                offset: Offset(0, -5),
+                color: BikiniColors.ink,
+                offset: Offset(0, -4),
                 blurRadius: 0,
               ),
             ],
@@ -112,49 +112,51 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                     Row(
                       children: [
                         const Text('🎮', style: TextStyle(fontSize: 22)),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: BikiniSpacing.space8),
                         Text(
                           'تغيير اللعبة النشطة على الترابيزة',
-                          style: BikiniTypography.displaySmall().copyWith(fontSize: 16),
+                          style: BikiniTypography.h2(color: BikiniColors.deep),
                         ),
                       ],
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close),
+                      icon: const Icon(Icons.close, color: BikiniColors.ink),
                       onPressed: () => Navigator.of(ctx).pop(),
                     ),
                   ],
                 ),
-                const Divider(color: BikiniColors.cartoonBlack, thickness: 1.5),
-                const SizedBox(height: 6),
+                const Divider(color: BikiniColors.line, thickness: 1.5),
+                const SizedBox(height: BikiniSpacing.space8),
                 ...CafeGameType.values.map((game) {
                   final isSelected = room.activeGame == game;
                   return Container(
-                    margin: const EdgeInsets.only(bottom: 8),
+                    margin: const EdgeInsets.only(bottom: BikiniSpacing.space8),
                     decoration: BoxDecoration(
-                      color: isSelected ? BikiniColors.spongeYellow : BikiniColors.pureWhite,
-                      borderRadius: BorderRadius.circular(14),
+                      color: BikiniColors.card,
+                      borderRadius: BorderRadius.circular(BikiniRadius.button),
                       border: Border.all(
-                        color: isSelected ? BikiniColors.krabsRed : BikiniColors.cartoonBlack,
-                        width: 2.2,
+                        color: isSelected ? BikiniColors.deep : BikiniColors.line,
+                        width: isSelected ? 2.0 : 1.5,
                       ),
                     ),
                     child: ListTile(
                       leading: Text(game.emoji, style: const TextStyle(fontSize: 24)),
                       title: Text(
                         game.title,
-                        style: BikiniTypography.titleBold().copyWith(fontSize: 13.5),
+                        style: BikiniTypography.label(color: BikiniColors.deep),
                       ),
                       subtitle: Text(
                         game.description,
-                        style: BikiniTypography.caption(color: const Color(0xFF666666))
-                            .copyWith(fontSize: 11),
+                        style: BikiniTypography.caption(color: BikiniColors.muted),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       trailing: isSelected
-                          ? const Text('نشطة الآن 🟢',
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11))
+                          ? const BikiniBadge(
+                              text: 'نشطة الآن 🟢',
+                              backgroundColor: BikiniColors.support,
+                              textColor: BikiniColors.ink,
+                            )
                           : BikiniButton.secondary(
                               onPressed: () {
                                 CafeRoomService.instance.switchGame(room.id, game);
@@ -164,7 +166,7 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                 Navigator.of(ctx).pop();
                               },
                               text: 'اختيار 🕹️',
-                              height: 32,
+                              height: 36,
                             ),
                     ),
                   );
@@ -189,11 +191,11 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
             textDirection: TextDirection.rtl,
             child: Container(
               height: MediaQuery.of(context).size.height * 0.7,
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(BikiniSpacing.space16),
               decoration: BoxDecoration(
-                color: BikiniColors.warmSand,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                border: Border.all(color: BikiniColors.cartoonBlack, width: 3.5),
+                color: BikiniColors.paper,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(BikiniRadius.sheet)),
+                border: Border.all(color: BikiniColors.ink, width: BikiniRadius.borderWidth),
               ),
               child: SafeArea(
                 child: Column(
@@ -204,38 +206,39 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                         Row(
                           children: [
                             const Text('🪑', style: TextStyle(fontSize: 20)),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: BikiniSpacing.space8),
                             Text(
                               'إدارة كراسي الترابيزة والمشاهدين',
-                              style: BikiniTypography.displaySmall().copyWith(fontSize: 16),
+                              style: BikiniTypography.h2(color: BikiniColors.deep),
                             ),
                           ],
                         ),
                         IconButton(
-                          icon: const Icon(Icons.close),
+                          icon: const Icon(Icons.close, color: BikiniColors.ink),
                           onPressed: () => Navigator.of(ctx).pop(),
                         ),
                       ],
                     ),
-                    const Divider(color: BikiniColors.cartoonBlack, thickness: 1.5),
+                    const Divider(color: BikiniColors.line, thickness: 1.5),
                     Expanded(
                       child: ListView.separated(
                         itemCount: currentRoom.participants.length,
-                        separatorBuilder: (ctx, i) => const SizedBox(height: 8),
+                        separatorBuilder: (ctx, i) => const SizedBox(height: BikiniSpacing.space8),
                         itemBuilder: (ctx, i) {
                           final p = currentRoom.participants[i];
                           final isPlayer = p.role == CafePlayerRole.player;
                           return Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: BikiniColors.pureWhite,
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: BikiniSpacing.space12,
+                              vertical: BikiniSpacing.space8,
+                            ),
+                            decoration: BikiniDecorations.staticCard(
+                              backgroundColor: BikiniColors.card,
                             ),
                             child: Row(
                               children: [
                                 Text(p.avatar, style: const TextStyle(fontSize: 20)),
-                                const SizedBox(width: 8),
+                                const SizedBox(width: BikiniSpacing.space8),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,7 +247,7 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                         children: [
                                           Text(
                                             p.name,
-                                            style: BikiniTypography.titleBold().copyWith(fontSize: 13),
+                                            style: BikiniTypography.label(color: BikiniColors.deep),
                                           ),
                                           if (p.isOwner) ...[
                                             const SizedBox(width: 4),
@@ -254,8 +257,7 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                       ),
                                       Text(
                                         isPlayer ? 'لاعب نشط على الترابيزة 🤿' : 'في وضع المشاهدين 👁️',
-                                        style: BikiniTypography.caption(color: const Color(0xFF666666))
-                                            .copyWith(fontSize: 10.5),
+                                        style: BikiniTypography.caption(color: BikiniColors.muted),
                                       ),
                                     ],
                                   ),
@@ -278,7 +280,7 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                       setState(() {});
                                     },
                                     text: isPlayer ? 'تحويل لمشاهد 👁️' : 'شد كرسي للعب 🪑',
-                                    height: 32,
+                                    height: 36,
                                   ),
                               ],
                             ),
@@ -319,7 +321,6 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
               'avatar': avatar,
               'text': text.trim(),
               'time': 'الآن',
-              'color': '0xFF00F5D4',
             });
 
             textController.clear();
@@ -346,13 +347,13 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.8,
                 decoration: BoxDecoration(
-                  color: BikiniColors.warmSand,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-                  border: Border.all(color: BikiniColors.cartoonBlack, width: 3.5),
+                  color: BikiniColors.paper,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(BikiniRadius.sheet)),
+                  border: Border.all(color: BikiniColors.ink, width: BikiniRadius.borderWidth),
                   boxShadow: const [
                     BoxShadow(
-                      color: BikiniColors.cartoonBlack,
-                      offset: Offset(0, -6),
+                      color: BikiniColors.ink,
+                      offset: Offset(0, -4),
                       blurRadius: 0,
                     ),
                   ],
@@ -360,20 +361,20 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                 child: SafeArea(
                   child: Column(
                     children: [
-                      const SizedBox(height: 10),
+                      const SizedBox(height: BikiniSpacing.space12),
                       Container(
                         width: 48,
-                        height: 5,
+                        height: 4,
                         decoration: BoxDecoration(
-                          color: BikiniColors.cartoonBlack,
-                          borderRadius: BorderRadius.circular(3),
+                          color: BikiniColors.ink,
+                          borderRadius: BorderRadius.circular(2),
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: BikiniSpacing.space12),
 
                       // Header
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: BikiniRadius.screenMargin),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -381,11 +382,11 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                               child: Row(
                                 children: [
                                   const Text('💬', style: TextStyle(fontSize: 18)),
-                                  const SizedBox(width: 6),
+                                  const SizedBox(width: BikiniSpacing.space8),
                                   Flexible(
                                     child: Text(
                                       'شات الترابيزة المباشر',
-                                      style: BikiniTypography.displaySmall().copyWith(fontSize: 16),
+                                      style: BikiniTypography.h2(color: BikiniColors.deep),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -393,42 +394,35 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: BikiniSpacing.space8),
                             BikiniButton.secondary(
                               onPressed: () => BeverageMenuSheet.show(context),
                               text: 'طلب مشروب 🫖',
-                              height: 32,
+                              height: 36,
                             ),
                           ],
                         ),
                       ),
 
-                      const SizedBox(height: 6),
-                      const Divider(color: BikiniColors.cartoonBlack, thickness: 1.8),
+                      const SizedBox(height: BikiniSpacing.space8),
+                      const Divider(color: BikiniColors.line, thickness: 1.5),
 
                       // Messages List
                       Expanded(
                         child: ListView.separated(
                           controller: scrollController,
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: BikiniRadius.screenMargin,
+                            vertical: BikiniSpacing.space8,
+                          ),
                           itemCount: currentRoom.chatMessages.length,
-                          separatorBuilder: (ctx, i) => const SizedBox(height: 8),
+                          separatorBuilder: (ctx, i) => const SizedBox(height: BikiniSpacing.space8),
                           itemBuilder: (ctx, i) {
                             final m = currentRoom.chatMessages[i];
-                            final colorHex = int.tryParse(m['color'] ?? '0xFFFFFFFF') ?? 0xFFFFFFFF;
                             return Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: Color(colorHex),
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(color: BikiniColors.cartoonBlack, width: 1.8),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: BikiniColors.cartoonBlack,
-                                    offset: Offset(2, 2),
-                                    blurRadius: 0,
-                                  ),
-                                ],
+                              padding: const EdgeInsets.all(BikiniSpacing.space12),
+                              decoration: BikiniDecorations.staticCard(
+                                backgroundColor: BikiniColors.card,
                               ),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -437,15 +431,15 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                     width: 32,
                                     height: 32,
                                     decoration: BoxDecoration(
-                                      color: BikiniColors.pureWhite,
+                                      color: BikiniColors.paper,
                                       shape: BoxShape.circle,
-                                      border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+                                      border: Border.all(color: BikiniColors.ink, width: 1.5),
                                     ),
                                     child: Center(
                                       child: Text(m['avatar'] ?? '🧽', style: const TextStyle(fontSize: 16)),
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
+                                  const SizedBox(width: BikiniSpacing.space8),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -456,10 +450,7 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                             Expanded(
                                               child: Text(
                                                 m['sender'] ?? 'مواطن',
-                                                style: BikiniTypography.bodyLarge().copyWith(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
+                                                style: BikiniTypography.label(color: BikiniColors.deep),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
@@ -467,15 +458,14 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                             const SizedBox(width: 6),
                                             Text(
                                               m['time'] ?? 'الآن',
-                                              style: BikiniTypography.caption(color: const Color(0xFF666666))
-                                                  .copyWith(fontSize: 9.5),
+                                              style: BikiniTypography.caption(color: BikiniColors.muted),
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 2),
+                                        const SizedBox(height: BikiniSpacing.space4),
                                         Text(
                                           m['text'] ?? '',
-                                          style: BikiniTypography.bodyMedium().copyWith(fontSize: 12.5),
+                                          style: BikiniTypography.body(color: BikiniColors.ink),
                                         ),
                                       ],
                                     ),
@@ -490,11 +480,11 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                       // Quick Preset Chips
                       Container(
                         height: 38,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: BikiniRadius.screenMargin),
                         child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           itemCount: _quickChatPresets.length,
-                          separatorBuilder: (ctx, i) => const SizedBox(width: 6),
+                          separatorBuilder: (ctx, i) => const SizedBox(width: BikiniSpacing.space8),
                           itemBuilder: (ctx, i) {
                             final preset = _quickChatPresets[i];
                             return GestureDetector(
@@ -502,14 +492,14 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: BikiniColors.spongeYellow,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: BikiniColors.cartoonBlack, width: 1.2),
+                                  color: BikiniColors.paper,
+                                  borderRadius: BorderRadius.circular(BikiniRadius.pill),
+                                  border: Border.all(color: BikiniColors.ink, width: 1.2),
                                 ),
                                 child: Center(
                                   child: Text(
                                     preset['label']!,
-                                    style: BikiniTypography.captionBold().copyWith(fontSize: 10.5),
+                                    style: BikiniTypography.caption(color: BikiniColors.ink),
                                   ),
                                 ),
                               ),
@@ -518,38 +508,43 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 6),
+                      const SizedBox(height: BikiniSpacing.space8),
 
                       // Input Bar
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 4, 12, 10),
+                        padding: const EdgeInsets.fromLTRB(
+                          BikiniRadius.screenMargin,
+                          4,
+                          BikiniRadius.screenMargin,
+                          BikiniSpacing.space12,
+                        ),
                         child: Row(
                           children: [
                             Expanded(
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 12),
                                 decoration: BoxDecoration(
-                                  color: BikiniColors.pureWhite,
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
+                                  color: BikiniColors.card,
+                                  borderRadius: BorderRadius.circular(BikiniRadius.button),
+                                  border: Border.all(color: BikiniColors.ink, width: 1.5),
                                 ),
                                 child: TextField(
                                   controller: textController,
-                                  style: BikiniTypography.bodyMedium().copyWith(fontSize: 13),
+                                  style: BikiniTypography.body(color: BikiniColors.ink),
                                   onSubmitted: (val) => sendMessage(val),
                                   decoration: InputDecoration(
                                     hintText: 'ارمي نكتة أو علّق على اللعبة...',
-                                    hintStyle: BikiniTypography.inputHint().copyWith(fontSize: 12),
+                                    hintStyle: BikiniTypography.inputHint(),
                                     border: InputBorder.none,
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: BikiniSpacing.space8),
                             BikiniButton.primary(
                               onPressed: () => sendMessage(textController.text),
                               text: 'إرسال 🚀',
-                              height: 44,
+                              height: 48,
                             ),
                           ],
                         ),
@@ -573,14 +568,14 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
         final room = _getRoom();
         if (room == null) {
           return Scaffold(
-            backgroundColor: BikiniColors.warmSand,
+            backgroundColor: BikiniColors.paper,
             appBar: AppBar(title: const Text('الترابيزة غير موجودة')),
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text('الترابيزة دي اتقفلت أو مش موجودة! 🪑'),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: BikiniSpacing.space12),
                   BikiniButton.primary(
                     onPressed: () => Navigator.of(context).pop(),
                     text: 'الرجوع للقهوة 🔙',
@@ -597,38 +592,42 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
         final isPlayer = room.isUserPlayer(myId);
 
         return Scaffold(
-          backgroundColor: BikiniColors.warmSand,
+          backgroundColor: BikiniColors.paper,
           appBar: _buildRoomAppBar(room, isOwner),
           body: Stack(
             children: [
               // Main Game Canvas & Controls
               ListView(
-                padding: const EdgeInsets.fromLTRB(12, 10, 12, 90),
+                padding: const EdgeInsets.fromLTRB(
+                  BikiniRadius.screenMargin,
+                  BikiniSpacing.space8,
+                  BikiniRadius.screenMargin,
+                  BikiniRadius.navBarClearance,
+                ),
                 children: [
                   // Role Badge & Admin Bar
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: BikiniColors.pureWhite,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
+                    decoration: BikiniDecorations.interactiveCard(
+                      backgroundColor: BikiniColors.card,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
-                            Text(isPlayer ? '🤿 لاعب نشط' : '👁️ وضع المشاهدين',
-                                style: BikiniTypography.captionBold(
-                                  color: isPlayer ? const Color(0xFF007A78) : const Color(0xFF666666),
-                                ).copyWith(fontSize: 11)),
-                            const SizedBox(width: 6),
+                            Text(
+                              isPlayer ? '🤿 لاعب نشط' : '👁️ وضع المشاهدين',
+                              style: BikiniTypography.caption(
+                                color: isPlayer ? BikiniColors.deep : BikiniColors.muted,
+                              ),
+                            ),
+                            const SizedBox(width: BikiniSpacing.space8),
                             if (isOwner)
-                              BikiniBadge(
+                              const BikiniBadge(
                                 text: 'صاحب الترابيزة 👑',
-                                backgroundColor: BikiniColors.spongeYellow,
-                                textColor: BikiniColors.cartoonBlack,
-                                fontSize: 9.5,
+                                backgroundColor: BikiniColors.coin,
+                                textColor: BikiniColors.card,
                               ),
                           ],
                         ),
@@ -640,26 +639,30 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                   decoration: BoxDecoration(
-                                    color: BikiniColors.marineCyan,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: BikiniColors.cartoonBlack, width: 1.2),
+                                    color: BikiniColors.paper,
+                                    borderRadius: BorderRadius.circular(BikiniRadius.button),
+                                    border: Border.all(color: BikiniColors.ink, width: 1.2),
                                   ),
-                                  child: const Text('🎮 غيّر اللعبة',
-                                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                                  child: Text(
+                                    '🎮 غيّر اللعبة',
+                                    style: BikiniTypography.caption(color: BikiniColors.deep),
+                                  ),
                                 ),
                               ),
-                              const SizedBox(width: 6),
+                              const SizedBox(width: BikiniSpacing.space8),
                               GestureDetector(
                                 onTap: () => _showSeatManagementModal(room),
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                   decoration: BoxDecoration(
-                                    color: BikiniColors.spongeYellow,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: BikiniColors.cartoonBlack, width: 1.2),
+                                    color: BikiniColors.paper,
+                                    borderRadius: BorderRadius.circular(BikiniRadius.button),
+                                    border: Border.all(color: BikiniColors.ink, width: 1.2),
                                   ),
-                                  child: const Text('🪑 الكراسي',
-                                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                                  child: Text(
+                                    '🪑 الكراسي',
+                                    style: BikiniTypography.caption(color: BikiniColors.deep),
+                                  ),
                                 ),
                               ),
                             ],
@@ -668,7 +671,7 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: BikiniSpacing.space12),
 
                   // Dynamic Game Canvas
                   KeyedSubtree(
@@ -716,25 +719,18 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
           right: 10,
           bottom: 6,
         ),
-        decoration: BoxDecoration(
-          color: BikiniColors.pureWhite,
-          border: const Border(
-            bottom: BorderSide(color: BikiniColors.cartoonBlack, width: 3),
+        decoration: const BoxDecoration(
+          color: BikiniColors.deep,
+          border: Border(
+            bottom: BorderSide(color: BikiniColors.ink, width: BikiniRadius.borderWidth),
           ),
-          boxShadow: const [
-            BoxShadow(
-              color: BikiniColors.cartoonBlack,
-              offset: Offset(0, 3),
-              blurRadius: 0,
-            ),
-          ],
         ),
         child: Row(
           children: [
             IconButton(
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
-              icon: const Icon(Icons.arrow_back_rounded, color: BikiniColors.cartoonBlack),
+              icon: const Icon(Icons.arrow_back_rounded, color: BikiniColors.card),
               onPressed: () => Navigator.of(context).pop(),
             ),
             const SizedBox(width: 4),
@@ -745,7 +741,7 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                 children: [
                   Text(
                     room.title,
-                    style: BikiniTypography.titleBold().copyWith(fontSize: 13.5),
+                    style: BikiniTypography.h3(color: BikiniColors.card),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -756,17 +752,13 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                           decoration: BoxDecoration(
-                            color: BikiniColors.spongeYellow,
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: BikiniColors.cartoonBlack, width: 1),
+                            color: BikiniColors.deep2,
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(color: BikiniColors.ink, width: 1),
                           ),
                           child: Text(
                             '#${room.id} 📋',
-                            style: const TextStyle(
-                              fontSize: 9.5,
-                              fontWeight: FontWeight.bold,
-                              color: BikiniColors.cartoonBlack,
-                            ),
+                            style: BikiniTypography.mono(color: BikiniColors.card),
                           ),
                         ),
                       ),
@@ -774,7 +766,7 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
                       Flexible(
                         child: Text(
                           '👁️ ${room.spectators.length} مشاهدين',
-                          style: BikiniTypography.caption(color: const Color(0xFF666666)).copyWith(fontSize: 9.5),
+                          style: BikiniTypography.caption(color: BikiniColors.paper),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -787,9 +779,8 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
             const SizedBox(width: 6),
             BikiniBadge(
               text: room.activeGame.title,
-              backgroundColor: room.activeGame.themeColor,
-              textColor: BikiniColors.cartoonBlack,
-              fontSize: 10,
+              backgroundColor: BikiniColors.support,
+              textColor: BikiniColors.ink,
             ),
           ],
         ),
@@ -847,21 +838,21 @@ class _GameRoomScreenState extends State<GameRoomScreen> {
       width: 54,
       height: 54,
       decoration: BoxDecoration(
-        color: BikiniColors.neonPink,
+        color: BikiniColors.support,
         shape: BoxShape.circle,
-        border: Border.all(color: BikiniColors.cartoonBlack, width: 2.8),
+        border: Border.all(color: BikiniColors.ink, width: BikiniRadius.borderWidth),
         boxShadow: isDragging
             ? const [
                 BoxShadow(
-                  color: BikiniColors.cartoonBlack,
-                  offset: Offset(6, 6),
+                  color: BikiniColors.ink,
+                  offset: Offset(4, 4),
                   blurRadius: 0,
                 ),
               ]
             : const [
                 BoxShadow(
-                  color: BikiniColors.cartoonBlack,
-                  offset: Offset(3.5, 3.5),
+                  color: BikiniColors.ink,
+                  offset: Offset(3, 3),
                   blurRadius: 0,
                 ),
               ],

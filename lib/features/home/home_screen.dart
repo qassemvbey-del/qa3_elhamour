@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: BikiniColors.warmSand,
+      backgroundColor: BikiniColors.paper,
       appBar: WoodenTopBar(
         title: 'جمهورية قاع الهامور',
         unreadCount: 3,
@@ -27,7 +27,10 @@ class HomeScreen extends StatelessWidget {
       body: SafeArea(
         bottom: false,
         child: ListView(
-          padding: const EdgeInsets.only(bottom: 110, top: 8),
+          padding: const EdgeInsets.only(
+            bottom: BikiniRadius.navBarClearance,
+            top: BikiniSpacing.space8,
+          ),
           children: [
             // Satirical Breaking News Ticker
             const BreakingNewsTicker(),

@@ -42,8 +42,8 @@ class PlayingCard {
 
   Color get suitColor {
     return (suit == CardSuit.hearts || suit == CardSuit.diamonds)
-        ? const Color(0xFFD62828)
-        : const Color(0xFF1E1E1E);
+        ? BikiniColors.danger
+        : BikiniColors.ink;
   }
 
   bool get isJack => value == 11;
@@ -241,7 +241,6 @@ class _BasraGameCanvasState extends State<BasraGameCanvas> {
 
       setState(() {
         if (_opponentHand.isNotEmpty) {
-          // AI selects best card (Jack/Kommi if table full, or matching card)
           PlayingCard chosenCard = _opponentHand.first;
 
           final matches = _opponentHand.where((c) => _tableCards.any((tc) => tc.value == c.value)).toList();
@@ -295,18 +294,9 @@ class _BasraGameCanvasState extends State<BasraGameCanvas> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: BikiniColors.pureWhite,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: BikiniColors.cartoonBlack, width: 3),
-        boxShadow: const [
-          BoxShadow(
-            color: BikiniColors.cartoonBlack,
-            offset: Offset(4, 4),
-            blurRadius: 0,
-          ),
-        ],
+      padding: const EdgeInsets.all(BikiniSpacing.space12),
+      decoration: BikiniDecorations.interactiveCard(
+        backgroundColor: BikiniColors.card,
       ),
       child: Column(
         children: [
@@ -321,28 +311,28 @@ class _BasraGameCanvasState extends State<BasraGameCanvas> {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: BikiniColors.spongeYellow,
+                        color: BikiniColors.paper,
                         shape: BoxShape.circle,
-                        border: Border.all(color: BikiniColors.cartoonBlack, width: 1.8),
+                        border: Border.all(color: BikiniColors.ink, width: 1.5),
                       ),
                       child: Center(
                         child: Text(widget.player2Avatar, style: const TextStyle(fontSize: 15)),
                       ),
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: BikiniSpacing.space8),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             widget.player2Name,
-                            style: BikiniTypography.titleBold().copyWith(fontSize: 12),
+                            style: BikiniTypography.label(color: BikiniColors.deep),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
                             'مجمع: ${_opponentCaptured.length} كارت (بصرة: $_opponentBasras)',
-                            style: BikiniTypography.caption(color: const Color(0xFF666666)).copyWith(fontSize: 9.5),
+                            style: BikiniTypography.caption(color: BikiniColors.muted),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -352,36 +342,38 @@ class _BasraGameCanvasState extends State<BasraGameCanvas> {
                   ],
                 ),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: BikiniSpacing.space8),
               BikiniBadge(
                 text: 'الكوتشينة: ${_deck.length} 🃏',
-                backgroundColor: BikiniColors.spongeYellow,
-                textColor: BikiniColors.cartoonBlack,
-                fontSize: 9.5,
+                backgroundColor: BikiniColors.paper,
+                textColor: BikiniColors.ink,
               ),
             ],
           ),
 
-          const SizedBox(height: 6),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Status Banner
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            padding: const EdgeInsets.symmetric(
+              horizontal: BikiniSpacing.space12,
+              vertical: BikiniSpacing.space8,
+            ),
             decoration: BoxDecoration(
-              color: _winnerMessage != null ? BikiniColors.spongeYellow : BikiniColors.warmSand,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+              color: _winnerMessage != null ? BikiniColors.paper : BikiniColors.paper,
+              borderRadius: BorderRadius.circular(BikiniRadius.button),
+              border: Border.all(color: BikiniColors.ink, width: 1.5),
             ),
             child: Row(
               children: [
                 Text(_winnerMessage != null ? '🏆' : '🃏', style: const TextStyle(fontSize: 16)),
-                const SizedBox(width: 6),
+                const SizedBox(width: BikiniSpacing.space8),
                 Expanded(
                   child: Text(
                     _winnerMessage ?? _statusBanner ?? 'العب كارتك واقش الطربيزة!',
-                    style: BikiniTypography.captionBold(
-                      color: _winnerMessage != null ? BikiniColors.krabsRed : BikiniColors.cartoonBlack,
-                    ).copyWith(fontSize: 11),
+                    style: BikiniTypography.caption(
+                      color: _winnerMessage != null ? BikiniColors.alert : BikiniColors.deep,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -390,21 +382,23 @@ class _BasraGameCanvasState extends State<BasraGameCanvas> {
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: BikiniSpacing.space8),
 
-          // Green Felt Table (Face-up Cards on the Floor)
+          // Green/Deep Felt Table (Face-up Cards on the Floor)
           Container(
             height: 115,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF0F5132),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: BikiniColors.cartoonBlack, width: 2.5),
+              color: BikiniColors.deep,
+              borderRadius: BorderRadius.circular(BikiniRadius.card),
+              border: Border.all(color: BikiniColors.ink, width: BikiniRadius.borderWidth),
             ),
             child: _tableCards.isEmpty
-                ? const Center(
-                    child: Text('الطربيزة فاضية (قش نضيف)! 🃏✨',
-                        style: TextStyle(color: Colors.white70, fontSize: 12)),
+                ? Center(
+                    child: Text(
+                      'الطربيزة فاضية (قش نضيف)! 🃏✨',
+                      style: BikiniTypography.caption(color: BikiniColors.card),
+                    ),
                   )
                 : ListView.separated(
                     scrollDirection: Axis.horizontal,
@@ -417,7 +411,7 @@ class _BasraGameCanvasState extends State<BasraGameCanvas> {
                   ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Player Stats & Hand Section
           Row(
@@ -429,37 +423,41 @@ class _BasraGameCanvasState extends State<BasraGameCanvas> {
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: BikiniColors.marineCyan,
+                      color: BikiniColors.paper,
                       shape: BoxShape.circle,
-                      border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+                      border: Border.all(color: BikiniColors.ink, width: 1.5),
                     ),
                     child: Center(
                       child: Text(widget.player1Avatar, style: const TextStyle(fontSize: 16)),
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: BikiniSpacing.space8),
                   Text(
                     'كروتك (مجمع: ${_playerCaptured.length} | بصرة: $_playerBasras):',
-                    style: BikiniTypography.captionBold().copyWith(fontSize: 11),
+                    style: BikiniTypography.caption(color: BikiniColors.deep),
                   ),
                 ],
               ),
               BikiniBadge(
                 text: _currentTurn == 0 ? 'دورك للعب 🃏' : 'دور الخصم ⏳',
-                backgroundColor: _currentTurn == 0 ? BikiniColors.marineCyan : BikiniColors.warmSand,
-                textColor: BikiniColors.cartoonBlack,
-                fontSize: 9.5,
+                backgroundColor: _currentTurn == 0 ? BikiniColors.support : BikiniColors.paper,
+                textColor: BikiniColors.ink,
               ),
             ],
           ),
 
-          const SizedBox(height: 6),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Player Hand Cards
           SizedBox(
             height: 85,
             child: _playerHand.isEmpty
-                ? const Center(child: Text('جاري توزيع الكروت الجديدة...'))
+                ? Center(
+                    child: Text(
+                      'جاري توزيع الكروت الجديدة...',
+                      style: BikiniTypography.caption(color: BikiniColors.muted),
+                    ),
+                  )
                 : ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: _playerHand.length,
@@ -476,12 +474,12 @@ class _BasraGameCanvasState extends State<BasraGameCanvas> {
           ),
 
           if (_winnerMessage != null) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: BikiniSpacing.space8),
             BikiniButton.primary(
               onPressed: _startNewGame,
               text: 'لعب دور جديد 🃏🔄',
               isFullWidth: true,
-              height: 40,
+              height: 48,
             ),
           ],
         ],
@@ -496,15 +494,15 @@ class _BasraGameCanvasState extends State<BasraGameCanvas> {
       height: 80,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: BikiniColors.pureWhite,
-        borderRadius: BorderRadius.circular(10),
+        color: BikiniColors.card,
+        borderRadius: BorderRadius.circular(BikiniRadius.button),
         border: Border.all(
-          color: isInteractive ? BikiniColors.krabsRed : BikiniColors.cartoonBlack,
-          width: isInteractive ? 2.5 : 1.8,
+          color: isInteractive ? BikiniColors.deep : BikiniColors.ink,
+          width: isInteractive ? 2.5 : 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: BikiniColors.cartoonBlack,
+            color: BikiniColors.ink,
             offset: isInteractive ? const Offset(2.5, 2.5) : const Offset(1.5, 1.5),
             blurRadius: 0,
           ),
@@ -518,11 +516,7 @@ class _BasraGameCanvasState extends State<BasraGameCanvas> {
             children: [
               Text(
                 card.label,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                  color: card.suitColor,
-                ),
+                style: BikiniTypography.mono(color: card.suitColor),
               ),
               Text(
                 card.suitSymbol,
@@ -544,11 +538,7 @@ class _BasraGameCanvasState extends State<BasraGameCanvas> {
             alignment: Alignment.bottomLeft,
             child: Text(
               card.label,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 11,
-                color: card.suitColor,
-              ),
+              style: BikiniTypography.mono(color: card.suitColor),
             ),
           ),
         ],

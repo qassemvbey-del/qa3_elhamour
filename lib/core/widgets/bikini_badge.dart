@@ -16,66 +16,66 @@ class BikiniBadge extends StatelessWidget {
     super.key,
     required this.text,
     this.icon,
-    this.backgroundColor = BikiniColors.spongeYellow,
-    this.textColor = BikiniColors.cartoonBlack,
-    this.borderColor = BikiniColors.cartoonBlack,
-    this.fontSize = 11.0,
+    this.backgroundColor = BikiniColors.support,
+    this.textColor = BikiniColors.ink,
+    this.borderColor = BikiniColors.ink,
+    this.fontSize = 11.5,
     this.padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-    this.shadowOffset = const Offset(2, 2),
+    this.shadowOffset = const Offset(1.5, 1.5),
   });
 
   /// Factory for locked/coming soon status
   factory BikiniBadge.locked({
     String text = '🔒 قريباً',
-    double fontSize = 10.0,
+    double fontSize = 11.5,
   }) {
     return BikiniBadge(
       text: text,
-      backgroundColor: const Color(0xFFFFD166),
-      textColor: BikiniColors.cartoonBlack,
+      backgroundColor: BikiniColors.line,
+      textColor: BikiniColors.ink,
       fontSize: fontSize,
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       shadowOffset: const Offset(1.5, 1.5),
     );
   }
 
-  /// Factory for breaking news badge
+  /// Factory for breaking news / live / count badge (Alert red)
   factory BikiniBadge.breaking({
     String text = '⚡ عاجل',
   }) {
     return BikiniBadge(
       text: text,
-      backgroundColor: BikiniColors.krabsRed,
-      textColor: BikiniColors.pureWhite,
-      fontSize: 11.0,
+      backgroundColor: BikiniColors.alert,
+      textColor: BikiniColors.card,
+      fontSize: 11.5,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      shadowOffset: const Offset(2, 2),
+      shadowOffset: const Offset(1.5, 1.5),
     );
   }
 
-  /// Factory for trending / hot badge
+  /// Factory for trending / hot badge (Alert red)
   factory BikiniBadge.trending({
     String text = '🔥 تريند القاع',
   }) {
     return BikiniBadge(
       text: text,
-      backgroundColor: BikiniColors.neonPink,
-      textColor: BikiniColors.pureWhite,
-      fontSize: 11.0,
+      backgroundColor: BikiniColors.alert,
+      textColor: BikiniColors.card,
+      fontSize: 11.5,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      shadowOffset: const Offset(2, 2),
+      shadowOffset: const Offset(1.5, 1.5),
     );
   }
 
-  /// Factory for active official badge
+  /// Factory for active official badge (Support cyan)
   factory BikiniBadge.active({
     String text = '✨ متاح الآن',
   }) {
     return BikiniBadge(
       text: text,
-      backgroundColor: BikiniColors.marineCyan,
-      textColor: BikiniColors.cartoonBlack,
-      fontSize: 10.0,
+      backgroundColor: BikiniColors.support,
+      textColor: BikiniColors.ink,
+      fontSize: 11.5,
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       shadowOffset: const Offset(1.5, 1.5),
     );
@@ -87,14 +87,14 @@ class BikiniBadge extends StatelessWidget {
       padding: padding,
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(BikiniRadius.pill),
         border: Border.all(
           color: borderColor,
-          width: 1.8,
+          width: BikiniRadius.borderWidth,
         ),
         boxShadow: [
           BoxShadow(
-            color: BikiniColors.cartoonBlack,
+            color: BikiniColors.ink,
             offset: shadowOffset,
             blurRadius: 0,
           ),
@@ -111,9 +111,8 @@ class BikiniBadge extends StatelessWidget {
           Flexible(
             child: Text(
               text,
-              style: BikiniTypography.captionBold(color: textColor).copyWith(
-                fontSize: fontSize,
-                height: 1.2,
+              style: BikiniTypography.caption(color: textColor).copyWith(
+                fontSize: fontSize < 11.5 ? 11.5 : fontSize,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -124,3 +123,4 @@ class BikiniBadge extends StatelessWidget {
     );
   }
 }
+

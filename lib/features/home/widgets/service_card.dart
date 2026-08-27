@@ -18,7 +18,7 @@ class BikiniServiceItem {
     required this.title,
     required this.subtitle,
     required this.emoji,
-    required this.backgroundColor,
+    this.backgroundColor = BikiniColors.card,
     this.isLocked = false,
     this.lockReason,
     this.targetTabIndex,
@@ -46,8 +46,8 @@ class _ServiceCardState extends State<ServiceCard> {
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
-    final currentShadow = _isPressed ? const Offset(1, 1) : const Offset(3.5, 3.5);
-    final currentTranslation = _isPressed ? const Offset(2.5, 2.5) : Offset.zero;
+    final currentShadow = _isPressed ? const Offset(1, 1) : const Offset(3.0, 3.0);
+    final currentTranslation = _isPressed ? const Offset(2.0, 2.0) : Offset.zero;
 
     return GestureDetector(
       onTapDown: (_) => setState(() => _isPressed = true),
@@ -62,111 +62,77 @@ class _ServiceCardState extends State<ServiceCard> {
           currentTranslation.dy,
           0,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        padding: const EdgeInsets.all(BikiniSpacing.space12),
         decoration: BoxDecoration(
           color: item.backgroundColor,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(BikiniRadius.card),
           border: Border.all(
-            color: BikiniColors.cartoonBlack,
-            width: 2.8,
+            color: BikiniColors.ink,
+            width: BikiniRadius.borderWidth,
           ),
           boxShadow: [
             BoxShadow(
-              color: BikiniColors.cartoonBlack,
+              color: BikiniColors.ink,
               offset: currentShadow,
               blurRadius: 0,
             ),
           ],
         ),
-        child: Stack(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Watermark emoji in the corner
-            Positioned(
-              left: -6,
-              bottom: -6,
-              child: Opacity(
-                opacity: 0.12,
-                child: Text(
-                  item.emoji,
-                  style: const TextStyle(fontSize: 42),
+            // Top row: Emoji Icon & Status Badge
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: BikiniColors.paper,
+                    borderRadius: BorderRadius.circular(BikiniRadius.button),
+                    border: Border.all(
+                      color: BikiniColors.ink,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      item.emoji,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(width: BikiniSpacing.space4),
+                Flexible(
+                  child: item.isLocked
+                      ? BikiniBadge.locked()
+                      : BikiniBadge.active(),
+                ),
+              ],
             ),
 
+            const SizedBox(height: BikiniSpacing.space8),
+
+            // Title & Description in Cairo
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // Top row: Emoji Icon & Status Badge
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 38,
-                      height: 38,
-                      decoration: BoxDecoration(
-                        color: BikiniColors.pureWhite,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: BikiniColors.cartoonBlack,
-                          width: 2.0,
-                        ),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: BikiniColors.cartoonBlack,
-                            offset: Offset(1.5, 1.5),
-                            blurRadius: 0,
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          item.emoji,
-                          style: const TextStyle(fontSize: 20),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Flexible(
-                      child: item.isLocked
-                          ? BikiniBadge.locked()
-                          : BikiniBadge.active(),
-                    ),
-                  ],
+                Text(
+                  item.title,
+                  style: BikiniTypography.h3(color: BikiniColors.deep),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-
-                const SizedBox(height: 6),
-
-                // Title & Description in Cairo
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      item.title,
-                      style: BikiniTypography.titleBold(
-                        color: BikiniColors.cartoonBlack,
-                      ).copyWith(
-                        fontSize: 13.5,
-                        height: 1.2,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      item.subtitle,
-                      style: BikiniTypography.bodyRegular(
-                        color: const Color(0xFF333333),
-                      ).copyWith(
-                        fontSize: 10.5,
-                        height: 1.25,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                const SizedBox(height: BikiniSpacing.space4),
+                Text(
+                  item.subtitle,
+                  style: BikiniTypography.caption(color: BikiniColors.muted),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -176,3 +142,4 @@ class _ServiceCardState extends State<ServiceCard> {
     );
   }
 }
+

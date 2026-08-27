@@ -28,12 +28,12 @@ class NewsFeedScreen extends StatefulWidget {
 
 class _NewsFeedScreenState extends State<NewsFeedScreen> {
   static const List<BikiniReaction> reactionOptions = [
-    BikiniReaction(emoji: '👍', label: 'عاش', color: BikiniColors.marineCyan),
-    BikiniReaction(emoji: '❤️', label: 'حب', color: BikiniColors.neonPink),
-    BikiniReaction(emoji: '😂', label: 'مسخرة', color: BikiniColors.spongeYellow),
-    BikiniReaction(emoji: '🪑', label: 'كرسي خناقة', color: Color(0xFFFFCCD5)),
-    BikiniReaction(emoji: '🐟', label: 'سمكة دايخة', color: Color(0xFFD0E1FD)),
-    BikiniReaction(emoji: '😡', label: 'غضب سلطعي', color: BikiniColors.krabsRed),
+    BikiniReaction(emoji: '👍', label: 'عاش', color: BikiniColors.support),
+    BikiniReaction(emoji: '❤️', label: 'حب', color: BikiniColors.alert),
+    BikiniReaction(emoji: '😂', label: 'مسخرة', color: BikiniColors.coin),
+    BikiniReaction(emoji: '🪑', label: 'كرسي خناقة', color: BikiniColors.danger),
+    BikiniReaction(emoji: '🐟', label: 'سمكة دايخة', color: BikiniColors.deep2),
+    BikiniReaction(emoji: '😡', label: 'غضب سلطعي', color: BikiniColors.alert),
   ];
 
   // Active open reaction tray post ID
@@ -168,23 +168,11 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
         textDirection: TextDirection.rtl,
         child: Dialog(
           backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+          insetPadding: const EdgeInsets.symmetric(horizontal: BikiniRadius.screenMargin),
           child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: BikiniColors.pureWhite,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(
-                color: BikiniColors.cartoonBlack,
-                width: 3.5,
-              ),
-              boxShadow: const [
-                BoxShadow(
-                  color: BikiniColors.cartoonBlack,
-                  offset: Offset(5, 5),
-                  blurRadius: 0,
-                ),
-              ],
+            padding: const EdgeInsets.all(BikiniSpacing.space24),
+            decoration: BikiniDecorations.interactiveCard(
+              backgroundColor: BikiniColors.card,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -194,45 +182,38 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: BikiniColors.spongeYellow,
+                    color: BikiniColors.paper,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: BikiniColors.cartoonBlack,
-                      width: 2.8,
+                      color: BikiniColors.ink,
+                      width: BikiniRadius.borderWidth,
                     ),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: BikiniColors.cartoonBlack,
-                        offset: Offset(2.5, 2.5),
-                        blurRadius: 0,
-                      ),
-                    ],
                   ),
                   child: const Center(
                     child: Text('📜', style: TextStyle(fontSize: 32)),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: BikiniSpacing.space12),
 
                 Text(
                   '⚠️ تصريح نشر مفقود!',
-                  style: BikiniTypography.displaySmall(
-                    color: BikiniColors.krabsRed,
-                  ).copyWith(fontSize: 19),
+                  style: BikiniTypography.h2(
+                    color: BikiniColors.alert,
+                  ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: BikiniSpacing.space8),
 
                 Text(
                   'يا مواطن يا محترم، النشر حالياً مقتصر على مراسلي ديوان الإعلام الرسمي في قاع الهامور.. ريح زعانفك لحد ما تصريح النشر يطلعلك من البلدية! 📜🪪',
-                  style: BikiniTypography.bodyMedium(
-                    color: BikiniColors.cartoonBlack,
-                  ).copyWith(fontSize: 13, height: 1.45),
+                  style: BikiniTypography.body(
+                    color: BikiniColors.muted,
+                  ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: BikiniSpacing.space16),
 
-                BikiniButton.primary(
+                BikiniButton.secondary(
                   onPressed: () => Navigator.of(ctx).pop(),
                   text: 'علم وينفذ يا باشا 🫡',
                   isFullWidth: true,
@@ -314,13 +295,13 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                 maxHeight: MediaQuery.of(context).size.height * 0.75,
               ),
               decoration: BoxDecoration(
-                color: BikiniColors.warmSand,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-                border: Border.all(color: BikiniColors.cartoonBlack, width: 3.5),
+                color: BikiniColors.paper,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(BikiniRadius.sheet)),
+                border: Border.all(color: BikiniColors.ink, width: BikiniRadius.borderWidth),
                 boxShadow: const [
                   BoxShadow(
-                    color: BikiniColors.cartoonBlack,
-                    offset: Offset(0, -6),
+                    color: BikiniColors.ink,
+                    offset: Offset(0, -4),
                     blurRadius: 0,
                   ),
                 ],
@@ -330,20 +311,20 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // Handle Bar
-                    const SizedBox(height: 10),
+                    const SizedBox(height: BikiniSpacing.space12),
                     Container(
                       width: 48,
-                      height: 5,
+                      height: 4,
                       decoration: BoxDecoration(
-                        color: BikiniColors.cartoonBlack,
-                        borderRadius: BorderRadius.circular(3),
+                        color: BikiniColors.ink,
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: BikiniSpacing.space12),
 
                     // Header
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: BikiniRadius.screenMargin),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -351,11 +332,11 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                             child: Row(
                               children: [
                                 const Text('🌊', style: TextStyle(fontSize: 18)),
-                                const SizedBox(width: 6),
+                                const SizedBox(width: BikiniSpacing.space8),
                                 Flexible(
                                   child: Text(
                                     'تفاعلات المواطنين',
-                                    style: BikiniTypography.displaySmall().copyWith(fontSize: 17),
+                                    style: BikiniTypography.h2(color: BikiniColors.deep),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -363,19 +344,18 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: BikiniSpacing.space8),
                           BikiniBadge(
                             text: '$total تفاعل',
-                            backgroundColor: BikiniColors.spongeYellow,
-                            textColor: BikiniColors.cartoonBlack,
-                            fontSize: 10.5,
+                            backgroundColor: BikiniColors.support,
+                            textColor: BikiniColors.ink,
                           ),
                         ],
                       ),
                     ),
 
-                    const SizedBox(height: 10),
-                    const Divider(color: BikiniColors.cartoonBlack, thickness: 2),
+                    const SizedBox(height: BikiniSpacing.space12),
+                    const Divider(color: BikiniColors.line, thickness: 1.5),
 
                     // List of reactors
                     Flexible(
@@ -385,29 +365,26 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                                 padding: const EdgeInsets.all(24.0),
                                 child: Text(
                                   'لسة مفيش مواطنين تفاعلوا مع البوست دا!',
-                                  style: BikiniTypography.bodyMedium(color: const Color(0xFF666666)),
+                                  style: BikiniTypography.body(color: BikiniColors.muted),
                                 ),
                               ),
                             )
                           : ListView.separated(
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: BikiniRadius.screenMargin,
+                                vertical: BikiniSpacing.space8,
+                              ),
                               itemCount: reactors.length,
-                              separatorBuilder: (ctx, i) => const SizedBox(height: 8),
+                              separatorBuilder: (ctx, i) => const SizedBox(height: BikiniSpacing.space8),
                               itemBuilder: (ctx, i) {
                                 final r = reactors[i];
                                 return Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  decoration: BoxDecoration(
-                                    color: BikiniColors.pureWhite,
-                                    borderRadius: BorderRadius.circular(14),
-                                    border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: BikiniColors.cartoonBlack,
-                                        offset: Offset(2, 2),
-                                        blurRadius: 0,
-                                      ),
-                                    ],
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: BikiniSpacing.space12,
+                                    vertical: BikiniSpacing.space8,
+                                  ),
+                                  decoration: BikiniDecorations.staticCard(
+                                    backgroundColor: BikiniColors.card,
                                   ),
                                   child: Row(
                                     children: [
@@ -416,15 +393,15 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                                         width: 38,
                                         height: 38,
                                         decoration: BoxDecoration(
-                                          color: BikiniColors.spongeYellow,
+                                          color: BikiniColors.paper,
                                           shape: BoxShape.circle,
-                                          border: Border.all(color: BikiniColors.cartoonBlack, width: 1.8),
+                                          border: Border.all(color: BikiniColors.ink, width: 1.5),
                                         ),
                                         child: Center(
                                           child: Text(r['avatar'] ?? '🧽', style: const TextStyle(fontSize: 18)),
                                         ),
                                       ),
-                                      const SizedBox(width: 10),
+                                      const SizedBox(width: BikiniSpacing.space12),
 
                                       // Name and Citizen ID
                                       Expanded(
@@ -433,14 +410,13 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                                           children: [
                                             Text(
                                               r['name'] ?? 'مواطن',
-                                              style: BikiniTypography.titleBold().copyWith(fontSize: 13.5),
+                                              style: BikiniTypography.label(color: BikiniColors.deep),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                             Text(
                                               'رقم القيد: ${r['citizenId'] ?? '#0001'}',
-                                              style: BikiniTypography.caption(color: const Color(0xFF666666))
-                                                  .copyWith(fontSize: 10.5),
+                                              style: BikiniTypography.caption(color: BikiniColors.muted),
                                             ),
                                           ],
                                         ),
@@ -450,9 +426,9 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                         decoration: BoxDecoration(
-                                          color: BikiniColors.warmSand,
-                                          borderRadius: BorderRadius.circular(20),
-                                          border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+                                          color: BikiniColors.paper,
+                                          borderRadius: BorderRadius.circular(BikiniRadius.pill),
+                                          border: Border.all(color: BikiniColors.ink, width: 1.5),
                                         ),
                                         child: Text(
                                           r['reaction'] ?? '👍',
@@ -468,12 +444,12 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
 
                     // Close button
                     Padding(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(BikiniSpacing.space16),
                       child: BikiniButton.secondary(
                         onPressed: () => Navigator.of(ctx).pop(),
                         text: 'إغلاق القائمة 👋',
                         isFullWidth: true,
-                        height: 44,
+                        height: 48,
                       ),
                     ),
                   ],
@@ -534,13 +510,13 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                   maxHeight: MediaQuery.of(context).size.height * 0.85,
                 ),
                 decoration: BoxDecoration(
-                  color: BikiniColors.warmSand,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-                  border: Border.all(color: BikiniColors.cartoonBlack, width: 3.5),
+                  color: BikiniColors.paper,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(BikiniRadius.sheet)),
+                  border: Border.all(color: BikiniColors.ink, width: BikiniRadius.borderWidth),
                   boxShadow: const [
                     BoxShadow(
-                      color: BikiniColors.cartoonBlack,
-                      offset: Offset(0, -6),
+                      color: BikiniColors.ink,
+                      offset: Offset(0, -4),
                       blurRadius: 0,
                     ),
                   ],
@@ -550,20 +526,20 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       // Handle
-                      const SizedBox(height: 10),
+                      const SizedBox(height: BikiniSpacing.space12),
                       Container(
                         width: 48,
-                        height: 5,
+                        height: 4,
                         decoration: BoxDecoration(
-                          color: BikiniColors.cartoonBlack,
-                          borderRadius: BorderRadius.circular(3),
+                          color: BikiniColors.ink,
+                          borderRadius: BorderRadius.circular(2),
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: BikiniSpacing.space12),
 
                       // Header
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: BikiniRadius.screenMargin),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -571,11 +547,11 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                               child: Row(
                                 children: [
                                   const Text('💬', style: TextStyle(fontSize: 18)),
-                                  const SizedBox(width: 6),
+                                  const SizedBox(width: BikiniSpacing.space8),
                                   Flexible(
                                     child: Text(
                                       'التعليقات والمناقشات',
-                                      style: BikiniTypography.displaySmall().copyWith(fontSize: 17),
+                                      style: BikiniTypography.h2(color: BikiniColors.deep),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -583,19 +559,18 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: BikiniSpacing.space8),
                             BikiniBadge(
                               text: '${comments.length} تعليق',
-                              backgroundColor: BikiniColors.marineCyan,
-                              textColor: BikiniColors.cartoonBlack,
-                              fontSize: 10.5,
+                              backgroundColor: BikiniColors.support,
+                              textColor: BikiniColors.ink,
                             ),
                           ],
                         ),
                       ),
 
-                      const SizedBox(height: 8),
-                      const Divider(color: BikiniColors.cartoonBlack, thickness: 2),
+                      const SizedBox(height: BikiniSpacing.space8),
+                      const Divider(color: BikiniColors.line, thickness: 1.5),
 
                       // Comments List
                       Flexible(
@@ -605,29 +580,23 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                                 padding: const EdgeInsets.all(24.0),
                                 child: Text(
                                   'كن أول مواطن يعلق على المنشور! 🌊',
-                                  style: BikiniTypography.bodyMedium(color: const Color(0xFF666666)),
+                                  style: BikiniTypography.body(color: BikiniColors.muted),
                                 ),
                               ),
                             )
                           : ListView.separated(
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: BikiniRadius.screenMargin,
+                                vertical: BikiniSpacing.space8,
+                              ),
                               itemCount: comments.length,
-                              separatorBuilder: (ctx, i) => const SizedBox(height: 10),
+                              separatorBuilder: (ctx, i) => const SizedBox(height: BikiniSpacing.space8),
                               itemBuilder: (ctx, i) {
                                 final c = comments[i];
                                 return Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: BikiniColors.pureWhite,
-                                    borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: BikiniColors.cartoonBlack, width: 2.2),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: BikiniColors.cartoonBlack,
-                                        offset: Offset(2.5, 2.5),
-                                        blurRadius: 0,
-                                      ),
-                                    ],
+                                  padding: const EdgeInsets.all(BikiniSpacing.space12),
+                                  decoration: BikiniDecorations.staticCard(
+                                    backgroundColor: BikiniColors.card,
                                   ),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -643,50 +612,48 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                                                   width: 30,
                                                   height: 30,
                                                   decoration: BoxDecoration(
-                                                    color: BikiniColors.spongeYellow,
+                                                    color: BikiniColors.paper,
                                                     shape: BoxShape.circle,
-                                                    border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+                                                    border: Border.all(color: BikiniColors.ink, width: 1.5),
                                                   ),
                                                   child: Center(
                                                     child: Text(c['avatar'] ?? '🧽', style: const TextStyle(fontSize: 15)),
                                                   ),
                                                 ),
-                                                const SizedBox(width: 8),
+                                                const SizedBox(width: BikiniSpacing.space8),
                                                 Flexible(
                                                   child: Text(
                                                     c['author'] ?? 'مواطن',
-                                                    style: BikiniTypography.titleBold().copyWith(fontSize: 12.5),
+                                                    style: BikiniTypography.label(color: BikiniColors.deep),
                                                     maxLines: 1,
                                                     overflow: TextOverflow.ellipsis,
                                                   ),
                                                 ),
-                                                const SizedBox(width: 6),
+                                                const SizedBox(width: BikiniSpacing.space4),
                                                 Container(
                                                   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                                                   decoration: BoxDecoration(
-                                                    color: BikiniColors.warmSand,
-                                                    borderRadius: BorderRadius.circular(6),
-                                                    border: Border.all(color: BikiniColors.cartoonBlack, width: 1),
+                                                    color: BikiniColors.paper,
+                                                    borderRadius: BorderRadius.circular(4),
+                                                    border: Border.all(color: BikiniColors.ink, width: 1),
                                                   ),
                                                   child: Text(
                                                     c['citizenId'] ?? '#0001',
-                                                    style: BikiniTypography.caption(color: BikiniColors.cartoonBlack)
-                                                        .copyWith(fontSize: 9.5),
+                                                    style: BikiniTypography.caption(color: BikiniColors.muted),
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                          const SizedBox(width: 6),
+                                          const SizedBox(width: BikiniSpacing.space4),
                                           Text(
                                             c['time'] ?? 'الآن',
-                                            style: BikiniTypography.caption(color: const Color(0xFF777777))
-                                                .copyWith(fontSize: 10),
+                                            style: BikiniTypography.caption(color: BikiniColors.muted),
                                           ),
                                         ],
                                       ),
 
-                                      const SizedBox(height: 6),
+                                      const SizedBox(height: BikiniSpacing.space8),
 
                                       // Comment Text with @مواطن_ Highlight
                                       _buildMentionRichText(c['text'] ?? ''),
@@ -699,19 +666,22 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
 
                       // Quick Mention Chips Bar
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: BikiniRadius.screenMargin,
+                          vertical: 4,
+                        ),
                         height: 38,
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: [
                             _buildQuickMentionChip('@مواطن_0001', commentController),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: BikiniSpacing.space8),
                             _buildQuickMentionChip('@مواطن_سلطع', commentController),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: BikiniSpacing.space8),
                             _buildQuickMentionChip('@مواطن_شفيق', commentController),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: BikiniSpacing.space8),
                             _buildQuickMentionChip('@مواطن_بسيط', commentController),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: BikiniSpacing.space8),
                             _buildQuickMentionChip('@مواطن_شمشون', commentController),
                           ],
                         ),
@@ -719,34 +689,34 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
 
                       // Input Bar
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 6, 12, 12),
+                        padding: const EdgeInsets.all(BikiniSpacing.space12),
                         child: Row(
                           children: [
                             Expanded(
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 12),
                                 decoration: BoxDecoration(
-                                  color: BikiniColors.pureWhite,
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
+                                  color: BikiniColors.card,
+                                  borderRadius: BorderRadius.circular(BikiniRadius.button),
+                                  border: Border.all(color: BikiniColors.ink, width: 1.5),
                                 ),
                                 child: TextField(
                                   controller: commentController,
-                                  style: BikiniTypography.bodyMedium().copyWith(fontSize: 13),
+                                  style: BikiniTypography.body(color: BikiniColors.ink),
                                   onSubmitted: (val) => addNewComment(val),
                                   decoration: InputDecoration(
                                     hintText: 'اكتب تعليقك المائي... (استخدم @مواطن_)',
-                                    hintStyle: BikiniTypography.inputHint().copyWith(fontSize: 11.5),
+                                    hintStyle: BikiniTypography.inputHint(),
                                     border: InputBorder.none,
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: BikiniSpacing.space8),
                             BikiniButton.primary(
                               onPressed: () => addNewComment(commentController.text),
                               text: 'إرسال 🚀',
-                              height: 44,
+                              height: 48,
                             ),
                           ],
                         ),
@@ -773,14 +743,14 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
         decoration: BoxDecoration(
-          color: BikiniColors.marineCyan,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: BikiniColors.cartoonBlack, width: 1.2),
+          color: BikiniColors.paper,
+          borderRadius: BorderRadius.circular(BikiniRadius.pill),
+          border: Border.all(color: BikiniColors.ink, width: 1.2),
         ),
         child: Center(
           child: Text(
             mentionText,
-            style: BikiniTypography.captionBold(color: BikiniColors.cartoonBlack).copyWith(fontSize: 10.5),
+            style: BikiniTypography.caption(color: BikiniColors.ink),
           ),
         ),
       ),
@@ -796,18 +766,12 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
           if (word.startsWith('@مواطن_') || word.startsWith('@مواطن')) {
             return TextSpan(
               text: '$word ',
-              style: BikiniTypography.bodyBold(color: const Color(0xFF007A78)).copyWith(
-                fontSize: 12.5,
-                backgroundColor: BikiniColors.marineCyan.withValues(alpha: 0.3),
-              ),
+              style: BikiniTypography.label(color: BikiniColors.deep2),
             );
           }
           return TextSpan(
             text: '$word ',
-            style: BikiniTypography.bodyMedium(color: BikiniColors.cartoonBlack).copyWith(
-              fontSize: 12.5,
-              height: 1.35,
-            ),
+            style: BikiniTypography.body(color: BikiniColors.ink),
           );
         }).toList(),
       ),
@@ -820,7 +784,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
     final userAvatar = profile?.speciesEmoji ?? '🧽';
 
     return Scaffold(
-      backgroundColor: BikiniColors.warmSand,
+      backgroundColor: BikiniColors.paper,
       appBar: const WoodenTopBar(
         title: 'جريدة قاع الهامور 📰',
         unreadCount: 1,
@@ -828,70 +792,65 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
       body: SafeArea(
         bottom: false,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 120),
+          padding: const EdgeInsets.only(
+            left: BikiniRadius.screenMargin,
+            right: BikiniRadius.screenMargin,
+            top: BikiniSpacing.space12,
+            bottom: BikiniRadius.navBarClearance,
+          ),
           children: [
             // Create Post Bar (Tapping triggers Admin-Only Dialog)
             Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: BikiniColors.pureWhite,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: BikiniColors.cartoonBlack, width: 2.8),
-                boxShadow: const [
-                  BoxShadow(
-                    color: BikiniColors.cartoonBlack,
-                    offset: Offset(3.5, 3.5),
-                    blurRadius: 0,
-                  ),
-                ],
+              padding: const EdgeInsets.all(BikiniSpacing.space12),
+              decoration: BikiniDecorations.interactiveCard(
+                backgroundColor: BikiniColors.card,
               ),
               child: Row(
                 children: [
                   Container(
-                    width: 36,
-                    height: 36,
+                    width: 38,
+                    height: 38,
                     decoration: BoxDecoration(
-                      color: BikiniColors.spongeYellow,
+                      color: BikiniColors.paper,
                       shape: BoxShape.circle,
-                      border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
+                      border: Border.all(color: BikiniColors.ink, width: 1.5),
                     ),
                     child: Center(
                       child: Text(userAvatar, style: const TextStyle(fontSize: 18)),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: BikiniSpacing.space8),
                   Expanded(
                     child: GestureDetector(
                       onTap: _showAdminOnlyDialog,
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                         decoration: BoxDecoration(
-                          color: BikiniColors.warmSand,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+                          color: BikiniColors.paper,
+                          borderRadius: BorderRadius.circular(BikiniRadius.button),
+                          border: Border.all(color: BikiniColors.ink, width: 1.5),
                         ),
                         child: Text(
                           'شارك فضيحة أو خبر مائي جديد...',
-                          style: BikiniTypography.bodyMedium(color: const Color(0xFF666666))
-                              .copyWith(fontSize: 12.5),
+                          style: BikiniTypography.caption(color: BikiniColors.muted),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: BikiniSpacing.space4),
                   IconButton(
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                     onPressed: _showAdminOnlyDialog,
-                    icon: const Icon(Icons.add_photo_alternate_rounded, color: BikiniColors.krabsRed, size: 22),
+                    icon: const Icon(Icons.add_photo_alternate_rounded, color: BikiniColors.alert, size: 22),
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 14),
+            const SizedBox(height: BikiniSpacing.space12),
 
             // Newsfeed Posts
             ..._posts.map((post) => _buildPostCard(post)),
@@ -910,19 +869,10 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
     final commentsList = post['comments'] as List<Map<String, dynamic>>? ?? [];
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: BikiniColors.pureWhite,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: BikiniColors.cartoonBlack, width: 2.8),
-        boxShadow: const [
-          BoxShadow(
-            color: BikiniColors.cartoonBlack,
-            offset: Offset(3.5, 3.5),
-            blurRadius: 0,
-          ),
-        ],
+      margin: const EdgeInsets.only(bottom: BikiniSpacing.space12),
+      padding: const EdgeInsets.all(BikiniSpacing.space16),
+      decoration: BikiniDecorations.interactiveCard(
+        backgroundColor: BikiniColors.card,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -939,29 +889,28 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                       width: 38,
                       height: 38,
                       decoration: BoxDecoration(
-                        color: BikiniColors.spongeYellow,
+                        color: BikiniColors.paper,
                         shape: BoxShape.circle,
-                        border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
+                        border: Border.all(color: BikiniColors.ink, width: 1.5),
                       ),
                       child: Center(
                         child: Text(post['avatar'], style: const TextStyle(fontSize: 18)),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: BikiniSpacing.space8),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             post['author'],
-                            style: BikiniTypography.titleBold().copyWith(fontSize: 13.5),
+                            style: BikiniTypography.h3(color: BikiniColors.deep),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
                             '${post['clan']} • ${post['time']}',
-                            style: BikiniTypography.caption(color: const Color(0xFF777777))
-                                .copyWith(fontSize: 11),
+                            style: BikiniTypography.caption(color: BikiniColors.muted),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -971,24 +920,23 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                   ],
                 ),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: BikiniSpacing.space8),
               BikiniBadge(
                 text: post['badge'],
-                backgroundColor: BikiniColors.neonPink,
-                textColor: BikiniColors.pureWhite,
-                fontSize: 10.5,
+                backgroundColor: BikiniColors.alert,
+                textColor: BikiniColors.card,
               ),
             ],
           ),
 
-          const SizedBox(height: 8),
-          const Divider(color: BikiniColors.cartoonBlack, thickness: 1.5),
-          const SizedBox(height: 4),
+          const SizedBox(height: BikiniSpacing.space8),
+          const Divider(color: BikiniColors.line, thickness: 1.5),
+          const SizedBox(height: BikiniSpacing.space4),
 
           // Post Content with clean Cairo line height & Mention Highlighting
           _buildMentionRichText(post['content']),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: BikiniSpacing.space12),
 
           // Reaction Stats Row (Stacked Emojis + Total Counter)
           GestureDetector(
@@ -1005,9 +953,6 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                           return Container(
                             margin: const EdgeInsets.only(left: 2),
                             padding: const EdgeInsets.all(2),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
                             child: Text(emoji, style: const TextStyle(fontSize: 14)),
                           );
                         }).toList(),
@@ -1015,8 +960,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                     const SizedBox(width: 4),
                     Text(
                       '$totalReactions تفاعل',
-                      style: BikiniTypography.caption(color: const Color(0xFF666666))
-                          .copyWith(fontSize: 11, fontWeight: FontWeight.w600),
+                      style: BikiniTypography.caption(color: BikiniColors.muted),
                     ),
                   ],
                 ),
@@ -1026,31 +970,30 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                   onTap: () => _showCommentsBottomSheet(post),
                   child: Text(
                     '${commentsList.length} تعليق',
-                    style: BikiniTypography.caption(color: const Color(0xFF666666))
-                        .copyWith(fontSize: 11),
+                    style: BikiniTypography.caption(color: BikiniColors.muted),
                   ),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(height: 6),
-          const Divider(color: BikiniColors.cartoonBlack, thickness: 1),
-          const SizedBox(height: 6),
+          const SizedBox(height: BikiniSpacing.space8),
+          const Divider(color: BikiniColors.line, thickness: 1),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Reaction Tray (Visible when active)
           if (isTrayOpen) ...[
             Container(
-              margin: const EdgeInsets.only(bottom: 8),
+              margin: const EdgeInsets.only(bottom: BikiniSpacing.space8),
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
               decoration: BoxDecoration(
-                color: BikiniColors.pureWhite,
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: BikiniColors.cartoonBlack, width: 2.2),
+                color: BikiniColors.paper,
+                borderRadius: BorderRadius.circular(BikiniRadius.pill),
+                border: Border.all(color: BikiniColors.ink, width: 2),
                 boxShadow: const [
                   BoxShadow(
-                    color: BikiniColors.cartoonBlack,
-                    offset: Offset(3, 3),
+                    color: BikiniColors.ink,
+                    offset: Offset(2, 2),
                     blurRadius: 0,
                   ),
                 ],
@@ -1066,9 +1009,9 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                       decoration: BoxDecoration(
                         color: isSelected ? opt.color : Colors.transparent,
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(BikiniRadius.button),
                         border: isSelected
-                            ? Border.all(color: BikiniColors.cartoonBlack, width: 1.5)
+                            ? Border.all(color: BikiniColors.ink, width: 1.5)
                             : null,
                       ),
                       child: Column(
@@ -1078,8 +1021,8 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                           Text(
                             opt.label,
                             style: BikiniTypography.caption(
-                              color: isSelected ? BikiniColors.cartoonBlack : const Color(0xFF666666),
-                            ).copyWith(fontSize: 9),
+                              color: isSelected ? BikiniColors.card : BikiniColors.muted,
+                            ),
                           ),
                         ],
                       ),
@@ -1094,7 +1037,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Like / React Button (Tap toggles tray or thumbs up, Long Press opens tray)
+              // Like / React Button (Tap toggles tray or thumbs up)
               GestureDetector(
                 onTap: () {
                   setState(() {
@@ -1102,11 +1045,11 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                   });
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
-                    color: userReaction != null ? BikiniColors.spongeYellow : BikiniColors.warmSand,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+                    color: userReaction != null ? BikiniColors.support : BikiniColors.paper,
+                    borderRadius: BorderRadius.circular(BikiniRadius.button),
+                    border: Border.all(color: BikiniColors.ink, width: 1.5),
                   ),
                   child: Row(
                     children: [
@@ -1114,7 +1057,9 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                       const SizedBox(width: 4),
                       Text(
                         userReaction != null ? 'تفاعلت' : 'تفاعل',
-                        style: BikiniTypography.captionBold().copyWith(fontSize: 11),
+                        style: BikiniTypography.caption(
+                          color: userReaction != null ? BikiniColors.ink : BikiniColors.muted,
+                        ),
                       ),
                     ],
                   ),
@@ -1125,11 +1070,11 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
               GestureDetector(
                 onTap: () => _showCommentsBottomSheet(post),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
-                    color: BikiniColors.warmSand,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+                    color: BikiniColors.paper,
+                    borderRadius: BorderRadius.circular(BikiniRadius.button),
+                    border: Border.all(color: BikiniColors.ink, width: 1.5),
                   ),
                   child: Row(
                     children: [
@@ -1137,7 +1082,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                       const SizedBox(width: 4),
                       Text(
                         'تعليق (${commentsList.length})',
-                        style: BikiniTypography.captionBold().copyWith(fontSize: 11),
+                        style: BikiniTypography.caption(color: BikiniColors.ink),
                       ),
                     ],
                   ),
@@ -1151,13 +1096,15 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      backgroundColor: BikiniColors.cartoonBlack,
-                      content: Text('تم نسخ رابط المنشور لنشره في قاع الهامور! 🌊',
-                          style: BikiniTypography.bodyMedium(color: BikiniColors.spongeYellow)),
+                      backgroundColor: BikiniColors.deep,
+                      content: Text(
+                        'تم نسخ رابط المنشور لنشره في قاع الهامور! 🌊',
+                        style: BikiniTypography.body(color: BikiniColors.card),
+                      ),
                     ),
                   );
                 },
-                icon: const Icon(Icons.share_rounded, color: BikiniColors.cartoonBlack, size: 20),
+                icon: const Icon(Icons.share_rounded, color: BikiniColors.ink, size: 20),
               ),
             ],
           ),

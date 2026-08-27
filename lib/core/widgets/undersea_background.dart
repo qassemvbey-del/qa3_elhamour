@@ -40,7 +40,7 @@ class _UnderseaBackgroundState extends State<UnderseaBackground>
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        gradient: BikiniColors.oceanGradient,
+        color: BikiniColors.deep,
       ),
       child: Stack(
         children: [
@@ -66,24 +66,16 @@ class _UnderseaBackgroundState extends State<UnderseaBackground>
                   return Container(
                     decoration: isFramed
                         ? BoxDecoration(
-                            color: BikiniColors.warmSand,
+                            color: BikiniColors.paper,
                             border: Border.symmetric(
                               vertical: BorderSide(
-                                color: BikiniColors.cartoonBlack,
-                                width: 3.5,
+                                color: BikiniColors.ink,
+                                width: BikiniRadius.borderWidth,
                               ),
                             ),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color(0x99000000),
-                                offset: Offset(0, 0),
-                                blurRadius: 24,
-                                spreadRadius: 4,
-                              ),
-                            ],
                           )
                         : const BoxDecoration(
-                            color: BikiniColors.warmSand,
+                            color: BikiniColors.paper,
                           ),
                     child: ClipRect(
                       child: widget.child,
@@ -116,11 +108,11 @@ class _BubblePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final bubblePaint = Paint()
-      ..color = const Color(0x3300F5D4)
+      ..color = BikiniColors.support.withValues(alpha: 0.25)
       ..style = PaintingStyle.fill;
 
     final bubbleStroke = Paint()
-      ..color = const Color(0x66FFFFFF)
+      ..color = BikiniColors.card.withValues(alpha: 0.4)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
 
@@ -135,7 +127,7 @@ class _BubblePainter extends CustomPainter {
 
       // Light reflection highlight
       final highlightPaint = Paint()
-        ..color = const Color(0x88FFFFFF)
+        ..color = BikiniColors.card.withValues(alpha: 0.6)
         ..style = PaintingStyle.fill;
       canvas.drawCircle(
         Offset(x - spec.size * 0.18, y - spec.size * 0.18),

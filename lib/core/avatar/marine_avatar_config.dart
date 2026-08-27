@@ -99,35 +99,36 @@ class MarineAvatarConfig {
   }
 
   static MarineAvatarConfig fromSpeciesName(String species) {
-    if (species.contains('إسفنجة')) {
+    final s = species.toLowerCase();
+    if (s.contains('إسفنجة') || s == 'sponge') {
       return const MarineAvatarConfig(
         bodyType: MarineBodyType.sponge,
         expression: MarineExpression.happy,
         hat: MarineHat.krustyVisor,
         outfit: MarineOutfit.tieShirt,
       );
-    } else if (species.contains('نجم')) {
+    } else if (s.contains('نجم') || s == 'starfish') {
       return const MarineAvatarConfig(
         bodyType: MarineBodyType.starfish,
         expression: MarineExpression.dumb,
         hat: MarineHat.none,
         outfit: MarineOutfit.flowerTrunks,
       );
-    } else if (species.contains('أخطبوط')) {
+    } else if (s.contains('أخطبوط') || s == 'squid') {
       return const MarineAvatarConfig(
         bodyType: MarineBodyType.squid,
         expression: MarineExpression.bored,
         hat: MarineHat.squidWig,
         outfit: MarineOutfit.none,
       );
-    } else if (species.contains('سرطان')) {
+    } else if (s.contains('سرطان') || s == 'crab') {
       return const MarineAvatarConfig(
         bodyType: MarineBodyType.crab,
         expression: MarineExpression.angry,
         hat: MarineHat.kingCrown,
         outfit: MarineOutfit.bossSuit,
       );
-    } else if (species.contains('سنجاب')) {
+    } else if (s.contains('سنجاب') || s == 'squirrel') {
       return const MarineAvatarConfig(
         bodyType: MarineBodyType.squirrel,
         expression: MarineExpression.happy,

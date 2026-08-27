@@ -59,7 +59,6 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
   }
 
   void _startNewGame() {
-    // Generate all 28 tiles
     final allTiles = <DominoTile>[];
     for (int i = 0; i <= 6; i++) {
       for (int j = i; j <= 6; j++) {
@@ -77,18 +76,17 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
     _winnerMessage = null;
     _statusBanner = 'ابدأ الدور بأعلى دوبل أو اسحب من البلاط! 🁓';
 
-    // Auto-place highest double or let player start
     DominoTile? firstTile;
     for (int d = 6; d >= 0; d--) {
       if (_playerHand.any((t) => t.left == d && t.right == d)) {
         firstTile = DominoTile(d, d);
         _playerHand.removeWhere((t) => t.left == d && t.right == d);
-        _currentTurn = 1; // opponent turn next
+        _currentTurn = 1;
         break;
       } else if (_opponentHand.any((t) => t.left == d && t.right == d)) {
         firstTile = DominoTile(d, d);
         _opponentHand.removeWhere((t) => t.left == d && t.right == d);
-        _currentTurn = 0; // player turn next
+        _currentTurn = 0;
         break;
       }
     }
@@ -99,7 +97,6 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
       _openRight = firstTile.right;
       _statusBanner = 'تم لعب ${firstTile.left}-${firstTile.right}! الدور على الدور التالي';
     } else {
-      // Pick first from player
       firstTile = _playerHand.removeAt(0);
       _boardChain.add(firstTile);
       _openLeft = firstTile.left;
@@ -130,10 +127,12 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
     if (!canLeft && !canRight) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: BikiniColors.cartoonBlack,
+          backgroundColor: BikiniColors.deep,
           duration: const Duration(seconds: 1),
-          content: Text('الحجر دا مش راكب على أي طرف يا معلم! 🁓',
-              style: BikiniTypography.bodyMedium(color: BikiniColors.spongeYellow)),
+          content: Text(
+            'الحجر دا مش راكب على أي طرف يا معلم! 🁓',
+            style: BikiniTypography.body(color: BikiniColors.card),
+          ),
         ),
       );
       return;
@@ -170,7 +169,6 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
 
   void _drawFromBoneyard() {
     if (_boneyard.isEmpty) {
-      // Pass turn
       setState(() {
         _currentTurn = 1;
         _statusBanner = 'البلاطة خلصت! تم تمرير الدور للخصم 🁓';
@@ -240,7 +238,6 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
       return;
     }
 
-    // Check if blocked (كتمت)
     final playerHasMove = _playerHand.any(_canPlay);
     final opponentHasMove = _opponentHand.any(_canPlay);
     if (!playerHasMove && !opponentHasMove && _boneyard.isEmpty) {
@@ -260,18 +257,9 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: BikiniColors.pureWhite,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: BikiniColors.cartoonBlack, width: 3),
-        boxShadow: const [
-          BoxShadow(
-            color: BikiniColors.cartoonBlack,
-            offset: Offset(4, 4),
-            blurRadius: 0,
-          ),
-        ],
+      padding: const EdgeInsets.all(BikiniSpacing.space12),
+      decoration: BikiniDecorations.interactiveCard(
+        backgroundColor: BikiniColors.card,
       ),
       child: Column(
         children: [
@@ -286,28 +274,28 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: BikiniColors.krabsRed,
+                        color: BikiniColors.paper,
                         shape: BoxShape.circle,
-                        border: Border.all(color: BikiniColors.cartoonBlack, width: 1.8),
+                        border: Border.all(color: BikiniColors.ink, width: 1.5),
                       ),
                       child: Center(
                         child: Text(widget.player2Avatar, style: const TextStyle(fontSize: 15)),
                       ),
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: BikiniSpacing.space8),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             widget.player2Name,
-                            style: BikiniTypography.titleBold().copyWith(fontSize: 12),
+                            style: BikiniTypography.label(color: BikiniColors.deep),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
                             'معاه ${_opponentHand.length} أحجار',
-                            style: BikiniTypography.caption(color: const Color(0xFF666666)).copyWith(fontSize: 10),
+                            style: BikiniTypography.caption(color: BikiniColors.muted),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -317,36 +305,38 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
                   ],
                 ),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: BikiniSpacing.space8),
               BikiniBadge(
                 text: 'البلاط: ${_boneyard.length} 🁓',
-                backgroundColor: BikiniColors.spongeYellow,
-                textColor: BikiniColors.cartoonBlack,
-                fontSize: 10,
+                backgroundColor: BikiniColors.paper,
+                textColor: BikiniColors.ink,
               ),
             ],
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Game Status / Winner Banner
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            padding: const EdgeInsets.symmetric(
+              horizontal: BikiniSpacing.space12,
+              vertical: BikiniSpacing.space8,
+            ),
             decoration: BoxDecoration(
-              color: _winnerMessage != null ? BikiniColors.spongeYellow : BikiniColors.warmSand,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: BikiniColors.cartoonBlack, width: 1.8),
+              color: BikiniColors.paper,
+              borderRadius: BorderRadius.circular(BikiniRadius.button),
+              border: Border.all(color: BikiniColors.ink, width: 1.5),
             ),
             child: Row(
               children: [
                 Text(_winnerMessage != null ? '🏆' : '📢', style: const TextStyle(fontSize: 16)),
-                const SizedBox(width: 6),
+                const SizedBox(width: BikiniSpacing.space8),
                 Expanded(
                   child: Text(
                     _winnerMessage ?? _statusBanner ?? 'العَب دورك يا مواطن!',
-                    style: BikiniTypography.captionBold(
-                      color: _winnerMessage != null ? BikiniColors.krabsRed : BikiniColors.cartoonBlack,
-                    ).copyWith(fontSize: 11),
+                    style: BikiniTypography.caption(
+                      color: _winnerMessage != null ? BikiniColors.alert : BikiniColors.deep,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -355,21 +345,23 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
             ),
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Dominoes Chain Board (Horizontal Scrollable Table)
           Container(
             height: 110,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF1B4332), // Classic green felt table
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: BikiniColors.cartoonBlack, width: 2.5),
+              color: BikiniColors.deep,
+              borderRadius: BorderRadius.circular(BikiniRadius.card),
+              border: Border.all(color: BikiniColors.ink, width: BikiniRadius.borderWidth),
             ),
             child: _boardChain.isEmpty
-                ? const Center(
-                    child: Text('الطربيزة فاضية.. ابدأ أول حجر!',
-                        style: TextStyle(color: Colors.white70, fontSize: 12)),
+                ? Center(
+                    child: Text(
+                      'الطربيزة فاضية.. ابدأ أول حجر!',
+                      style: BikiniTypography.caption(color: BikiniColors.card),
+                    ),
                   )
                 : ListView.separated(
                     scrollDirection: Axis.horizontal,
@@ -382,7 +374,7 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
                   ),
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Player Hand & Controls Section
           Row(
@@ -394,18 +386,18 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: BikiniColors.spongeYellow,
+                      color: BikiniColors.paper,
                       shape: BoxShape.circle,
-                      border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+                      border: Border.all(color: BikiniColors.ink, width: 1.5),
                     ),
                     child: Center(
                       child: Text(widget.player1Avatar, style: const TextStyle(fontSize: 16)),
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: BikiniSpacing.space8),
                   Text(
                     'أحجارك (${_playerHand.length}):',
-                    style: BikiniTypography.captionBold().copyWith(fontSize: 11.5),
+                    style: BikiniTypography.caption(color: BikiniColors.deep),
                   ),
                 ],
               ),
@@ -415,26 +407,31 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: BikiniColors.marineCyan,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+                      color: BikiniColors.paper,
+                      borderRadius: BorderRadius.circular(BikiniRadius.button),
+                      border: Border.all(color: BikiniColors.ink, width: 1.2),
                     ),
                     child: Text(
                       _boneyard.isNotEmpty ? 'سحب حجر 🁓' : 'تمرير الدور ⏩',
-                      style: BikiniTypography.captionBold().copyWith(fontSize: 10.5),
+                      style: BikiniTypography.caption(color: BikiniColors.deep),
                     ),
                   ),
                 ),
             ],
           ),
 
-          const SizedBox(height: 6),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Player Tiles Horizontal List
           SizedBox(
             height: 75,
             child: _playerHand.isEmpty
-                ? const Center(child: Text('معكش أحجار في إيدك! 🎉'))
+                ? Center(
+                    child: Text(
+                      'معكش أحجار في إيدك! 🎉',
+                      style: BikiniTypography.caption(color: BikiniColors.muted),
+                    ),
+                  )
                 : ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: _playerHand.length,
@@ -451,12 +448,12 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
           ),
 
           if (_winnerMessage != null) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: BikiniSpacing.space8),
             BikiniButton.primary(
               onPressed: _startNewGame,
               text: 'لعب دور جديد 🁓🔄',
               isFullWidth: true,
-              height: 40,
+              height: 48,
             ),
           ],
         ],
@@ -470,12 +467,12 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
       height: 90,
       padding: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFA),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
+        color: BikiniColors.card,
+        borderRadius: BorderRadius.circular(BikiniRadius.button),
+        border: Border.all(color: BikiniColors.ink, width: 1.8),
         boxShadow: const [
           BoxShadow(
-            color: BikiniColors.cartoonBlack,
+            color: BikiniColors.ink,
             offset: Offset(1.5, 1.5),
             blurRadius: 0,
           ),
@@ -485,7 +482,7 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildPips(tile.left),
-          Container(height: 1.5, width: 34, color: BikiniColors.cartoonBlack),
+          Container(height: 1.5, width: 34, color: BikiniColors.ink),
           _buildPips(tile.right),
         ],
       ),
@@ -499,15 +496,15 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
       height: 70,
       padding: const EdgeInsets.symmetric(vertical: 3),
       decoration: BoxDecoration(
-        color: isPlayable ? BikiniColors.spongeYellow : const Color(0xFFFFFFFA),
-        borderRadius: BorderRadius.circular(8),
+        color: isPlayable ? BikiniColors.paper : BikiniColors.card,
+        borderRadius: BorderRadius.circular(BikiniRadius.button),
         border: Border.all(
-          color: isPlayable ? BikiniColors.krabsRed : BikiniColors.cartoonBlack,
-          width: isPlayable ? 2.5 : 1.8,
+          color: isPlayable ? BikiniColors.deep : BikiniColors.ink,
+          width: isPlayable ? 2.5 : 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: BikiniColors.cartoonBlack,
+            color: BikiniColors.ink,
             offset: isPlayable ? const Offset(2.5, 2.5) : const Offset(1.5, 1.5),
             blurRadius: 0,
           ),
@@ -516,9 +513,9 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Text('${tile.left}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-          Container(height: 1.2, width: 30, color: BikiniColors.cartoonBlack),
-          Text('${tile.right}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+          Text('${tile.left}', style: BikiniTypography.mono(color: BikiniColors.ink)),
+          Container(height: 1.2, width: 30, color: BikiniColors.ink),
+          Text('${tile.right}', style: BikiniTypography.mono(color: BikiniColors.ink)),
         ],
       ),
     );
@@ -527,11 +524,7 @@ class _DominoesGameCanvasState extends State<DominoesGameCanvas> {
   Widget _buildPips(int count) {
     return Text(
       count.toString(),
-      style: const TextStyle(
-        fontWeight: FontWeight.w900,
-        fontSize: 15,
-        color: BikiniColors.cartoonBlack,
-      ),
+      style: BikiniTypography.mono(color: BikiniColors.ink),
     );
   }
 }

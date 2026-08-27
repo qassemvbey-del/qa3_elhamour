@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/bikini_theme.dart';
 
 /// Available Games in Uncle Fish Café
 enum CafeGameType {
@@ -77,13 +78,13 @@ extension CafeGameTypeExtension on CafeGameType {
   Color get themeColor {
     switch (this) {
       case CafeGameType.dominoes:
-        return const Color(0xFFFFCCD5);
+        return BikiniColors.card;
       case CafeGameType.tawla:
-        return const Color(0xFFFFE6A7);
+        return BikiniColors.card;
       case CafeGameType.chess:
-        return const Color(0xFFD0E1FD);
+        return BikiniColors.card;
       case CafeGameType.basra:
-        return const Color(0xFFD8F3DC);
+        return BikiniColors.card;
     }
   }
 

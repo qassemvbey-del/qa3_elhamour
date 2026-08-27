@@ -5,7 +5,8 @@ import '../civil_id/civil_id_screen.dart';
 import '../home/home_screen.dart';
 import '../news/news_feed_screen.dart';
 
-/// Main navigation shell hosting the floating cartoon bottom navigation dock
+/// Main navigation shell hosting the full-width bottom navigation bar
+/// Strictly conforming to 02-ui-system.md
 class MainShell extends StatefulWidget {
   final int initialIndex;
 
@@ -45,10 +46,10 @@ class _MainShellState extends State<MainShell> {
     ];
 
     return Scaffold(
-      backgroundColor: BikiniColors.warmSand,
+      backgroundColor: BikiniColors.paper,
       body: Stack(
         children: [
-          // Current Active Screen
+          // Active Screen with clearance for bottom navbar
           Positioned.fill(
             child: IndexedStack(
               index: _currentIndex,
@@ -56,12 +57,12 @@ class _MainShellState extends State<MainShell> {
             ),
           ),
 
-          // Floating Cartoon Bottom Navigation Bar Dock
+          // Bottom Attached Full-Width Navbar as mandated by 02-ui-system.md
           Positioned(
-            left: 12,
-            right: 12,
-            bottom: MediaQuery.of(context).padding.bottom + 10,
-            child: _CartoonBottomDock(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: _BottomNavBar(
               currentIndex: _currentIndex,
               onTabSelected: _onTabSelected,
             ),
@@ -72,11 +73,11 @@ class _MainShellState extends State<MainShell> {
   }
 }
 
-class _CartoonBottomDock extends StatelessWidget {
+class _BottomNavBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTabSelected;
 
-  const _CartoonBottomDock({
+  const _BottomNavBar({
     required this.currentIndex,
     required this.onTabSelected,
   });
@@ -85,111 +86,85 @@ class _CartoonBottomDock extends StatelessWidget {
     _NavTabItem(
       title: 'الرئيسية',
       emoji: '🍍',
-      activeColor: BikiniColors.spongeYellow,
     ),
     _NavTabItem(
       title: 'السجل المدني',
       emoji: '🪪',
-      activeColor: BikiniColors.marineCyan,
     ),
     _NavTabItem(
       title: 'جريدة القاع',
       emoji: '📰',
-      activeColor: Color(0xFFFFB3C6),
     ),
     _NavTabItem(
       title: 'قهوة العم فيش',
       emoji: '☕',
-      activeColor: Color(0xFFD8F3DC),
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-      decoration: BoxDecoration(
-        color: BikiniColors.pureWhite,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: BikiniColors.cartoonBlack,
-          width: 3.0,
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: BikiniColors.cartoonBlack,
-            offset: Offset(4, 4),
-            blurRadius: 0,
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(_tabs.length, (index) {
-          final tab = _tabs[index];
-          final isSelected = index == currentIndex;
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
 
-          return Flexible(
-            child: GestureDetector(
-              onTap: () => onTabSelected(index),
-              behavior: HitTestBehavior.opaque,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                curve: Curves.easeInOut,
-                padding: EdgeInsets.symmetric(
-                  horizontal: isSelected ? 8 : 4,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: isSelected ? tab.activeColor : Colors.transparent,
-                  borderRadius: BorderRadius.circular(14),
-                  border: isSelected
-                      ? Border.all(
-                          color: BikiniColors.cartoonBlack,
-                          width: 2.0,
-                        )
-                      : Border.all(
-                          color: Colors.transparent,
-                          width: 2.0,
-                        ),
-                  boxShadow: isSelected
-                      ? const [
-                          BoxShadow(
-                            color: BikiniColors.cartoonBlack,
-                            offset: Offset(2, 2),
-                            blurRadius: 0,
-                          ),
-                        ]
-                      : null,
-                ),
+    return Container(
+      decoration: const BoxDecoration(
+        color: BikiniColors.deep,
+        border: Border(
+          top: BorderSide(
+            color: BikiniColors.ink,
+            width: BikiniRadius.borderWidth,
+          ),
+        ),
+      ),
+      padding: EdgeInsets.only(bottom: bottomPadding),
+      child: SizedBox(
+        height: 64,
+        child: Row(
+          children: List.generate(_tabs.length, (index) {
+            final tab = _tabs[index];
+            final isSelected = index == currentIndex;
+
+            return Expanded(
+              child: GestureDetector(
+                onTap: () => onTabSelected(index),
+                behavior: HitTestBehavior.opaque,
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      tab.emoji,
-                      style: TextStyle(
-                        fontSize: isSelected ? 20 : 18,
-                      ),
+                    // Active top indicator (yellow line on top of active item)
+                    Container(
+                      height: 3.5,
+                      width: double.infinity,
+                      color: isSelected ? BikiniColors.action : Colors.transparent,
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      tab.title,
-                      style: BikiniTypography.caption().copyWith(
-                        fontSize: isSelected ? 11 : 10,
-                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                        color: isSelected
-                            ? BikiniColors.cartoonBlack
-                            : const Color(0xFF666666),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            tab.emoji,
+                            style: TextStyle(
+                              fontSize: isSelected ? 20 : 18,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            tab.title,
+                            style: BikiniTypography.caption(
+                              color: isSelected
+                                  ? BikiniColors.card
+                                  : BikiniColors.muted,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
-            ),
-          );
-        }),
+            );
+          }),
+        ),
       ),
     );
   }
@@ -198,11 +173,9 @@ class _CartoonBottomDock extends StatelessWidget {
 class _NavTabItem {
   final String title;
   final String emoji;
-  final Color activeColor;
 
   const _NavTabItem({
     required this.title,
     required this.emoji,
-    required this.activeColor,
   });
 }

@@ -47,10 +47,10 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: BikiniColors.krabsRed,
+          backgroundColor: BikiniColors.danger,
           content: Text(
             'يا باشا اكتب اسمك الرسمي، قاع الهامور مفيهوش مواطنين مجهولين! 🦀',
-            style: BikiniTypography.bodyMedium(color: BikiniColors.pureWhite),
+            style: BikiniTypography.body(color: BikiniColors.card),
           ),
         ),
       );
@@ -62,10 +62,10 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
     if (!handleRegex.hasMatch(handle)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: BikiniColors.krabsRed,
+          backgroundColor: BikiniColors.danger,
           content: Text(
             'الهاندل يجب أن يحتوي على حروف إنجليزية صغيرة وأرقام و_ فقط، وبطول 3-20 حرفاً! (مثال: sponge_001)',
-            style: BikiniTypography.bodyMedium(color: BikiniColors.pureWhite),
+            style: BikiniTypography.body(color: BikiniColors.card),
           ),
         ),
       );
@@ -91,10 +91,10 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
         final errorMsg = e.toString().replaceAll('Exception:', '').trim();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            backgroundColor: BikiniColors.krabsRed,
+            backgroundColor: BikiniColors.danger,
             content: Text(
               'خطأ في التسجيل: $errorMsg',
-              style: BikiniTypography.bodyMedium(color: BikiniColors.pureWhite),
+              style: BikiniTypography.body(color: BikiniColors.card),
             ),
           ),
         );
@@ -116,23 +116,11 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
         textDirection: TextDirection.rtl,
         child: Dialog(
           backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(horizontal: 16),
+          insetPadding: const EdgeInsets.symmetric(horizontal: BikiniRadius.screenMargin),
           child: Container(
-            padding: const EdgeInsets.all(22),
-            decoration: BoxDecoration(
-              color: BikiniColors.warmSand,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(
-                color: BikiniColors.cartoonBlack,
-                width: 3.5,
-              ),
-              boxShadow: const [
-                BoxShadow(
-                  color: BikiniColors.cartoonBlack,
-                  offset: Offset(6, 6),
-                  blurRadius: 0,
-                ),
-              ],
+            padding: const EdgeInsets.all(BikiniSpacing.space24),
+            decoration: BikiniDecorations.interactiveCard(
+              backgroundColor: BikiniColors.card,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -142,19 +130,12 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
                   width: 76,
                   height: 76,
                   decoration: BoxDecoration(
-                    color: BikiniColors.spongeYellow,
+                    color: BikiniColors.support,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: BikiniColors.cartoonBlack,
-                      width: 3,
+                      color: BikiniColors.ink,
+                      width: BikiniRadius.borderWidth,
                     ),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: BikiniColors.cartoonBlack,
-                        offset: Offset(3, 3),
-                        blurRadius: 0,
-                      ),
-                    ],
                   ),
                   child: Center(
                     child: Text(
@@ -164,56 +145,45 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 12),
+                const SizedBox(height: BikiniSpacing.space12),
 
                 BikiniBadge.active(
                   text: 'رقم القيد الرسمي: ${profile.id}',
                 ),
 
-                const SizedBox(height: 12),
+                const SizedBox(height: BikiniSpacing.space12),
 
                 Text(
                   'أهلاً بيك رسمياً كمواطن في جمهورية قاع الهامور العظمى! 🪪✨',
-                  style: BikiniTypography.displaySmall(
-                    color: BikiniColors.deepNavy,
-                  ).copyWith(fontSize: 19),
+                  style: BikiniTypography.h2(color: BikiniColors.deep),
                   textAlign: TextAlign.center,
                 ),
 
-                const SizedBox(height: 10),
+                const SizedBox(height: BikiniSpacing.space12),
 
                 Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: BikiniColors.pureWhite,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: BikiniColors.cartoonBlack,
-                      width: 2,
-                    ),
+                  padding: const EdgeInsets.all(BikiniSpacing.space12),
+                  decoration: BikiniDecorations.staticCard(
+                    backgroundColor: BikiniColors.paper,
                   ),
                   child: Column(
                     children: [
                       Text(
                         'يا مرحب بالمواطن "${profile.name}"، تم استخراج بطاقتك وتوثيقها بختم النسر المائي!',
-                        style: BikiniTypography.bodyMedium(
-                          color: BikiniColors.cartoonBlack,
-                        ),
+                        style: BikiniTypography.body(color: BikiniColors.ink),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: BikiniSpacing.space4),
                       Text(
                         'دلوقتي تقدر تطلب سلطع برجر بالتقسيط، تشتكي شفيق للبلدية، وتشارك في رغي قهوة العم فيش! ☕🦀',
-                        style: BikiniTypography.bodyRegular(
-                          color: const Color(0xFF555555),
-                        ),
+                        style: BikiniTypography.caption(color: BikiniColors.muted),
                         textAlign: TextAlign.center,
                       ),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: BikiniSpacing.space24),
 
                 BikiniButton.primary(
                   onPressed: () {
@@ -237,42 +207,45 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: BikiniColors.paper,
       body: SafeArea(
         child: Directionality(
           textDirection: TextDirection.rtl,
           child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            padding: const EdgeInsets.symmetric(
+              horizontal: BikiniRadius.screenMargin,
+              vertical: BikiniSpacing.space16,
+            ),
             children: [
               // Nautical Header Card
               _buildHeaderCard(),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: BikiniSpacing.space16),
 
               // Live ID Card Preview
               _buildLiveCardPreview(),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: BikiniSpacing.space16),
 
               // Form: Citizen Name
               _buildNameField(),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: BikiniSpacing.space8),
 
               // Permanent Name Warning Alert
               _buildPermanentNameAlert(),
 
-              const SizedBox(height: 18),
+              const SizedBox(height: BikiniSpacing.space16),
 
               // Form: Citizen Handle (@handle)
               _buildHandleField(),
 
-              const SizedBox(height: 18),
+              const SizedBox(height: BikiniSpacing.space16),
 
               // Form: Species Selector
               _buildSpeciesSelector(),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: BikiniSpacing.space24),
 
               // Action Button to Issue ID (Single Primary Yellow Button on screen)
               BikiniButton.primary(
@@ -282,7 +255,7 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
                 height: 52,
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: BikiniSpacing.space32),
             ],
           ),
         ),
@@ -292,21 +265,9 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
 
   Widget _buildHeaderCard() {
     return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: BikiniColors.spongeYellow,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: BikiniColors.cartoonBlack,
-          width: 3.2,
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: BikiniColors.cartoonBlack,
-            offset: Offset(4, 4),
-            blurRadius: 0,
-          ),
-        ],
+      padding: const EdgeInsets.all(BikiniSpacing.space16),
+      decoration: BikiniDecorations.interactiveCard(
+        backgroundColor: BikiniColors.card,
       ),
       child: Column(
         children: [
@@ -315,46 +276,49 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: BikiniColors.marineCyan,
+                  color: BikiniColors.support,
                   shape: BoxShape.circle,
-                  border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
+                  border: Border.all(
+                    color: BikiniColors.ink,
+                    width: BikiniRadius.borderWidth,
+                  ),
                 ),
                 child: const Text('🏛️', style: TextStyle(fontSize: 22)),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: BikiniSpacing.space12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'ديوان السجل المدني والتجنيد',
-                      style: BikiniTypography.displaySmall().copyWith(fontSize: 17),
+                      style: BikiniTypography.h2(color: BikiniColors.deep),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       'جمهورية قاع الهامور العظمى 🔱',
-                      style: BikiniTypography.bodyMedium(
-                        color: const Color(0xFF333333),
-                      ),
+                      style: BikiniTypography.caption(color: BikiniColors.muted),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 6),
-              BikiniBadge.active(text: 'تسجيل رسمي'),
+              const SizedBox(width: BikiniSpacing.space8),
+              const BikiniBadge(
+                text: 'تسجيل رسمي',
+                backgroundColor: BikiniColors.support,
+                textColor: BikiniColors.ink,
+              ),
             ],
           ),
-          const SizedBox(height: 10),
-          const Divider(color: BikiniColors.cartoonBlack, thickness: 1.8),
-          const SizedBox(height: 6),
+          const SizedBox(height: BikiniSpacing.space12),
+          const Divider(color: BikiniColors.line, thickness: 1.5),
+          const SizedBox(height: BikiniSpacing.space8),
           Text(
             'استخرج بطاقة هويتك المائية وسجل بياناتك عشان تدخل الجمهورية وتاخد حصتك التموينية من سبونج بوب!',
-            style: BikiniTypography.bodyRegular(
-              color: const Color(0xFF222222),
-            ),
+            style: BikiniTypography.body(color: BikiniColors.ink),
           ),
         ],
       ),
@@ -367,25 +331,9 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
         : _nameController.text.trim();
 
     return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFFFF9E6), Color(0xFFFDE89C)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: BikiniColors.cartoonBlack,
-          width: 3.2,
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: BikiniColors.cartoonBlack,
-            offset: Offset(4, 4),
-            blurRadius: 0,
-          ),
-        ],
+      padding: const EdgeInsets.all(BikiniSpacing.space16),
+      decoration: BikiniDecorations.interactiveCard(
+        backgroundColor: BikiniColors.card,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -397,11 +345,11 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
                 child: Row(
                   children: [
                     const Text('🌊', style: TextStyle(fontSize: 16)),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: BikiniSpacing.space8),
                     Flexible(
                       child: Text(
                         'جمهورية قاع الهامور',
-                        style: BikiniTypography.titleBold(color: BikiniColors.deepNavy),
+                        style: BikiniTypography.h3(color: BikiniColors.deep),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -409,17 +357,17 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
-              BikiniBadge(
+              const SizedBox(width: BikiniSpacing.space8),
+              const BikiniBadge(
                 text: 'معاينة حية 👁️',
-                backgroundColor: BikiniColors.marineCyan,
-                textColor: BikiniColors.cartoonBlack,
+                backgroundColor: BikiniColors.support,
+                textColor: BikiniColors.ink,
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          const Divider(color: BikiniColors.cartoonBlack, thickness: 1.5),
-          const SizedBox(height: 6),
+          const SizedBox(height: BikiniSpacing.space8),
+          const Divider(color: BikiniColors.line, thickness: 1.5),
+          const SizedBox(height: BikiniSpacing.space8),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -428,19 +376,12 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
                 width: 72,
                 height: 88,
                 decoration: BoxDecoration(
-                  color: BikiniColors.spongeYellow,
-                  borderRadius: BorderRadius.circular(12),
+                  color: BikiniColors.paper,
+                  borderRadius: BorderRadius.circular(BikiniRadius.button),
                   border: Border.all(
-                    color: BikiniColors.cartoonBlack,
-                    width: 2.2,
+                    color: BikiniColors.ink,
+                    width: BikiniRadius.borderWidth,
                   ),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: BikiniColors.cartoonBlack,
-                      offset: Offset(2, 2),
-                      blurRadius: 0,
-                    ),
-                  ],
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -452,7 +393,7 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
                     const SizedBox(height: 2),
                     Text(
                       _selectedSpecies.name,
-                      style: BikiniTypography.caption().copyWith(fontSize: 8.5),
+                      style: BikiniTypography.caption(color: BikiniColors.muted),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -460,7 +401,7 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
                 ),
               ),
 
-              const SizedBox(width: 10),
+              const SizedBox(width: BikiniSpacing.space12),
 
               // Details
               Expanded(
@@ -469,32 +410,28 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
                   children: [
                     Text(
                       'الاسم: $name',
-                      style: BikiniTypography.bodyLarge().copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: BikiniTypography.label(color: BikiniColors.ink),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
                     Text(
                       'المهنة: مواطن مائي 🌊',
-                      style: BikiniTypography.bodyRegular(),
+                      style: BikiniTypography.caption(color: BikiniColors.muted),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
                     Text(
                       'التهمة: بدون سوابق',
-                      style: BikiniTypography.bodyRegular(
-                        color: BikiniColors.krabsRed,
-                      ),
+                      style: BikiniTypography.caption(color: BikiniColors.alert),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
                     Text(
                       'القبيلة: ${_selectedSpecies.defaultClan}',
-                      style: BikiniTypography.caption(),
+                      style: BikiniTypography.caption(color: BikiniColors.muted),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -503,22 +440,22 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: BikiniSpacing.space8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
                 child: Text(
                   'ختم النسر المائي 🦅',
-                  style: BikiniTypography.captionBold(color: BikiniColors.krabsRed),
+                  style: BikiniTypography.caption(color: BikiniColors.alert),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: BikiniSpacing.space8),
               Text(
                 'الرقم: 2980710001',
-                style: BikiniTypography.caption(color: const Color(0xFF666666)),
+                style: BikiniTypography.mono(color: BikiniColors.muted),
               ),
             ],
           ),
@@ -533,29 +470,18 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
       children: [
         Text(
           '١. الاسم الرسمى للمواطن (Legal Name) ✍️',
-          style: BikiniTypography.titleBold(),
+          style: BikiniTypography.h3(color: BikiniColors.deep),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: BikiniSpacing.space8),
         Container(
-          decoration: BoxDecoration(
-            color: BikiniColors.pureWhite,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: BikiniColors.cartoonBlack,
-              width: 2.8,
-            ),
-            boxShadow: const [
-              BoxShadow(
-                color: BikiniColors.cartoonBlack,
-                offset: Offset(3, 3),
-                blurRadius: 0,
-              ),
-            ],
+          decoration: BikiniDecorations.staticCard(
+            backgroundColor: BikiniColors.card,
+            radius: BikiniRadius.button,
           ),
           child: TextField(
             controller: _nameController,
             onChanged: (_) => setState(() {}),
-            style: BikiniTypography.bodyLarge(),
+            style: BikiniTypography.body(color: BikiniColors.ink),
             decoration: InputDecoration(
               hintText: 'اكتب اسمك البحري الرسمي...',
               hintStyle: BikiniTypography.inputHint(),
@@ -570,20 +496,23 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
 
   Widget _buildPermanentNameAlert() {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(BikiniSpacing.space12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF3CD),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
+        color: BikiniColors.paper,
+        borderRadius: BorderRadius.circular(BikiniRadius.button),
+        border: Border.all(
+          color: BikiniColors.alert,
+          width: BikiniRadius.borderWidth,
+        ),
       ),
       child: Row(
         children: [
           const Text('⚠️', style: TextStyle(fontSize: 22)),
-          const SizedBox(width: 10),
+          const SizedBox(width: BikiniSpacing.space8),
           Expanded(
             child: Text(
               'تنبيه هام: الاسم الرسمي ثابت مدى الحياة ولا يمكن تغييره إطلاقاً بعد التسجيل بقرار ديوان السجل المدني!',
-              style: BikiniTypography.captionBold(color: BikiniColors.cartoonBlack).copyWith(fontSize: 11.5),
+              style: BikiniTypography.caption(color: BikiniColors.alert),
             ),
           ),
         ],
@@ -597,39 +526,28 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
       children: [
         Text(
           '٢. اسم المعرّف الفريد (Handle) 🏷️',
-          style: BikiniTypography.titleBold(),
+          style: BikiniTypography.h3(color: BikiniColors.deep),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: BikiniSpacing.space4),
         Text(
           'حروف إنجليزية صغيرة وأرقام و_ فقط (من 3 إلى 20 حرفاً)',
-          style: BikiniTypography.caption(color: const Color(0xFF555555)),
+          style: BikiniTypography.caption(color: BikiniColors.muted),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: BikiniSpacing.space8),
         Container(
-          decoration: BoxDecoration(
-            color: BikiniColors.pureWhite,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: BikiniColors.cartoonBlack,
-              width: 2.8,
-            ),
-            boxShadow: const [
-              BoxShadow(
-                color: BikiniColors.cartoonBlack,
-                offset: Offset(3, 3),
-                blurRadius: 0,
-              ),
-            ],
+          decoration: BikiniDecorations.staticCard(
+            backgroundColor: BikiniColors.card,
+            radius: BikiniRadius.button,
           ),
           child: Directionality(
             textDirection: TextDirection.ltr,
             child: TextField(
               controller: _handleController,
               onChanged: (_) => setState(() {}),
-              style: BikiniTypography.bodyLarge(),
+              style: BikiniTypography.mono(color: BikiniColors.ink),
               decoration: InputDecoration(
                 prefixText: '@ ',
-                prefixStyle: BikiniTypography.titleBold(color: BikiniColors.marineCyan),
+                prefixStyle: BikiniTypography.mono(color: BikiniColors.support),
                 hintText: 'sponge_001',
                 hintStyle: BikiniTypography.inputHint(),
                 border: InputBorder.none,
@@ -647,32 +565,32 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '٢. فصيلة الكائن البحري 🧬',
-          style: BikiniTypography.titleBold(),
+          '٣. فصيلة الكائن البحري 🧬',
+          style: BikiniTypography.h3(color: BikiniColors.deep),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: BikiniSpacing.space8),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: BikiniSpacing.space8,
+          runSpacing: BikiniSpacing.space8,
           children: CitizenService.availableSpecies.map((species) {
             final isSelected = species.name == _selectedSpecies.name;
             return GestureDetector(
               onTap: () => setState(() => _selectedSpecies = species),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 150),
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? BikiniColors.spongeYellow
-                      : BikiniColors.pureWhite,
-                  borderRadius: BorderRadius.circular(14),
+                      ? BikiniColors.support
+                      : BikiniColors.card,
+                  borderRadius: BorderRadius.circular(BikiniRadius.button),
                   border: Border.all(
-                    color: BikiniColors.cartoonBlack,
-                    width: isSelected ? 2.5 : 2.0,
+                    color: BikiniColors.ink,
+                    width: BikiniRadius.borderWidth,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: BikiniColors.cartoonBlack,
+                      color: BikiniColors.ink,
                       offset: isSelected ? const Offset(1, 1) : const Offset(3, 3),
                       blurRadius: 0,
                     ),
@@ -682,13 +600,11 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(species.emoji, style: const TextStyle(fontSize: 18)),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: BikiniSpacing.space8),
                     Text(
                       species.name,
-                      style: BikiniTypography.bodyMedium(
-                        color: BikiniColors.cartoonBlack,
-                      ).copyWith(
-                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                      style: BikiniTypography.label(
+                        color: isSelected ? BikiniColors.ink : BikiniColors.muted,
                       ),
                     ),
                   ],
@@ -701,3 +617,4 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
     );
   }
 }
+

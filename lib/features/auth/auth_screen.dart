@@ -34,10 +34,10 @@ class _AuthScreenState extends State<AuthScreen> {
         final errorMsg = e.toString().replaceAll('Exception:', '').trim();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            backgroundColor: BikiniColors.krabsRed,
+            backgroundColor: BikiniColors.danger,
             content: Text(
               'عطل في بوابة الجمارك: $errorMsg',
-              style: BikiniTypography.bodyMedium(color: BikiniColors.pureWhite),
+              style: BikiniTypography.body(color: BikiniColors.card),
             ),
           ),
         );
@@ -54,53 +54,47 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: BikiniColors.warmSand,
+      backgroundColor: BikiniColors.paper,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 440),
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              padding: const EdgeInsets.symmetric(
+                horizontal: BikiniRadius.screenMargin,
+                vertical: BikiniSpacing.space24,
+              ),
               child: Column(
                 children: [
                   // Customs Header Card
                   _buildHeaderCard(),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: BikiniSpacing.space16),
 
                   // Main Google Auth Container
                   Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: BikiniColors.pureWhite,
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(color: BikiniColors.cartoonBlack, width: 3.2),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: BikiniColors.cartoonBlack,
-                          offset: Offset(4, 4),
-                          blurRadius: 0,
-                        ),
-                      ],
+                    padding: const EdgeInsets.all(BikiniSpacing.space16),
+                    decoration: BikiniDecorations.interactiveCard(
+                      backgroundColor: BikiniColors.card,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const SizedBox(height: 8),
+                        const SizedBox(height: BikiniSpacing.space8),
 
                         Text(
                           'تسجيل الدخول الرسمي 🌐',
-                          style: BikiniTypography.titleBold(color: BikiniColors.deepNavy).copyWith(fontSize: 18),
+                          style: BikiniTypography.h1(color: BikiniColors.deep),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: BikiniSpacing.space8),
                         Text(
                           'جمهورية قاع الهامور تعتمد المصادقة عبر Google OAuth فقط لحماية بيانات المواطنين وسجل الممتلكات.',
-                          style: BikiniTypography.bodyMedium(color: const Color(0xFF444444)).copyWith(fontSize: 13),
+                          style: BikiniTypography.body(color: BikiniColors.muted),
                           textAlign: TextAlign.center,
                         ),
 
-                        const SizedBox(height: 24),
+                        const SizedBox(height: BikiniSpacing.space24),
 
                         // The ONLY primary yellow button on screen as required by 02-ui-system.md
                         BikiniButton.primary(
@@ -112,17 +106,17 @@ class _AuthScreenState extends State<AuthScreen> {
                           height: 50,
                         ),
 
-                        const SizedBox(height: 16),
+                        const SizedBox(height: BikiniSpacing.space16),
                       ],
                     ),
                   ),
 
-                  const SizedBox(height: 18),
+                  const SizedBox(height: BikiniSpacing.space16),
 
                   // Bottom Satirical Notice
                   Text(
-                    '⚠️ تحذير رسمى: محاولة الدخول ببيانات مزورة تعرضك للتنظيف الإجباري في مطبخ سلطع برجر!',
-                    style: BikiniTypography.caption(color: const Color(0xFF666666)).copyWith(fontSize: 11),
+                    '⚠️ تحذير رسمي: محاولة الدخول ببيانات مزورة تعرضك للتنظيف الإجباري في مطبخ سلطع برجر!',
+                    style: BikiniTypography.caption(color: BikiniColors.muted),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -136,18 +130,9 @@ class _AuthScreenState extends State<AuthScreen> {
 
   Widget _buildHeaderCard() {
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: BikiniColors.warmSand,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: BikiniColors.cartoonBlack, width: 3.2),
-        boxShadow: const [
-          BoxShadow(
-            color: BikiniColors.cartoonBlack,
-            offset: Offset(4, 4),
-            blurRadius: 0,
-          ),
-        ],
+      padding: const EdgeInsets.all(BikiniSpacing.space16),
+      decoration: BikiniDecorations.interactiveCard(
+        backgroundColor: BikiniColors.card,
       ),
       child: Row(
         children: [
@@ -155,15 +140,18 @@ class _AuthScreenState extends State<AuthScreen> {
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              color: BikiniColors.pureWhite,
+              color: BikiniColors.paper,
               shape: BoxShape.circle,
-              border: Border.all(color: BikiniColors.cartoonBlack, width: 2.2),
+              border: Border.all(
+                color: BikiniColors.ink,
+                width: BikiniRadius.borderWidth,
+              ),
             ),
             child: const Center(
               child: Text('🛂', style: TextStyle(fontSize: 28)),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: BikiniSpacing.space12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,24 +161,23 @@ class _AuthScreenState extends State<AuthScreen> {
                     Flexible(
                       child: Text(
                         'بوابة جمارك قاع الهامور',
-                        style: BikiniTypography.displaySmall().copyWith(fontSize: 17),
+                        style: BikiniTypography.h2(color: BikiniColors.deep),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(width: 6),
-                    BikiniBadge(
+                    const SizedBox(width: BikiniSpacing.space8),
+                    const BikiniBadge(
                       text: 'نقطة تفتيش 🚨',
-                      backgroundColor: BikiniColors.krabsRed,
-                      textColor: BikiniColors.pureWhite,
-                      fontSize: 9,
+                      backgroundColor: BikiniColors.alert,
+                      textColor: BikiniColors.card,
                     ),
                   ],
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: BikiniSpacing.space4),
                 Text(
                   'سجل دخولك بـ Google للدخول إلى الجمهورية!',
-                  style: BikiniTypography.bodyMedium(color: const Color(0xFF333333)).copyWith(fontSize: 11.5),
+                  style: BikiniTypography.caption(color: BikiniColors.muted),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -202,4 +189,5 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 }
+
 

@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'redirect_stub.dart'
+    if (dart.library.js_interop) 'redirect_web.dart'
+    as redirect_helper;
 
 /// Supabase Integration, Auth & Local Storage Persistence Service
 class SupabaseService {
@@ -59,7 +62,8 @@ class SupabaseService {
     if (!_initialized || client == null) {
       throw Exception('خدمة الجمارك المائية غير متصلة حالياً!');
     }
-    final redirectUrl = kIsWeb ? null : 'io.supabase.qa3elhamour://login-callback';
+    final redirectUrl = redirect_helper.getAuthRedirectUrl();
+    debugPrint('🔑 [SupabaseService] signInWithGoogle redirectUrl: $redirectUrl');
     return await client!.auth.signInWithOAuth(
       OAuthProvider.google,
       redirectTo: redirectUrl,

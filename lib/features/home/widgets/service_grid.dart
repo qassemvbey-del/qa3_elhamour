@@ -18,7 +18,7 @@ class ServiceGrid extends StatelessWidget {
       title: 'مطاعم القاع 🍔',
       subtitle: 'اطلب برجر سلطع الطازج ومقرمشات شمشون المشبوهة دليفري للأعماق',
       emoji: '🍔',
-      backgroundColor: Color(0xFFFFE6A7),
+      backgroundColor: BikiniColors.card,
       isLocked: false,
       targetTabIndex: 0,
     ),
@@ -27,7 +27,7 @@ class ServiceGrid extends StatelessWidget {
       title: 'السجل المدني 🏛️',
       subtitle: 'إصدار بطاقة الرقم القومي المائي وتحديد شجرة عائلة قاع الهامور',
       emoji: '🏛️',
-      backgroundColor: BikiniColors.marineCyan,
+      backgroundColor: BikiniColors.card,
       isLocked: false,
       targetTabIndex: 1,
     ),
@@ -36,7 +36,7 @@ class ServiceGrid extends StatelessWidget {
       title: 'جريدة القاع 📰',
       subtitle: 'فيديوهات وفضائح وحكايات قاع الهامور الحصرية لحظة بلحظة',
       emoji: '📰',
-      backgroundColor: Color(0xFFFFB3C6),
+      backgroundColor: BikiniColors.card,
       isLocked: false,
       targetTabIndex: 2,
     ),
@@ -45,7 +45,7 @@ class ServiceGrid extends StatelessWidget {
       title: 'قهوة العم فيش ☕',
       subtitle: 'شات حي وساوند بورد أصوات سبونج بوب ونكت مع المعلمين',
       emoji: '☕',
-      backgroundColor: Color(0xFFD8F3DC),
+      backgroundColor: BikiniColors.card,
       isLocked: false,
       targetTabIndex: 3,
     ),
@@ -54,7 +54,7 @@ class ServiceGrid extends StatelessWidget {
       title: 'مستشفيات القاع 🏥',
       subtitle: 'طوارئ لسعات قنديل البحر وعلاج التسمم من وجبات دلو الصدا',
       emoji: '🏥',
-      backgroundColor: Color(0xFFFFCCD5),
+      backgroundColor: BikiniColors.card,
       isLocked: true,
       lockReason: 'المستشفى مقفولة عشان الدكاترة عندهم إضراب ومستر سلطع رافض يدفع التأمين!',
     ),
@@ -63,7 +63,7 @@ class ServiceGrid extends StatelessWidget {
       title: 'حفلات الأعماق 🎤',
       subtitle: 'حفلات مستر سلطع مع أوكا وأورتيجا وعزف كلارينيت شفيق المزعج',
       emoji: '🎤',
-      backgroundColor: Color(0xFFE2D4F0),
+      backgroundColor: BikiniColors.card,
       isLocked: true,
       lockReason: 'الحفلة اتلغت عشان شفيق كسر الكلارينيت في دماغ واحد من المعازيم!',
     ),
@@ -72,7 +72,7 @@ class ServiceGrid extends StatelessWidget {
       title: 'محكمة الجنايات ⚖️',
       subtitle: 'جلسات محاكمة شمشون بتهمة سرقة سر الخلطة وقضايا التفحيط المائي',
       emoji: '⚖️',
-      backgroundColor: Color(0xFFD0E1FD),
+      backgroundColor: BikiniColors.card,
       isLocked: true,
       lockReason: 'القاضي راح يصطاد قناديل بحر والجلسة اتأجلت لسبتمبر الجاي!',
     ),
@@ -81,7 +81,7 @@ class ServiceGrid extends StatelessWidget {
       title: 'عقارات القاع 🪸',
       subtitle: 'أناناسات وبيوت صخرية للإيجار المفروش والتمويل العقاري البحري',
       emoji: '🪸',
-      backgroundColor: Color(0xFFFFF1C5),
+      backgroundColor: BikiniColors.card,
       isLocked: true,
       lockReason: 'كل الأناناسات محجوزة لسبونج بوب وبسيط رهن صخرته للبنك!',
     ),
@@ -106,23 +106,11 @@ class ServiceGrid extends StatelessWidget {
         textDirection: TextDirection.rtl,
         child: Dialog(
           backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+          insetPadding: const EdgeInsets.symmetric(horizontal: BikiniRadius.screenMargin),
           child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: BikiniColors.pureWhite,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(
-                color: BikiniColors.cartoonBlack,
-                width: 3.5,
-              ),
-              boxShadow: const [
-                BoxShadow(
-                  color: BikiniColors.cartoonBlack,
-                  offset: Offset(5, 5),
-                  blurRadius: 0,
-                ),
-              ],
+            padding: const EdgeInsets.all(BikiniSpacing.space24),
+            decoration: BikiniDecorations.interactiveCard(
+              backgroundColor: BikiniColors.card,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -132,19 +120,12 @@ class ServiceGrid extends StatelessWidget {
                   width: 64,
                   height: 64,
                   decoration: BoxDecoration(
-                    color: BikiniColors.spongeYellow,
+                    color: BikiniColors.paper,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: BikiniColors.cartoonBlack,
-                      width: 2.8,
+                      color: BikiniColors.ink,
+                      width: BikiniRadius.borderWidth,
                     ),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: BikiniColors.cartoonBlack,
-                        offset: Offset(2.5, 2.5),
-                        blurRadius: 0,
-                      ),
-                    ],
                   ),
                   child: Center(
                     child: Text(
@@ -153,32 +134,32 @@ class ServiceGrid extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: BikiniSpacing.space12),
 
                 Text(
                   'يا ريس الخدمة دي مقفولة حالياً! 🔒',
-                  style: BikiniTypography.displaySmall(
-                    color: BikiniColors.krabsRed,
-                  ).copyWith(fontSize: 18),
+                  style: BikiniTypography.h2(
+                    color: BikiniColors.alert,
+                  ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: BikiniSpacing.space8),
 
                 Text(
                   item.lockReason ??
                       'عمال بلدية قاع الهامور شغالين صيانة وغواصين المقاولين سارقين السلوك! ارجع بعد شوية يا غالي.',
-                  style: BikiniTypography.bodyMedium(
-                    color: BikiniColors.cartoonBlack,
+                  style: BikiniTypography.body(
+                    color: BikiniColors.muted,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: BikiniSpacing.space16),
 
-                BikiniButton.primary(
+                BikiniButton.secondary(
                   onPressed: () => Navigator.of(ctx).pop(),
                   text: 'فهمت يا ريس، رجوع 👋',
                   isFullWidth: true,
-                  height: 46,
+                  height: 48,
                 ),
               ],
             ),
@@ -196,18 +177,18 @@ class ServiceGrid extends StatelessWidget {
       builder: (ctx) => Directionality(
         textDirection: TextDirection.rtl,
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(BikiniSpacing.space24),
           decoration: BoxDecoration(
-            color: BikiniColors.warmSand,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            color: BikiniColors.paper,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(BikiniRadius.sheet)),
             border: Border.all(
-              color: BikiniColors.cartoonBlack,
-              width: 3.5,
+              color: BikiniColors.ink,
+              width: BikiniRadius.borderWidth,
             ),
             boxShadow: const [
               BoxShadow(
-                color: BikiniColors.cartoonBlack,
-                offset: Offset(0, -6),
+                color: BikiniColors.ink,
+                offset: Offset(0, -4),
                 blurRadius: 0,
               ),
             ],
@@ -218,29 +199,29 @@ class ServiceGrid extends StatelessWidget {
               children: [
                 Container(
                   width: 48,
-                  height: 5,
+                  height: 4,
                   decoration: BoxDecoration(
-                    color: BikiniColors.cartoonBlack,
-                    borderRadius: BorderRadius.circular(3),
+                    color: BikiniColors.ink,
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: BikiniSpacing.space16),
                 Text(
                   item.title,
-                  style: BikiniTypography.displayMedium().copyWith(fontSize: 22),
+                  style: BikiniTypography.h1(color: BikiniColors.deep),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: BikiniSpacing.space8),
                 Text(
                   'قريباً هتقدر تطلب أوردرات دليفري من مقرمشات سلطع وتدفع بعملة "دولار قاع الهامور" المائي! 🦀🍔',
-                  style: BikiniTypography.bodyMedium(),
+                  style: BikiniTypography.body(color: BikiniColors.muted),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: BikiniSpacing.space24),
                 BikiniButton.secondary(
                   onPressed: () => Navigator.of(ctx).pop(),
                   text: 'تسلم يا كابتن ✨',
                   isFullWidth: true,
-                  height: 46,
+                  height: 48,
                 ),
               ],
             ),
@@ -278,9 +259,9 @@ class ServiceGrid extends StatelessWidget {
                       Flexible(
                         child: Text(
                           'خدمات ديوان قاع الهامور',
-                          style: BikiniTypography.displaySmall(
-                            color: BikiniColors.deepNavy,
-                          ).copyWith(fontSize: 18),
+                          style: BikiniTypography.h2(
+                            color: BikiniColors.deep,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -288,11 +269,11 @@ class ServiceGrid extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: BikiniSpacing.space8),
                 Text(
                   '${defaultServices.length} خدمات',
                   style: BikiniTypography.caption(
-                    color: const Color(0xFF666666),
+                    color: BikiniColors.muted,
                   ),
                 ),
               ],

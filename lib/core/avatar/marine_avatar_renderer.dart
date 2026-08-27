@@ -23,16 +23,16 @@ class MarineAvatarRenderer extends StatelessWidget {
       height: size,
       decoration: showBackground
           ? BoxDecoration(
-              color: BikiniColors.marineCyan.withValues(alpha: 0.2),
+              color: BikiniColors.support.withValues(alpha: 0.2),
               shape: BoxShape.circle,
               border: Border.all(
-                color: BikiniColors.cartoonBlack,
-                width: size > 60 ? 2.8 : 1.8,
+                color: BikiniColors.ink,
+                width: size > 60 ? 2.5 : 1.8,
               ),
               boxShadow: size > 40
                   ? [
                       BoxShadow(
-                        color: BikiniColors.cartoonBlack.withValues(alpha: 0.3),
+                        color: BikiniColors.ink.withValues(alpha: 0.3),
                         offset: const Offset(2, 2),
                         blurRadius: 0,
                       ),
@@ -58,7 +58,7 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final strokePaint = Paint()
-      ..color = BikiniColors.cartoonBlack
+      ..color = BikiniColors.ink
       ..style = PaintingStyle.stroke
       ..strokeWidth = math.max(1.5, size.width * 0.035);
 
@@ -80,7 +80,7 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
     switch (config.bodyType) {
       case MarineBodyType.sponge:
         final fillPaint = Paint()
-          ..color = config.customColor ?? BikiniColors.spongeYellow
+          ..color = config.customColor ?? BikiniColors.sponge
           ..style = PaintingStyle.fill;
 
         final bodyRect = RRect.fromRectAndRadius(
@@ -96,7 +96,7 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
 
         // Sponge Pores
         final porePaint = Paint()
-          ..color = const Color(0xFFD4B012)
+          ..color = BikiniColors.coin.withValues(alpha: 0.5)
           ..style = PaintingStyle.fill;
         canvas.drawCircle(Offset(center.dx - width * 0.2, center.dy - height * 0.15), width * 0.05, porePaint);
         canvas.drawCircle(Offset(center.dx + width * 0.2, center.dy - height * 0.1), width * 0.04, porePaint);
@@ -106,7 +106,7 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
 
       case MarineBodyType.starfish:
         final fillPaint = Paint()
-          ..color = config.customColor ?? const Color(0xFFFF8B94)
+          ..color = config.customColor ?? BikiniColors.starfish
           ..style = PaintingStyle.fill;
 
         final path = Path();
@@ -133,7 +133,7 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
 
       case MarineBodyType.squid:
         final fillPaint = Paint()
-          ..color = config.customColor ?? const Color(0xFF5DBB63)
+          ..color = config.customColor ?? BikiniColors.squid
           ..style = PaintingStyle.fill;
 
         // Big oval head
@@ -148,7 +148,7 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
 
       case MarineBodyType.crab:
         final fillPaint = Paint()
-          ..color = config.customColor ?? BikiniColors.krabsRed
+          ..color = config.customColor ?? BikiniColors.crab
           ..style = PaintingStyle.fill;
 
         final shellRect = Rect.fromCenter(
@@ -168,11 +168,11 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
 
       case MarineBodyType.squirrel:
         final glassPaint = Paint()
-          ..color = const Color(0x66E0F7FA)
+          ..color = BikiniColors.support.withValues(alpha: 0.3)
           ..style = PaintingStyle.fill;
 
         final fillPaint = Paint()
-          ..color = config.customColor ?? const Color(0xFFA17A4A)
+          ..color = config.customColor ?? BikiniColors.squirrel
           ..style = PaintingStyle.fill;
 
         canvas.drawCircle(center, width * 0.35, fillPaint);
@@ -185,7 +185,7 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
 
       case MarineBodyType.fish:
         final fillPaint = Paint()
-          ..color = config.customColor ?? BikiniColors.oceanBlue
+          ..color = config.customColor ?? BikiniColors.fish
           ..style = PaintingStyle.fill;
 
         final fishPath = Path()
@@ -209,13 +209,13 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
     switch (config.outfit) {
       case MarineOutfit.tieShirt:
         final shirtPaint = Paint()
-          ..color = BikiniColors.pureWhite
+          ..color = BikiniColors.card
           ..style = PaintingStyle.fill;
         final pantsPaint = Paint()
-          ..color = const Color(0xFF8B5A2B)
+          ..color = BikiniColors.squirrel
           ..style = PaintingStyle.fill;
         final tiePaint = Paint()
-          ..color = BikiniColors.krabsRed
+          ..color = BikiniColors.alert
           ..style = PaintingStyle.fill;
 
         final shirtRect = Rect.fromLTWH(center.dx - width * 0.3, center.dy + height * 0.15, width * 0.6, height * 0.12);
@@ -240,10 +240,10 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
 
       case MarineOutfit.flowerTrunks:
         final trunkPaint = Paint()
-          ..color = const Color(0xFF8BC34A)
+          ..color = BikiniColors.support
           ..style = PaintingStyle.fill;
         final flowerPaint = Paint()
-          ..color = const Color(0xFF9C27B0)
+          ..color = BikiniColors.squid
           ..style = PaintingStyle.fill;
 
         final trunkRect = RRect.fromRectAndRadius(
@@ -253,17 +253,17 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
         canvas.drawRRect(trunkRect, trunkPaint);
         canvas.drawRRect(trunkRect, strokePaint);
 
-        // Purple Flowers on trunks
+        // Flowers on trunks
         canvas.drawCircle(Offset(center.dx - width * 0.15, center.dy + height * 0.22), width * 0.04, flowerPaint);
         canvas.drawCircle(Offset(center.dx + width * 0.15, center.dy + height * 0.28), width * 0.04, flowerPaint);
         break;
 
       case MarineOutfit.bossSuit:
         final suitPaint = Paint()
-          ..color = BikiniColors.cartoonBlack
+          ..color = BikiniColors.ink
           ..style = PaintingStyle.fill;
         final shirtPaint = Paint()
-          ..color = BikiniColors.pureWhite
+          ..color = BikiniColors.card
           ..style = PaintingStyle.fill;
 
         final suitRect = Rect.fromLTWH(center.dx - width * 0.35, center.dy + height * 0.14, width * 0.7, height * 0.3);
@@ -280,7 +280,7 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
 
       case MarineOutfit.sailorShirt:
         final shirtPaint = Paint()
-          ..color = BikiniColors.marineCyan
+          ..color = BikiniColors.support
           ..style = PaintingStyle.fill;
 
         final shirtRect = Rect.fromLTWH(center.dx - width * 0.32, center.dy + height * 0.15, width * 0.64, height * 0.25);
@@ -302,13 +302,13 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
     final height = size.height;
 
     final eyeWhite = Paint()
-      ..color = BikiniColors.pureWhite
+      ..color = BikiniColors.card
       ..style = PaintingStyle.fill;
     final pupilBlue = Paint()
-      ..color = const Color(0xFF0288D1)
+      ..color = BikiniColors.fish
       ..style = PaintingStyle.fill;
     final pupilBlack = Paint()
-      ..color = BikiniColors.cartoonBlack
+      ..color = BikiniColors.ink
       ..style = PaintingStyle.fill;
 
     final leftEye = Offset(center.dx - width * 0.13, center.dy - height * 0.1);
@@ -349,7 +349,7 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
 
         // Half eyelid
         final lidPaint = Paint()
-          ..color = const Color(0xFF5DBB63)
+          ..color = BikiniColors.squid
           ..style = PaintingStyle.fill;
         canvas.drawRect(Rect.fromLTWH(leftEye.dx - eyeRadius, leftEye.dy - eyeRadius, eyeRadius * 2, eyeRadius), lidPaint);
         canvas.drawRect(Rect.fromLTWH(rightEye.dx - eyeRadius, rightEye.dy - eyeRadius, eyeRadius * 2, eyeRadius), lidPaint);
@@ -416,10 +416,10 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
     switch (config.hat) {
       case MarineHat.krustyVisor:
         final visorPaint = Paint()
-          ..color = BikiniColors.pureWhite
+          ..color = BikiniColors.card
           ..style = PaintingStyle.fill;
         final anchorPaint = Paint()
-          ..color = BikiniColors.oceanBlue
+          ..color = BikiniColors.deep
           ..style = PaintingStyle.fill;
 
         final capPath = Path()
@@ -437,7 +437,7 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
 
       case MarineHat.pirateHat:
         final hatPaint = Paint()
-          ..color = BikiniColors.cartoonBlack
+          ..color = BikiniColors.ink
           ..style = PaintingStyle.fill;
 
         final hatPath = Path()
@@ -450,7 +450,7 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
 
       case MarineHat.squidWig:
         final wigPaint = Paint()
-          ..color = const Color(0xFF795548)
+          ..color = BikiniColors.squirrel
           ..style = PaintingStyle.fill;
 
         final wigPath = Path()
@@ -461,7 +461,7 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
 
       case MarineHat.kingCrown:
         final crownPaint = Paint()
-          ..color = const Color(0xFFFFD700)
+          ..color = BikiniColors.coin
           ..style = PaintingStyle.fill;
 
         final crownPath = Path()
@@ -479,7 +479,7 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
 
       case MarineHat.seaCap:
         final capPaint = Paint()
-          ..color = BikiniColors.marineCyan
+          ..color = BikiniColors.support
           ..style = PaintingStyle.fill;
 
         final capRect = RRect.fromRectAndRadius(
@@ -500,3 +500,4 @@ class _LayeredMarineAvatarPainter extends CustomPainter {
     return oldDelegate.config != config;
   }
 }
+

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/citizen_service.dart';
 import '../theme/bikini_theme.dart';
 
-/// Nautical Wooden Top Bar with Cartoon Planks, Rivets, and Glowing Jellyfish Notification Bell
+/// Nautical Top Bar for "جمهورية قاع الهامور" using deep, deep2, and ink tokens
 class WoodenTopBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final VoidCallback? onNotificationTap;
@@ -35,7 +35,7 @@ class _WoodenTopBarState extends State<WoodenTopBar>
       duration: const Duration(milliseconds: 1400),
     )..repeat(reverse: true);
 
-    _glowAnimation = Tween<double>(begin: 0.85, end: 1.15).animate(
+    _glowAnimation = Tween<double>(begin: 0.88, end: 1.12).animate(
       CurvedAnimation(
         parent: _jellyfishController,
         curve: Curves.easeInOutSine,
@@ -54,25 +54,18 @@ class _WoodenTopBarState extends State<WoodenTopBar>
       width: 10,
       height: 10,
       decoration: BoxDecoration(
-        color: BikiniColors.goldNail,
+        color: BikiniColors.coin,
         shape: BoxShape.circle,
         border: Border.all(
-          color: BikiniColors.cartoonBlack,
+          color: BikiniColors.ink,
           width: 1.5,
         ),
-        boxShadow: const [
-          BoxShadow(
-            color: BikiniColors.cartoonBlack,
-            offset: Offset(1, 1),
-            blurRadius: 0,
-          ),
-        ],
       ),
       child: Center(
         child: Container(
           width: 5,
           height: 1.5,
-          color: BikiniColors.cartoonBlack,
+          color: BikiniColors.ink,
         ),
       ),
     );
@@ -89,51 +82,29 @@ class _WoodenTopBarState extends State<WoodenTopBar>
         right: 14,
         bottom: 10,
       ),
-      decoration: BoxDecoration(
-        color: const Color(0xFF6F3B1A),
-        border: const Border(
+      decoration: const BoxDecoration(
+        color: BikiniColors.deep,
+        border: Border(
           bottom: BorderSide(
-            color: BikiniColors.cartoonBlack,
-            width: 3.5,
+            color: BikiniColors.ink,
+            width: BikiniRadius.borderWidth,
           ),
         ),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x66000000),
-            offset: Offset(0, 4),
-            blurRadius: 0,
-          ),
-        ],
       ),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [
-              Color(0xFFB57038),
-              Color(0xFF8B4B22),
-              Color(0xFF6E3614),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-          borderRadius: BorderRadius.circular(16),
+          color: BikiniColors.deep2,
+          borderRadius: BorderRadius.circular(BikiniRadius.card),
           border: Border.all(
-            color: BikiniColors.cartoonBlack,
-            width: 2.5,
+            color: BikiniColors.ink,
+            width: BikiniRadius.borderWidth,
           ),
-          boxShadow: const [
-            BoxShadow(
-              color: BikiniColors.cartoonBlack,
-              offset: Offset(2, 2),
-              blurRadius: 0,
-            ),
-          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Left Bolt & Decorative Citizen / Pineapple Avatar
+            // Left Bolt & Citizen Avatar
             Row(
               children: [
                 _buildWoodBolt(),
@@ -145,11 +116,11 @@ class _WoodenTopBarState extends State<WoodenTopBar>
                     return Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: BikiniColors.spongeYellow,
+                        color: BikiniColors.support,
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: BikiniColors.cartoonBlack,
-                          width: 2,
+                          color: BikiniColors.ink,
+                          width: BikiniRadius.borderWidth,
                         ),
                       ),
                       child: Text(
@@ -167,23 +138,10 @@ class _WoodenTopBarState extends State<WoodenTopBar>
               child: Center(
                 child: Text(
                   widget.title,
-                  style: BikiniTypography.displaySmall(
-                    color: BikiniColors.spongeYellow,
+                  style: BikiniTypography.display(
+                    color: BikiniColors.card,
                   ).copyWith(
-                    fontSize: 21,
-                    letterSpacing: 0.5,
-                    shadows: const [
-                      Shadow(
-                        color: BikiniColors.cartoonBlack,
-                        offset: Offset(2, 2),
-                        blurRadius: 0,
-                      ),
-                      Shadow(
-                        color: BikiniColors.cartoonBlack,
-                        offset: Offset(-1, -1),
-                        blurRadius: 0,
-                      ),
-                    ],
+                    fontSize: 20,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -191,7 +149,7 @@ class _WoodenTopBarState extends State<WoodenTopBar>
               ),
             ),
 
-            // Right: Glowing Jellyfish Notification Bell & Right Bolt
+            // Right: Notification Bell & Right Bolt
             Row(
               children: [
                 GestureDetector(
@@ -210,22 +168,15 @@ class _WoodenTopBarState extends State<WoodenTopBar>
                         Container(
                           padding: const EdgeInsets.all(7),
                           decoration: BoxDecoration(
-                            color: BikiniColors.neonPink,
+                            color: BikiniColors.support,
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: BikiniColors.cartoonBlack,
-                              width: 2.2,
+                              color: BikiniColors.ink,
+                              width: BikiniRadius.borderWidth,
                             ),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: BikiniColors.cartoonBlack,
-                                offset: Offset(2, 2),
-                                blurRadius: 0,
-                              ),
-                            ],
                           ),
                           child: const Text(
-                            '🪼',
+                            '🔔',
                             style: TextStyle(fontSize: 18),
                           ),
                         ),
@@ -236,19 +187,12 @@ class _WoodenTopBarState extends State<WoodenTopBar>
                             child: Container(
                               padding: const EdgeInsets.all(4),
                               decoration: BoxDecoration(
-                                color: BikiniColors.krabsRed,
+                                color: BikiniColors.alert,
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: BikiniColors.pureWhite,
+                                  color: BikiniColors.card,
                                   width: 1.5,
                                 ),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: BikiniColors.cartoonBlack,
-                                    offset: Offset(1, 1),
-                                    blurRadius: 0,
-                                  ),
-                                ],
                               ),
                               constraints: const BoxConstraints(
                                 minWidth: 18,
@@ -257,11 +201,10 @@ class _WoodenTopBarState extends State<WoodenTopBar>
                               child: Center(
                                 child: Text(
                                   '${widget.unreadCount}',
-                                  style: BikiniTypography.captionBold(
-                                    color: BikiniColors.pureWhite,
+                                  style: BikiniTypography.caption(
+                                    color: BikiniColors.card,
                                   ).copyWith(
-                                    fontSize: 10,
-                                    height: 1.0,
+                                    fontSize: 11.5,
                                   ),
                                 ),
                               ),
@@ -281,3 +224,4 @@ class _WoodenTopBarState extends State<WoodenTopBar>
     );
   }
 }
+

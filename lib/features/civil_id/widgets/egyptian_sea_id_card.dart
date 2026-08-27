@@ -97,26 +97,9 @@ class _EgyptianSeaIdCardState extends State<EgyptianSeaIdCard>
   Widget _buildFrontCard() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFFFFF9D2),
-            Color(0xFFF4E3B2),
-            Color(0xFFE2F9F0),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: BikiniColors.cartoonBlack, width: 3.5),
-        boxShadow: const [
-          BoxShadow(
-            color: BikiniColors.cartoonBlack,
-            offset: Offset(4, 4),
-            blurRadius: 0,
-          ),
-        ],
+      padding: const EdgeInsets.all(BikiniSpacing.space16),
+      decoration: BikiniDecorations.interactiveCard(
+        backgroundColor: BikiniColors.card,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -125,43 +108,35 @@ class _EgyptianSeaIdCardState extends State<EgyptianSeaIdCard>
           Row(
             children: [
               const Text('🦅', style: TextStyle(fontSize: 20)),
-              const SizedBox(width: 6),
+              const SizedBox(width: BikiniSpacing.space8),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'جمهورية قاع الهامور - بطاقة الرقم القومي البحرية 🌊',
-                      style: BikiniTypography.titleBold().copyWith(fontSize: 11),
+                      style: BikiniTypography.label(color: BikiniColors.deep),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       'وزارة الداخلية والمقرمشات المائية',
-                      style: BikiniTypography.caption(color: const Color(0xFF555555))
-                          .copyWith(fontSize: 9),
+                      style: BikiniTypography.caption(color: BikiniColors.muted),
                     ),
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                decoration: BoxDecoration(
-                  color: BikiniColors.spongeYellow,
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
-                ),
-                child: Text(
-                  'اصلي 💯',
-                  style: BikiniTypography.captionBold().copyWith(fontSize: 8.5),
-                ),
+              const BikiniBadge(
+                text: 'أصلي 💯',
+                backgroundColor: BikiniColors.support,
+                textColor: BikiniColors.ink,
               ),
             ],
           ),
 
-          const SizedBox(height: 8),
-          const Divider(color: BikiniColors.cartoonBlack, height: 1, thickness: 1.5),
-          const SizedBox(height: 8),
+          const SizedBox(height: BikiniSpacing.space8),
+          const Divider(color: BikiniColors.line, thickness: 1.5),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Card Content Body (Avatar + Info)
           Row(
@@ -173,46 +148,46 @@ class _EgyptianSeaIdCardState extends State<EgyptianSeaIdCard>
                   Container(
                     padding: const EdgeInsets.all(3),
                     decoration: BoxDecoration(
-                      color: BikiniColors.pureWhite,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: BikiniColors.cartoonBlack, width: 2.2),
+                      color: BikiniColors.paper,
+                      borderRadius: BorderRadius.circular(BikiniRadius.button),
+                      border: Border.all(color: BikiniColors.ink, width: BikiniRadius.borderWidth),
                     ),
                     child: MarineAvatarRenderer(
                       config: widget.profile.avatarConfig,
                       size: 76,
                       showBackground: true,
-                    ),
+                    )
                   ),
-                  const SizedBox(height: 4),
-                  BikiniBadge(
+                  const SizedBox(height: BikiniSpacing.space4),
+                  const BikiniBadge(
                     text: 'معتمد رسمياً 🔱',
-                    backgroundColor: BikiniColors.marineCyan,
-                    fontSize: 8,
+                    backgroundColor: BikiniColors.support,
+                    textColor: BikiniColors.ink,
                   ),
                 ],
               ),
 
-              const SizedBox(width: 10),
+              const SizedBox(width: BikiniSpacing.space12),
 
               // Right: Citizen Data Fields
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildFieldRow('الاسم:', widget.profile.name, isBold: true, fontSize: 10.5),
-                    const SizedBox(height: 3),
-                    _buildFieldRow('الهاندل:', widget.profile.handle, color: const Color(0xFF0077B6), fontSize: 9.5),
-                    const SizedBox(height: 3),
-                    _buildFieldRow('الإقامة:', 'حارة الأناناسة - شارع الصدف', fontSize: 9.5),
-                    const SizedBox(height: 3),
-                    _buildFieldRow('الرقم القومي:', widget.profile.nationalNumber, fontSize: 9.5),
+                    _buildFieldRow('الاسم:', widget.profile.name, isBold: true),
+                    const SizedBox(height: BikiniSpacing.space4),
+                    _buildFieldRow('الهاندل:', widget.profile.handle, color: BikiniColors.deep2),
+                    const SizedBox(height: BikiniSpacing.space4),
+                    _buildFieldRow('الإقامة:', 'حارة الأناناسة - شارع الصدف'),
+                    const SizedBox(height: BikiniSpacing.space4),
+                    _buildFieldRow('الرقم القومي:', widget.profile.nationalNumber),
                   ],
                 ),
               ),
             ],
           ),
 
-          const SizedBox(height: 6),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Flip Hint Line
           Row(
@@ -221,16 +196,14 @@ class _EgyptianSeaIdCardState extends State<EgyptianSeaIdCard>
               Flexible(
                 child: Text(
                   'كود القاع: ${widget.profile.id}',
-                  style: BikiniTypography.captionBold(color: BikiniColors.krabsRed)
-                      .copyWith(fontSize: 9.5),
+                  style: BikiniTypography.caption(color: BikiniColors.alert),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
               Text(
                 'اضغط لقلب البطاقة 🔄',
-                style: BikiniTypography.caption(color: const Color(0xFF666666))
-                    .copyWith(fontSize: 9),
+                style: BikiniTypography.caption(color: BikiniColors.muted),
               ),
             ],
           ),
@@ -242,26 +215,9 @@ class _EgyptianSeaIdCardState extends State<EgyptianSeaIdCard>
   Widget _buildBackCard() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFFE2F9F0),
-            Color(0xFFF4E3B2),
-            Color(0xFFFFF9D2),
-          ],
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: BikiniColors.cartoonBlack, width: 3.5),
-        boxShadow: const [
-          BoxShadow(
-            color: BikiniColors.cartoonBlack,
-            offset: Offset(4, 4),
-            blurRadius: 0,
-          ),
-        ],
+      padding: const EdgeInsets.all(BikiniSpacing.space16),
+      decoration: BikiniDecorations.interactiveCard(
+        backgroundColor: BikiniColors.card,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -272,37 +228,37 @@ class _EgyptianSeaIdCardState extends State<EgyptianSeaIdCard>
             children: [
               Text(
                 'البيانات الرسمية والعرقية 📜',
-                style: BikiniTypography.titleBold().copyWith(fontSize: 11),
+                style: BikiniTypography.label(color: BikiniColors.deep),
               ),
               const Text('🔱', style: TextStyle(fontSize: 18)),
             ],
           ),
 
-          const SizedBox(height: 6),
-          const Divider(color: BikiniColors.cartoonBlack, height: 1, thickness: 1.5),
-          const SizedBox(height: 6),
+          const SizedBox(height: BikiniSpacing.space8),
+          const Divider(color: BikiniColors.line, thickness: 1.5),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Back Details
-          _buildFieldRow('المهنة:', widget.profile.job, fontSize: 9.5),
-          const SizedBox(height: 3),
-          _buildFieldRow('الفصيلة والعشيرة:', '${widget.profile.speciesEmoji} ${widget.profile.species} - ${widget.profile.clan}', fontSize: 9.5),
-          const SizedBox(height: 3),
-          _buildFieldRow('التهمة المسجلة:', widget.profile.crime, color: BikiniColors.krabsRed, fontSize: 9.5),
-          const SizedBox(height: 3),
-          _buildFieldRow('فصيلة الدم:', widget.profile.bloodType, fontSize: 9.5),
-          const SizedBox(height: 3),
-          _buildFieldRow('تاريخ الاصدار:', widget.profile.registeredAt.toString().split(' ').first, fontSize: 9.5),
+          _buildFieldRow('المهنة:', widget.profile.job),
+          const SizedBox(height: BikiniSpacing.space4),
+          _buildFieldRow('الفصيلة والعشيرة:', '${widget.profile.speciesEmoji} ${widget.profile.species} - ${widget.profile.clan}'),
+          const SizedBox(height: BikiniSpacing.space4),
+          _buildFieldRow('التهمة المسجلة:', widget.profile.crime, color: BikiniColors.danger),
+          const SizedBox(height: BikiniSpacing.space4),
+          _buildFieldRow('فصيلة الدم:', widget.profile.bloodType),
+          const SizedBox(height: BikiniSpacing.space4),
+          _buildFieldRow('تاريخ الإصدار:', widget.profile.registeredAt.toString().split(' ').first),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // High Density Barcode Stripe
           Container(
             height: 34,
             padding: const EdgeInsets.all(3),
             decoration: BoxDecoration(
-              color: BikiniColors.pureWhite,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+              color: BikiniColors.paper,
+              borderRadius: BorderRadius.circular(BikiniRadius.button),
+              border: Border.all(color: BikiniColors.ink, width: 1.5),
             ),
             child: CustomPaint(
               size: const Size(double.infinity, 28),
@@ -319,7 +275,6 @@ class _EgyptianSeaIdCardState extends State<EgyptianSeaIdCard>
     String value, {
     bool isBold = false,
     Color? color,
-    double fontSize = 9.5,
   }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -328,8 +283,7 @@ class _EgyptianSeaIdCardState extends State<EgyptianSeaIdCard>
           flex: 0,
           child: Text(
             label,
-            style: BikiniTypography.captionBold(color: const Color(0xFF444444))
-                .copyWith(fontSize: fontSize),
+            style: BikiniTypography.caption(color: BikiniColors.muted),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -339,9 +293,8 @@ class _EgyptianSeaIdCardState extends State<EgyptianSeaIdCard>
           child: Text(
             value,
             style: (isBold
-                    ? BikiniTypography.titleBold(color: color ?? BikiniColors.cartoonBlack)
-                    : BikiniTypography.bodyMedium(color: color ?? BikiniColors.cartoonBlack))
-                .copyWith(fontSize: fontSize),
+                    ? BikiniTypography.label(color: color ?? BikiniColors.ink)
+                    : BikiniTypography.caption(color: color ?? BikiniColors.ink)),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -360,7 +313,7 @@ class _BarcodePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final linePaint = Paint()
-      ..color = BikiniColors.cartoonBlack
+      ..color = BikiniColors.ink
       ..style = PaintingStyle.fill;
 
     final random = math.Random(code.hashCode);
@@ -396,3 +349,4 @@ extension SeaIdCardExporter on GlobalKey {
     }
   }
 }
+

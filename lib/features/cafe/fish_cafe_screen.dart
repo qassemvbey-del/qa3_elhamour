@@ -11,7 +11,12 @@ import 'widgets/beverage_menu_sheet.dart';
 
 /// Uncle Fish Café Screen - Virtual Thematic Tables, 6-Digit Search & Live Games
 class FishCafeScreen extends StatefulWidget {
-  const FishCafeScreen({super.key});
+  final Function(int tabIndex)? onNavigateToTab;
+
+  const FishCafeScreen({
+    super.key,
+    this.onNavigateToTab,
+  });
 
   @override
   State<FishCafeScreen> createState() => _FishCafeScreenState();
@@ -47,16 +52,16 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: BikiniColors.cartoonBlack,
+          backgroundColor: BikiniColors.deep,
           duration: const Duration(seconds: 2),
           content: Row(
             children: [
               const Text('⚠️', style: TextStyle(fontSize: 20)),
-              const SizedBox(width: 8),
+              const SizedBox(width: BikiniSpacing.space8),
               Expanded(
                 child: Text(
                   'مفيش ترابيزة بالكود دا ($query) في القاع! اتأكد من الـ ٦ أرقام 🪑',
-                  style: BikiniTypography.bodyMedium(color: BikiniColors.spongeYellow),
+                  style: BikiniTypography.body(color: BikiniColors.card),
                 ),
               ),
             ],
@@ -97,15 +102,15 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
               ),
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.75,
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(BikiniSpacing.space16),
                 decoration: BoxDecoration(
-                  color: BikiniColors.warmSand,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-                  border: Border.all(color: BikiniColors.cartoonBlack, width: 3.5),
+                  color: BikiniColors.paper,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(BikiniRadius.sheet)),
+                  border: Border.all(color: BikiniColors.ink, width: BikiniRadius.borderWidth),
                   boxShadow: const [
                     BoxShadow(
-                      color: BikiniColors.cartoonBlack,
-                      offset: Offset(0, -6),
+                      color: BikiniColors.ink,
+                      offset: Offset(0, -4),
                       blurRadius: 0,
                     ),
                   ],
@@ -116,13 +121,13 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                       // Handle
                       Container(
                         width: 48,
-                        height: 5,
+                        height: 4,
                         decoration: BoxDecoration(
-                          color: BikiniColors.cartoonBlack,
-                          borderRadius: BorderRadius.circular(3),
+                          color: BikiniColors.ink,
+                          borderRadius: BorderRadius.circular(2),
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: BikiniSpacing.space12),
 
                       // Header
                       Row(
@@ -131,21 +136,21 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                           Row(
                             children: [
                               const Text('👑', style: TextStyle(fontSize: 22)),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: BikiniSpacing.space8),
                               Text(
                                 'حجز ترابيزة ألعاب خاصة',
-                                style: BikiniTypography.displaySmall().copyWith(fontSize: 17),
+                                style: BikiniTypography.h2(color: BikiniColors.deep),
                               ),
                             ],
                           ),
                           IconButton(
-                            icon: const Icon(Icons.close),
+                            icon: const Icon(Icons.close, color: BikiniColors.ink),
                             onPressed: () => Navigator.of(ctx).pop(),
                           ),
                         ],
                       ),
 
-                      const Divider(color: BikiniColors.cartoonBlack, thickness: 1.8),
+                      const Divider(color: BikiniColors.line, thickness: 1.5),
 
                       Expanded(
                         child: ListView(
@@ -153,66 +158,65 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                             // Room Title
                             Text(
                               'اسم الترابيزة:',
-                              style: BikiniTypography.titleBold().copyWith(fontSize: 13),
+                              style: BikiniTypography.label(color: BikiniColors.deep),
                             ),
-                            const SizedBox(height: 6),
+                            const SizedBox(height: BikiniSpacing.space8),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12),
                               decoration: BoxDecoration(
-                                color: BikiniColors.pureWhite,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
+                                color: BikiniColors.card,
+                                borderRadius: BorderRadius.circular(BikiniRadius.button),
+                                border: Border.all(color: BikiniColors.ink, width: 1.5),
                               ),
                               child: TextField(
                                 controller: titleController,
-                                style: BikiniTypography.bodyMedium().copyWith(fontSize: 13),
+                                style: BikiniTypography.body(color: BikiniColors.ink),
                                 decoration: InputDecoration(
                                   hintText: 'مثال: ترابيزة المعلمين الكبار 🁓',
-                                  hintStyle: BikiniTypography.inputHint().copyWith(fontSize: 12),
+                                  hintStyle: BikiniTypography.inputHint(),
                                   border: InputBorder.none,
                                 ),
                               ),
                             ),
 
-                            const SizedBox(height: 12),
+                            const SizedBox(height: BikiniSpacing.space12),
 
                             // Game Selection
                             Text(
                               'اختر اللعبة الافتتاحية:',
-                              style: BikiniTypography.titleBold().copyWith(fontSize: 13),
+                              style: BikiniTypography.label(color: BikiniColors.deep),
                             ),
-                            const SizedBox(height: 6),
+                            const SizedBox(height: BikiniSpacing.space8),
                             ...CafeGameType.values.map((g) {
                               final isSelected = selectedGame == g;
                               return GestureDetector(
                                 onTap: () => setModalState(() => selectedGame = g),
                                 child: Container(
-                                  margin: const EdgeInsets.only(bottom: 8),
-                                  padding: const EdgeInsets.all(10),
+                                  margin: const EdgeInsets.only(bottom: BikiniSpacing.space8),
+                                  padding: const EdgeInsets.all(BikiniSpacing.space12),
                                   decoration: BoxDecoration(
-                                    color: isSelected ? g.themeColor : BikiniColors.pureWhite,
-                                    borderRadius: BorderRadius.circular(12),
+                                    color: isSelected ? BikiniColors.paper : BikiniColors.card,
+                                    borderRadius: BorderRadius.circular(BikiniRadius.button),
                                     border: Border.all(
-                                      color: isSelected ? BikiniColors.krabsRed : BikiniColors.cartoonBlack,
-                                      width: isSelected ? 2.5 : 1.5,
+                                      color: isSelected ? BikiniColors.deep : BikiniColors.line,
+                                      width: isSelected ? 2.0 : 1.5,
                                     ),
                                   ),
                                   child: Row(
                                     children: [
                                       Text(g.emoji, style: const TextStyle(fontSize: 22)),
-                                      const SizedBox(width: 8),
+                                      const SizedBox(width: BikiniSpacing.space8),
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               g.title,
-                                              style: BikiniTypography.titleBold().copyWith(fontSize: 13),
+                                              style: BikiniTypography.label(color: BikiniColors.deep),
                                             ),
                                             Text(
                                               '(${g.minPlayers}-${g.maxPlayers} لاعبين) • ${g.description}',
-                                              style: BikiniTypography.caption(color: const Color(0xFF555555))
-                                                  .copyWith(fontSize: 10.5),
+                                              style: BikiniTypography.caption(color: BikiniColors.muted),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
@@ -221,7 +225,7 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                                       ),
                                       if (isSelected)
                                         const Icon(Icons.check_circle_rounded,
-                                            color: BikiniColors.krabsRed, size: 20),
+                                            color: BikiniColors.support, size: 20),
                                     ],
                                   ),
                                 ),
@@ -233,12 +237,12 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                               children: [
                                 Checkbox(
                                   value: isPrivate,
-                                  activeColor: BikiniColors.cartoonBlack,
+                                  activeColor: BikiniColors.deep,
                                   onChanged: (val) => setModalState(() => isPrivate = val ?? false),
                                 ),
                                 Text(
                                   'ترابيزة خاصة (الدخول بكود الـ ٦ أرقام فقط) 🔒',
-                                  style: BikiniTypography.bodyMedium().copyWith(fontSize: 12),
+                                  style: BikiniTypography.caption(color: BikiniColors.deep),
                                 ),
                               ],
                             ),
@@ -264,7 +268,7 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                         },
                         text: 'تأكيد حجز الترابيزة 🚀👑',
                         isFullWidth: true,
-                        height: 44,
+                        height: 48,
                       ),
                     ],
                   ),
@@ -280,16 +284,16 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
   void _playSoundEffect(String name, String subtitle) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: BikiniColors.cartoonBlack,
+        backgroundColor: BikiniColors.deep,
         duration: const Duration(seconds: 2),
         content: Row(
           children: [
             const Text('🔊', style: TextStyle(fontSize: 20)),
-            const SizedBox(width: 8),
+            const SizedBox(width: BikiniSpacing.space8),
             Expanded(
               child: Text(
                 'شغال صوت: $name ($subtitle) 🎶',
-                style: BikiniTypography.bodyMedium(color: BikiniColors.spongeYellow),
+                style: BikiniTypography.body(color: BikiniColors.card),
               ),
             ),
           ],
@@ -301,7 +305,7 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: BikiniColors.warmSand,
+      backgroundColor: BikiniColors.paper,
       appBar: const WoodenTopBar(
         title: 'قهوة العم فيش ☕',
         unreadCount: 2,
@@ -309,22 +313,27 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
       body: SafeArea(
         bottom: false,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(14, 10, 14, 120),
+          padding: const EdgeInsets.only(
+            left: BikiniRadius.screenMargin,
+            right: BikiniRadius.screenMargin,
+            top: BikiniSpacing.space12,
+            bottom: BikiniRadius.navBarClearance,
+          ),
           children: [
             // Café Welcome & Shells Balance Card
             _buildCafeHeroCard(),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: BikiniSpacing.space12),
 
             // Top 6-Digit Fast Search & Create Room Bar
             _buildSearchAndCreateBar(),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: BikiniSpacing.space12),
 
             // Uncle Fish Beverage Quick Scroller
             _buildBeverageQuickBar(),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: BikiniSpacing.space16),
 
             // Thematic Tables Section Header
             Row(
@@ -334,11 +343,11 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                   child: Row(
                     children: [
                       const Text('🪑', style: TextStyle(fontSize: 18)),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: BikiniSpacing.space8),
                       Flexible(
                         child: Text(
                           'ترابيزات القهوة والألعاب الحية',
-                          style: BikiniTypography.displaySmall().copyWith(fontSize: 17),
+                          style: BikiniTypography.h2(color: BikiniColors.deep),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -346,17 +355,16 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 6),
-                BikiniBadge(
+                const SizedBox(width: BikiniSpacing.space8),
+                const BikiniBadge(
                   text: 'ألعاب مباشرة 🟢',
-                  backgroundColor: BikiniColors.marineCyan,
-                  textColor: BikiniColors.cartoonBlack,
-                  fontSize: 10,
+                  backgroundColor: BikiniColors.support,
+                  textColor: BikiniColors.ink,
                 ),
               ],
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: BikiniSpacing.space8),
 
             // Live Game Rooms Feed from CafeRoomService
             ValueListenableBuilder<List<CafeRoom>>(
@@ -371,7 +379,7 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
               },
             ),
 
-            const SizedBox(height: 14),
+            const SizedBox(height: BikiniSpacing.space16),
 
             // Soundboard Section Header
             Row(
@@ -381,11 +389,11 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                   child: Row(
                     children: [
                       const Text('🔊', style: TextStyle(fontSize: 18)),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: BikiniSpacing.space8),
                       Flexible(
                         child: Text(
                           'ساوند بورد أصوات قاع الهامور',
-                          style: BikiniTypography.displaySmall().copyWith(fontSize: 17),
+                          style: BikiniTypography.h2(color: BikiniColors.deep),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -393,12 +401,12 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 6),
+                const SizedBox(width: BikiniSpacing.space8),
                 BikiniBadge.active(text: 'اضغط للتشغيل'),
               ],
             ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: BikiniSpacing.space8),
 
             // Soundboard Grid Horizontal
             SizedBox(
@@ -406,25 +414,16 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: _sounds.length,
-                separatorBuilder: (ctx, i) => const SizedBox(width: 8),
+                separatorBuilder: (ctx, i) => const SizedBox(width: BikiniSpacing.space8),
                 itemBuilder: (ctx, i) {
                   final s = _sounds[i];
                   return GestureDetector(
                     onTap: () => _playSoundEffect(s['name']!, s['subtitle']!),
                     child: Container(
                       width: 120,
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: BikiniColors.spongeYellow,
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: BikiniColors.cartoonBlack, width: 2.2),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: BikiniColors.cartoonBlack,
-                            offset: Offset(2.5, 2.5),
-                            blurRadius: 0,
-                          ),
-                        ],
+                      padding: const EdgeInsets.all(BikiniSpacing.space8),
+                      decoration: BikiniDecorations.interactiveCard(
+                        backgroundColor: BikiniColors.card,
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -433,15 +432,14 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                           const SizedBox(height: 2),
                           Text(
                             s['name']!,
-                            style: BikiniTypography.captionBold().copyWith(fontSize: 11),
+                            style: BikiniTypography.label(color: BikiniColors.deep),
                             textAlign: TextAlign.center,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
                             s['subtitle']!,
-                            style: BikiniTypography.caption(color: const Color(0xFF555555))
-                                .copyWith(fontSize: 9.5),
+                            style: BikiniTypography.caption(color: BikiniColors.muted),
                             textAlign: TextAlign.center,
                             maxLines: 1,
                           ),
@@ -460,18 +458,9 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
 
   Widget _buildCafeHeroCard() {
     return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: BikiniColors.spongeYellow,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: BikiniColors.cartoonBlack, width: 3.0),
-        boxShadow: const [
-          BoxShadow(
-            color: BikiniColors.cartoonBlack,
-            offset: Offset(4, 4),
-            blurRadius: 0,
-          ),
-        ],
+      padding: const EdgeInsets.all(BikiniSpacing.space16),
+      decoration: BikiniDecorations.interactiveCard(
+        backgroundColor: BikiniColors.card,
       ),
       child: Column(
         children: [
@@ -481,35 +470,28 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: BikiniColors.pureWhite,
+                  color: BikiniColors.paper,
                   shape: BoxShape.circle,
-                  border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: BikiniColors.cartoonBlack,
-                      offset: Offset(2, 2),
-                      blurRadius: 0,
-                    ),
-                  ],
+                  border: Border.all(color: BikiniColors.ink, width: 1.5),
                 ),
                 child: const Center(
                   child: Text('☕', style: TextStyle(fontSize: 24)),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: BikiniSpacing.space12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'قهوة العم فيش (صالة الألعاب الحية)',
-                      style: BikiniTypography.displaySmall(color: BikiniColors.deepNavy).copyWith(fontSize: 16.5),
+                      style: BikiniTypography.h2(color: BikiniColors.deep),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       'العب دومينو، طاولة، شطرنج، وبصرة.. واقعد مع الحبيبة!',
-                      style: BikiniTypography.bodyMedium(color: const Color(0xFF333333)).copyWith(fontSize: 11.5),
+                      style: BikiniTypography.caption(color: BikiniColors.muted),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -518,9 +500,9 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          const Divider(color: BikiniColors.cartoonBlack, thickness: 1.5),
-          const SizedBox(height: 6),
+          const SizedBox(height: BikiniSpacing.space12),
+          const Divider(color: BikiniColors.line, thickness: 1.5),
+          const SizedBox(height: BikiniSpacing.space8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -532,9 +514,9 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                     return Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: BikiniColors.pureWhite,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+                        color: BikiniColors.paper,
+                        borderRadius: BorderRadius.circular(BikiniRadius.button),
+                        border: Border.all(color: BikiniColors.ink, width: 1),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -544,8 +526,7 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                           Flexible(
                             child: Text(
                               'رصيدك: $balance صدفة',
-                              style: BikiniTypography.captionBold(color: BikiniColors.cartoonBlack)
-                                  .copyWith(fontSize: 10.5),
+                              style: BikiniTypography.caption(color: BikiniColors.coin),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -556,12 +537,12 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                   },
                 ),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: BikiniSpacing.space8),
               // Menu Button CTA
               BikiniButton.secondary(
                 onPressed: () => BeverageMenuSheet.show(context),
                 text: 'منيو المشاريب 🫖',
-                height: 36,
+                height: 40,
               ),
             ],
           ),
@@ -576,17 +557,8 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
         // 6-digit Search Field
         Container(
           padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: BikiniColors.pureWhite,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: BikiniColors.cartoonBlack, width: 2.5),
-            boxShadow: const [
-              BoxShadow(
-                color: BikiniColors.cartoonBlack,
-                offset: Offset(3, 3),
-                blurRadius: 0,
-              ),
-            ],
+          decoration: BikiniDecorations.interactiveCard(
+            backgroundColor: BikiniColors.card,
           ),
           child: Row(
             children: [
@@ -598,11 +570,11 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                   controller: _searchController,
                   keyboardType: TextInputType.number,
                   maxLength: 6,
-                  style: BikiniTypography.titleBold().copyWith(fontSize: 13),
+                  style: BikiniTypography.mono(color: BikiniColors.ink),
                   onSubmitted: (_) => _searchAndJoinRoom(),
                   decoration: InputDecoration(
                     hintText: 'ادخل كود الترابيزة الـ ٦ أرقام (مثال 492015)...',
-                    hintStyle: BikiniTypography.inputHint().copyWith(fontSize: 11.5),
+                    hintStyle: BikiniTypography.inputHint(),
                     counterText: '',
                     border: InputBorder.none,
                   ),
@@ -611,20 +583,20 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
               BikiniButton.primary(
                 onPressed: _searchAndJoinRoom,
                 text: 'دخول 🚀',
-                height: 38,
+                height: 40,
               ),
             ],
           ),
         ),
 
-        const SizedBox(height: 8),
+        const SizedBox(height: BikiniSpacing.space8),
 
         // "+ احجز ترابيزة خاصة" Button
-        BikiniButton.pink(
+        BikiniButton.secondary(
           onPressed: _showCreateRoomSheet,
           text: '+ احجز ترابيزة خاصة بكود ٦ أرقام 👑',
           isFullWidth: true,
-          height: 42,
+          height: 48,
         ),
       ],
     );
@@ -632,28 +604,19 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
 
   Widget _buildBeverageQuickBar() {
     return SizedBox(
-      height: 42,
+      height: 44,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: BeverageMenuSheet.menuItems.length,
-        separatorBuilder: (ctx, i) => const SizedBox(width: 8),
+        separatorBuilder: (ctx, i) => const SizedBox(width: BikiniSpacing.space8),
         itemBuilder: (ctx, i) {
           final item = BeverageMenuSheet.menuItems[i];
           return GestureDetector(
             onTap: () => BeverageMenuSheet.show(context),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: item.cardColor,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: BikiniColors.cartoonBlack, width: 1.8),
-                boxShadow: const [
-                  BoxShadow(
-                    color: BikiniColors.cartoonBlack,
-                    offset: Offset(2, 2),
-                    blurRadius: 0,
-                  ),
-                ],
+              decoration: BikiniDecorations.interactiveCard(
+                backgroundColor: item.cardColor,
               ),
               child: Row(
                 children: [
@@ -661,13 +624,12 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                   const SizedBox(width: 6),
                   Text(
                     item.name,
-                    style: BikiniTypography.captionBold().copyWith(fontSize: 11),
+                    style: BikiniTypography.caption(color: BikiniColors.deep),
                   ),
                   const SizedBox(width: 4),
                   Text(
                     '(${item.price} 🐚)',
-                    style: BikiniTypography.caption(color: BikiniColors.krabsRed)
-                        .copyWith(fontSize: 9.5, fontWeight: FontWeight.bold),
+                    style: BikiniTypography.caption(color: BikiniColors.coin),
                   ),
                 ],
               ),
@@ -680,19 +642,10 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
 
   Widget _buildRoomCard(CafeRoom room) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: room.activeGame.themeColor,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: BikiniColors.cartoonBlack, width: 2.8),
-        boxShadow: const [
-          BoxShadow(
-            color: BikiniColors.cartoonBlack,
-            offset: Offset(3.5, 3.5),
-            blurRadius: 0,
-          ),
-        ],
+      margin: const EdgeInsets.only(bottom: BikiniSpacing.space12),
+      padding: const EdgeInsets.all(BikiniSpacing.space12),
+      decoration: BikiniDecorations.interactiveCard(
+        backgroundColor: room.activeGame.themeColor,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -707,20 +660,20 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                     Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: BikiniColors.pureWhite,
+                        color: BikiniColors.paper,
                         shape: BoxShape.circle,
-                        border: Border.all(color: BikiniColors.cartoonBlack, width: 1.8),
+                        border: Border.all(color: BikiniColors.ink, width: 1.5),
                       ),
                       child: Text(room.activeGame.emoji, style: const TextStyle(fontSize: 18)),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: BikiniSpacing.space8),
                     Flexible(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             room.title,
-                            style: BikiniTypography.titleBold().copyWith(fontSize: 13.5),
+                            style: BikiniTypography.h3(color: BikiniColors.deep),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -729,21 +682,20 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                                 decoration: BoxDecoration(
-                                  color: BikiniColors.spongeYellow,
-                                  borderRadius: BorderRadius.circular(6),
-                                  border: Border.all(color: BikiniColors.cartoonBlack, width: 1),
+                                  color: BikiniColors.paper,
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(color: BikiniColors.ink, width: 1),
                                 ),
                                 child: Text(
                                   '#${room.id}',
-                                  style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold),
+                                  style: BikiniTypography.mono(color: BikiniColors.ink),
                                 ),
                               ),
                               const SizedBox(width: 4),
                               Flexible(
                                 child: Text(
                                   'المنظم: ${room.ownerName}',
-                                  style: BikiniTypography.caption(color: const Color(0xFF555555))
-                                      .copyWith(fontSize: 9.5),
+                                  style: BikiniTypography.caption(color: BikiniColors.muted),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -756,29 +708,28 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                   ],
                 ),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: BikiniSpacing.space8),
               BikiniBadge(
                 text: room.activeGame.shortName,
-                backgroundColor: BikiniColors.spongeYellow,
-                textColor: BikiniColors.cartoonBlack,
-                fontSize: 10,
+                backgroundColor: BikiniColors.support,
+                textColor: BikiniColors.ink,
               ),
             ],
           ),
 
-          const SizedBox(height: 6),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Table Description
           Text(
             room.activeGame.description,
-            style: BikiniTypography.bodyMedium(color: const Color(0xFF333333)).copyWith(fontSize: 11.5),
+            style: BikiniTypography.caption(color: BikiniColors.muted),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
 
-          const SizedBox(height: 8),
-          const Divider(color: BikiniColors.cartoonBlack, thickness: 1.2),
-          const SizedBox(height: 4),
+          const SizedBox(height: BikiniSpacing.space8),
+          const Divider(color: BikiniColors.line, thickness: 1.5),
+          const SizedBox(height: BikiniSpacing.space4),
 
           // Avatars & Join Button Row
           Row(
@@ -793,9 +744,9 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                         margin: const EdgeInsets.only(left: 2),
                         padding: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
-                          color: BikiniColors.pureWhite,
+                          color: BikiniColors.paper,
                           shape: BoxShape.circle,
-                          border: Border.all(color: BikiniColors.cartoonBlack, width: 1.2),
+                          border: Border.all(color: BikiniColors.ink, width: 1),
                         ),
                         child: Text(room.participants[i].avatar, style: const TextStyle(fontSize: 11)),
                       ),
@@ -803,7 +754,7 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                     Flexible(
                       child: Text(
                         '${room.players.length} لاعب • ${room.spectators.length} مشاهد',
-                        style: BikiniTypography.caption(color: const Color(0xFF555555)).copyWith(fontSize: 9.5),
+                        style: BikiniTypography.caption(color: BikiniColors.muted),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -811,13 +762,13 @@ class _FishCafeScreenState extends State<FishCafeScreen> {
                   ],
                 ),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: BikiniSpacing.space8),
 
               // Join Action Button
               BikiniButton.primary(
                 onPressed: () => _joinRoom(room),
                 text: 'شد كرسي 🪑',
-                height: 34,
+                height: 38,
               ),
             ],
           ),

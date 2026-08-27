@@ -117,16 +117,13 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
 
     switch (piece.type) {
       case ChessPieceType.pawn:
-        // 1 step forward
         if (r + forward >= 0 && r + forward < 8 && _board[r + forward][c] == null) {
           moves.add(Point(r + forward, c));
-          // Initial 2 steps
           final initialRow = piece.color == ChessColor.white ? 6 : 1;
           if (r == initialRow && _board[r + 2 * forward][c] == null) {
             moves.add(Point(r + 2 * forward, c));
           }
         }
-        // Diagonal captures
         for (final dc in [-1, 1]) {
           if (c + dc >= 0 && c + dc < 8 && r + forward >= 0 && r + forward < 8) {
             final target = _board[r + forward][c + dc];
@@ -155,17 +152,17 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
         break;
 
       case ChessPieceType.bishop:
-        _addRayMoves(moves, pos, piece.color, [Point(-1, -1), Point(-1, 1), Point(1, -1), Point(1, 1)]);
+        _addRayMoves(moves, pos, piece.color, [const Point(-1, -1), const Point(-1, 1), const Point(1, -1), const Point(1, 1)]);
         break;
 
       case ChessPieceType.rook:
-        _addRayMoves(moves, pos, piece.color, [Point(-1, 0), Point(1, 0), Point(0, -1), Point(0, 1)]);
+        _addRayMoves(moves, pos, piece.color, [const Point(-1, 0), const Point(1, 0), const Point(0, -1), const Point(0, 1)]);
         break;
 
       case ChessPieceType.queen:
         _addRayMoves(moves, pos, piece.color, [
-          Point(-1, -1), Point(-1, 1), Point(1, -1), Point(1, 1),
-          Point(-1, 0), Point(1, 0), Point(0, -1), Point(0, 1),
+          const Point(-1, -1), const Point(-1, 1), const Point(1, -1), const Point(1, 1),
+          const Point(-1, 0), const Point(1, 0), const Point(0, -1), const Point(0, 1),
         ]);
         break;
 
@@ -216,7 +213,6 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
     final tappedPoint = Point(r, c);
     final tappedPiece = _board[r][c];
 
-    // Selecting a piece of the current player's color
     if (tappedPiece != null && tappedPiece.color == _currentTurn) {
       setState(() {
         _selectedCoord = tappedPoint;
@@ -225,7 +221,6 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
       return;
     }
 
-    // Moving to a valid destination
     if (_selectedCoord != null && _validMoves.contains(tappedPoint)) {
       _executeMove(_selectedCoord!, tappedPoint);
     }
@@ -250,7 +245,6 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
         }
       }
 
-      // Pawn promotion to Queen on 8th rank
       final isPromotion = piece.type == ChessPieceType.pawn && (to.x == 0 || to.x == 7);
       _board[to.x][to.y] = isPromotion ? ChessPiece(ChessPieceType.queen, piece.color) : piece;
       _board[from.x][from.y] = null;
@@ -288,7 +282,6 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
       for (final pos in blackPieces) {
         final moves = _calculateMoves(pos);
         if (moves.isNotEmpty) {
-          // Prioritize capture if available
           moves.sort((a, b) {
             final targetA = _board[a.x][a.y] != null ? 1 : 0;
             final targetB = _board[b.x][b.y] != null ? 1 : 0;
@@ -304,18 +297,9 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: BikiniColors.pureWhite,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: BikiniColors.cartoonBlack, width: 3),
-        boxShadow: const [
-          BoxShadow(
-            color: BikiniColors.cartoonBlack,
-            offset: Offset(4, 4),
-            blurRadius: 0,
-          ),
-        ],
+      padding: const EdgeInsets.all(BikiniSpacing.space12),
+      decoration: BikiniDecorations.interactiveCard(
+        backgroundColor: BikiniColors.card,
       ),
       child: Column(
         children: [
@@ -330,29 +314,29 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: BikiniColors.spongeYellow,
+                        color: BikiniColors.paper,
                         shape: BoxShape.circle,
-                        border: Border.all(color: BikiniColors.cartoonBlack, width: 1.8),
+                        border: Border.all(color: BikiniColors.ink, width: 1.5),
                       ),
                       child: Center(
                         child: Text(widget.player2Avatar, style: const TextStyle(fontSize: 15)),
                       ),
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: BikiniSpacing.space8),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             widget.player2Name,
-                            style: BikiniTypography.titleBold().copyWith(fontSize: 12),
+                            style: BikiniTypography.label(color: BikiniColors.deep),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           if (_capturedByBlack.isNotEmpty)
                             Text(
                               'أكل: ${_capturedByBlack.join(' ')}',
-                              style: const TextStyle(fontSize: 9.5, color: Colors.red),
+                              style: BikiniTypography.caption(color: BikiniColors.danger),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -362,36 +346,38 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
                   ],
                 ),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: BikiniSpacing.space8),
               BikiniBadge(
                 text: _currentTurn == ChessColor.white ? 'دورك (أبيض) ♔' : 'دور الخصم ♚',
-                backgroundColor: _currentTurn == ChessColor.white ? BikiniColors.marineCyan : BikiniColors.warmSand,
-                textColor: BikiniColors.cartoonBlack,
-                fontSize: 9.5,
+                backgroundColor: _currentTurn == ChessColor.white ? BikiniColors.support : BikiniColors.paper,
+                textColor: BikiniColors.ink,
               ),
             ],
           ),
 
-          const SizedBox(height: 6),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Status / Winner Banner
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            padding: const EdgeInsets.symmetric(
+              horizontal: BikiniSpacing.space12,
+              vertical: BikiniSpacing.space8,
+            ),
             decoration: BoxDecoration(
-              color: _winnerMessage != null ? BikiniColors.spongeYellow : BikiniColors.warmSand,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+              color: BikiniColors.paper,
+              borderRadius: BorderRadius.circular(BikiniRadius.button),
+              border: Border.all(color: BikiniColors.ink, width: 1.5),
             ),
             child: Row(
               children: [
                 Text(_winnerMessage != null ? '🏆' : '♟️', style: const TextStyle(fontSize: 16)),
-                const SizedBox(width: 6),
+                const SizedBox(width: BikiniSpacing.space8),
                 Expanded(
                   child: Text(
                     _winnerMessage ?? _statusBanner ?? 'انقل قطعتك!',
-                    style: BikiniTypography.captionBold(
-                      color: _winnerMessage != null ? BikiniColors.krabsRed : BikiniColors.cartoonBlack,
-                    ).copyWith(fontSize: 11),
+                    style: BikiniTypography.caption(
+                      color: _winnerMessage != null ? BikiniColors.alert : BikiniColors.deep,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -400,15 +386,15 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // 8x8 Chess Board Grid
           AspectRatio(
             aspectRatio: 1.0,
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: BikiniColors.cartoonBlack, width: 2.5),
+                borderRadius: BorderRadius.circular(BikiniRadius.card),
+                border: Border.all(color: BikiniColors.ink, width: BikiniRadius.borderWidth),
               ),
               clipBehavior: Clip.antiAlias,
               child: Column(
@@ -426,12 +412,12 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
                             onTap: () => _onSquareTap(r, c),
                             child: Container(
                               color: isSelected
-                                  ? BikiniColors.marineCyan.withValues(alpha: 0.7)
+                                  ? BikiniColors.support
                                   : isValidMove
-                                      ? BikiniColors.spongeYellow.withValues(alpha: 0.75)
+                                      ? BikiniColors.action.withValues(alpha: 0.8)
                                       : isLight
-                                          ? const Color(0xFFF0D9B5)
-                                          : const Color(0xFFB58863),
+                                          ? BikiniColors.paper
+                                          : BikiniColors.deep2,
                               child: Stack(
                                 alignment: Alignment.center,
                                 children: [
@@ -440,7 +426,7 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
                                       width: 10,
                                       height: 10,
                                       decoration: const BoxDecoration(
-                                        color: BikiniColors.krabsRed,
+                                        color: BikiniColors.alert,
                                         shape: BoxShape.circle,
                                       ),
                                     ),
@@ -449,15 +435,15 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
                                       piece.symbol,
                                       style: TextStyle(
                                         fontSize: 22,
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.w800,
                                         color: piece.color == ChessColor.white
-                                            ? Colors.white
-                                            : Colors.black87,
+                                            ? BikiniColors.card
+                                            : BikiniColors.ink,
                                         shadows: const [
                                           Shadow(
                                             offset: Offset(1, 1),
                                             blurRadius: 1,
-                                            color: Colors.black,
+                                            color: BikiniColors.ink,
                                           ),
                                         ],
                                       ),
@@ -475,7 +461,7 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Player Captured Pieces & Controls
           Row(
@@ -487,18 +473,18 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: BikiniColors.marineCyan,
+                      color: BikiniColors.paper,
                       shape: BoxShape.circle,
-                      border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+                      border: Border.all(color: BikiniColors.ink, width: 1.5),
                     ),
                     child: Center(
                       child: Text(widget.player1Avatar, style: const TextStyle(fontSize: 16)),
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: BikiniSpacing.space8),
                   Text(
                     'أكلت: ${_capturedByWhite.isEmpty ? 'لا يوجد' : _capturedByWhite.join(' ')}',
-                    style: BikiniTypography.captionBold().copyWith(fontSize: 10.5),
+                    style: BikiniTypography.caption(color: BikiniColors.deep),
                   ),
                 ],
               ),
@@ -506,7 +492,7 @@ class _ChessGameCanvasState extends State<ChessGameCanvas> {
                 BikiniButton.primary(
                   onPressed: _initChessBoard,
                   text: 'دور جديد ♟️🔄',
-                  height: 34,
+                  height: 38,
                 ),
             ],
           ),

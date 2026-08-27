@@ -94,7 +94,6 @@ class _CafeLiveRoomModalState extends State<CafeLiveRoomModal> {
         'avatar': avatar,
         'text': text.trim(),
         'time': 'الآن',
-        'color': '0xFF00F5D4',
       });
     });
     _textController.clear();
@@ -121,13 +120,13 @@ class _CafeLiveRoomModalState extends State<CafeLiveRoomModal> {
         child: Container(
           height: MediaQuery.of(context).size.height * 0.82,
           decoration: BoxDecoration(
-            color: BikiniColors.warmSand,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-            border: Border.all(color: BikiniColors.cartoonBlack, width: 3.5),
+            color: BikiniColors.paper,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(BikiniRadius.sheet)),
+            border: Border.all(color: BikiniColors.ink, width: BikiniRadius.borderWidth),
             boxShadow: const [
               BoxShadow(
-                color: BikiniColors.cartoonBlack,
-                offset: Offset(0, -6),
+                color: BikiniColors.ink,
+                offset: Offset(0, -4),
                 blurRadius: 0,
               ),
             ],
@@ -137,20 +136,20 @@ class _CafeLiveRoomModalState extends State<CafeLiveRoomModal> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 // Handle Bar
-                const SizedBox(height: 10),
+                const SizedBox(height: BikiniSpacing.space12),
                 Container(
                   width: 48,
-                  height: 5,
+                  height: 4,
                   decoration: BoxDecoration(
-                    color: BikiniColors.cartoonBlack,
-                    borderRadius: BorderRadius.circular(3),
+                    color: BikiniColors.ink,
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: BikiniSpacing.space12),
 
                 // Table Header
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: BikiniRadius.screenMargin),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -160,27 +159,26 @@ class _CafeLiveRoomModalState extends State<CafeLiveRoomModal> {
                             Container(
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
-                                color: BikiniColors.spongeYellow,
+                                color: BikiniColors.support,
                                 shape: BoxShape.circle,
-                                border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
+                                border: Border.all(color: BikiniColors.ink, width: 1.5),
                               ),
                               child: Text(widget.emoji, style: const TextStyle(fontSize: 20)),
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: BikiniSpacing.space8),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     widget.title,
-                                    style: BikiniTypography.displaySmall().copyWith(fontSize: 16),
+                                    style: BikiniTypography.h3(color: BikiniColors.deep),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   Text(
                                     'شات حي ومباشر على الترابيزة 🪑',
-                                    style: BikiniTypography.caption(color: const Color(0xFF666666))
-                                        .copyWith(fontSize: 10.5),
+                                    style: BikiniTypography.caption(color: BikiniColors.muted),
                                   ),
                                 ],
                               ),
@@ -188,37 +186,34 @@ class _CafeLiveRoomModalState extends State<CafeLiveRoomModal> {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: BikiniSpacing.space8),
                       BikiniBadge(
                         text: widget.temperatureBadgeText,
                         backgroundColor: widget.temperatureColor,
-                        textColor: widget.temperatureColor == BikiniColors.krabsRed
-                            ? BikiniColors.pureWhite
-                            : BikiniColors.cartoonBlack,
-                        fontSize: 10,
+                        textColor: BikiniColors.card,
                       ),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 8),
+                const SizedBox(height: BikiniSpacing.space8),
 
                 // Sitting Citizens Avatars Row
                 Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 14),
+                  margin: const EdgeInsets.symmetric(horizontal: BikiniRadius.screenMargin),
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
-                    color: BikiniColors.pureWhite,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: BikiniColors.cartoonBlack, width: 1.8),
+                    color: BikiniColors.card,
+                    borderRadius: BorderRadius.circular(BikiniRadius.button),
+                    border: Border.all(color: BikiniColors.ink, width: 1.5),
                   ),
                   child: Row(
                     children: [
                       Text(
                         'قاعدين على الترابيزة:',
-                        style: BikiniTypography.captionBold().copyWith(fontSize: 11),
+                        style: BikiniTypography.caption(color: BikiniColors.deep),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: BikiniSpacing.space8),
                       Expanded(
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
@@ -228,9 +223,9 @@ class _CafeLiveRoomModalState extends State<CafeLiveRoomModal> {
                                 margin: const EdgeInsets.only(left: 4),
                                 padding: const EdgeInsets.all(3),
                                 decoration: BoxDecoration(
-                                  color: BikiniColors.warmSand,
+                                  color: BikiniColors.paper,
                                   shape: BoxShape.circle,
-                                  border: Border.all(color: BikiniColors.cartoonBlack, width: 1.2),
+                                  border: Border.all(color: BikiniColors.ink, width: 1),
                                 ),
                                 child: Text(av, style: const TextStyle(fontSize: 13)),
                               );
@@ -238,37 +233,33 @@ class _CafeLiveRoomModalState extends State<CafeLiveRoomModal> {
                           ),
                         ),
                       ),
-                      const Text('🟢 لايف', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                      Text(
+                        '🟢 لايف',
+                        style: BikiniTypography.caption(color: BikiniColors.support),
+                      ),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 8),
-                const Divider(color: BikiniColors.cartoonBlack, thickness: 1.8),
+                const SizedBox(height: BikiniSpacing.space8),
+                const Divider(color: BikiniColors.line, thickness: 1.5),
 
                 // Live Messages List
                 Flexible(
                   child: ListView.separated(
                     controller: _scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: BikiniRadius.screenMargin,
+                      vertical: BikiniSpacing.space8,
+                    ),
                     itemCount: _messages.length,
-                    separatorBuilder: (ctx, i) => const SizedBox(height: 8),
+                    separatorBuilder: (ctx, i) => const SizedBox(height: BikiniSpacing.space8),
                     itemBuilder: (ctx, i) {
                       final m = _messages[i];
-                      final colorHex = int.tryParse(m['color'] ?? '0xFFFFFFFF') ?? 0xFFFFFFFF;
                       return Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Color(colorHex),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: BikiniColors.cartoonBlack, width: 1.8),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: BikiniColors.cartoonBlack,
-                              offset: Offset(2, 2),
-                              blurRadius: 0,
-                            ),
-                          ],
+                        padding: const EdgeInsets.all(BikiniSpacing.space12),
+                        decoration: BikiniDecorations.staticCard(
+                          backgroundColor: BikiniColors.card,
                         ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,15 +268,15 @@ class _CafeLiveRoomModalState extends State<CafeLiveRoomModal> {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: BikiniColors.pureWhite,
+                                color: BikiniColors.paper,
                                 shape: BoxShape.circle,
-                                border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+                                border: Border.all(color: BikiniColors.ink, width: 1.5),
                               ),
                               child: Center(
                                 child: Text(m['avatar'] ?? '🧽', style: const TextStyle(fontSize: 16)),
                               ),
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: BikiniSpacing.space8),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,10 +287,7 @@ class _CafeLiveRoomModalState extends State<CafeLiveRoomModal> {
                                       Expanded(
                                         child: Text(
                                           m['sender'] ?? 'مواطن',
-                                          style: BikiniTypography.bodyLarge().copyWith(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w700,
-                                          ),
+                                          style: BikiniTypography.label(color: BikiniColors.deep),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -307,15 +295,14 @@ class _CafeLiveRoomModalState extends State<CafeLiveRoomModal> {
                                       const SizedBox(width: 6),
                                       Text(
                                         m['time'] ?? 'الآن',
-                                        style: BikiniTypography.caption(color: const Color(0xFF666666))
-                                            .copyWith(fontSize: 9.5),
+                                        style: BikiniTypography.caption(color: BikiniColors.muted),
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 3),
+                                  const SizedBox(height: BikiniSpacing.space4),
                                   Text(
                                     m['text'] ?? '',
-                                    style: BikiniTypography.bodyMedium().copyWith(fontSize: 12.5),
+                                    style: BikiniTypography.body(color: BikiniColors.ink),
                                   ),
                                 ],
                               ),
@@ -330,11 +317,11 @@ class _CafeLiveRoomModalState extends State<CafeLiveRoomModal> {
                 // Quick Punchlines Horizontal Tray
                 Container(
                   height: 38,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: BikiniRadius.screenMargin),
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: _quickPunchlines.length,
-                    separatorBuilder: (ctx, i) => const SizedBox(width: 6),
+                    separatorBuilder: (ctx, i) => const SizedBox(width: BikiniSpacing.space8),
                     itemBuilder: (ctx, i) {
                       final p = _quickPunchlines[i];
                       return GestureDetector(
@@ -342,14 +329,14 @@ class _CafeLiveRoomModalState extends State<CafeLiveRoomModal> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: BikiniColors.spongeYellow,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: BikiniColors.cartoonBlack, width: 1.2),
+                            color: BikiniColors.paper,
+                            borderRadius: BorderRadius.circular(BikiniRadius.pill),
+                            border: Border.all(color: BikiniColors.ink, width: 1.2),
                           ),
                           child: Center(
                             child: Text(
                               p['label']!,
-                              style: BikiniTypography.captionBold().copyWith(fontSize: 10.5),
+                              style: BikiniTypography.caption(color: BikiniColors.ink),
                             ),
                           ),
                         ),
@@ -358,38 +345,43 @@ class _CafeLiveRoomModalState extends State<CafeLiveRoomModal> {
                   ),
                 ),
 
-                const SizedBox(height: 6),
+                const SizedBox(height: BikiniSpacing.space8),
 
                 // Bottom Message Input Bar
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 4, 12, 10),
+                  padding: const EdgeInsets.fromLTRB(
+                    BikiniRadius.screenMargin,
+                    4,
+                    BikiniRadius.screenMargin,
+                    BikiniSpacing.space12,
+                  ),
                   child: Row(
                     children: [
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           decoration: BoxDecoration(
-                            color: BikiniColors.pureWhite,
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
+                            color: BikiniColors.card,
+                            borderRadius: BorderRadius.circular(BikiniRadius.button),
+                            border: Border.all(color: BikiniColors.ink, width: 1.5),
                           ),
                           child: TextField(
                             controller: _textController,
-                            style: BikiniTypography.bodyMedium().copyWith(fontSize: 13),
+                            style: BikiniTypography.body(color: BikiniColors.ink),
                             onSubmitted: (val) => _sendMessage(val),
                             decoration: InputDecoration(
                               hintText: 'ارمي كلمتين على الترابيزة...',
-                              hintStyle: BikiniTypography.inputHint().copyWith(fontSize: 12),
+                              hintStyle: BikiniTypography.inputHint(),
                               border: InputBorder.none,
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: BikiniSpacing.space8),
                       BikiniButton.primary(
                         onPressed: () => _sendMessage(_textController.text),
                         text: 'إرسال 🚀',
-                        height: 44,
+                        height: 48,
                       ),
                     ],
                   ),

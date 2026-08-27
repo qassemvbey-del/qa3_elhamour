@@ -51,28 +51,19 @@ class _BreakingNewsTickerState extends State<BreakingNewsTicker> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(
+        horizontal: BikiniRadius.screenMargin,
+        vertical: BikiniSpacing.space8,
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: BikiniColors.pureWhite,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: BikiniColors.cartoonBlack,
-          width: 3.0,
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: BikiniColors.cartoonBlack,
-            offset: Offset(4, 4),
-            blurRadius: 0,
-          ),
-        ],
+      decoration: BikiniDecorations.staticCard(
+        backgroundColor: BikiniColors.card,
       ),
       child: Row(
         children: [
           // Flashing Breaking Badge
           BikiniBadge.breaking(text: '⚡ عاجل القاع'),
-          const SizedBox(width: 10),
+          const SizedBox(width: BikiniSpacing.space8),
 
           // Sliding Ticker Content
           Expanded(
@@ -96,10 +87,8 @@ class _BreakingNewsTickerState extends State<BreakingNewsTicker> {
                 width: double.infinity,
                 child: Text(
                   _items[_currentIndex],
-                  style: BikiniTypography.bodyBold(
-                    color: BikiniColors.deepNavy,
-                  ).copyWith(
-                    fontSize: 13.5,
+                  style: BikiniTypography.label(
+                    color: BikiniColors.deep,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -112,3 +101,4 @@ class _BreakingNewsTickerState extends State<BreakingNewsTicker> {
     );
   }
 }
+

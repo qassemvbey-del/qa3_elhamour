@@ -22,12 +22,12 @@ class BikiniCard extends StatefulWidget {
   const BikiniCard({
     super.key,
     required this.child,
-    this.backgroundColor = BikiniColors.pureWhite,
-    this.borderColor = BikiniColors.cartoonBlack,
-    this.shadowColor = BikiniColors.cartoonBlack,
-    this.borderWidth = BikiniDecorations.borderWidth,
-    this.borderRadius = BikiniDecorations.borderRadius,
-    this.shadowOffset = BikiniDecorations.shadowOffset,
+    this.backgroundColor = BikiniColors.card,
+    this.borderColor = BikiniColors.ink,
+    this.shadowColor = BikiniColors.ink,
+    this.borderWidth = BikiniRadius.borderWidth,
+    this.borderRadius = BikiniRadius.card,
+    this.shadowOffset = const Offset(3, 3),
     this.padding = const EdgeInsets.all(16.0),
     this.margin,
     this.onTap,
@@ -64,13 +64,18 @@ class _BikiniCardState extends State<BikiniCard> {
 
   @override
   Widget build(BuildContext context) {
+    final hasShadow = widget.onTap != null || widget.shadowOffset != const Offset(3, 3);
+    final effectiveShadowOffset = widget.onTap == null && widget.shadowOffset == const Offset(3, 3)
+        ? Offset.zero
+        : widget.shadowOffset;
+
     final currentShadow = _isPressed
         ? const Offset(1, 1)
-        : widget.shadowOffset;
+        : effectiveShadowOffset;
     final currentTranslation = _isPressed
         ? Offset(
-            widget.shadowOffset.dx - 1,
-            widget.shadowOffset.dy - 1,
+            effectiveShadowOffset.dx - 1,
+            effectiveShadowOffset.dy - 1,
           )
         : Offset.zero;
 
@@ -93,13 +98,15 @@ class _BikiniCardState extends State<BikiniCard> {
           color: widget.borderColor,
           width: widget.borderWidth,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: widget.shadowColor,
-            offset: currentShadow,
-            blurRadius: 0,
-          ),
-        ],
+        boxShadow: hasShadow && effectiveShadowOffset != Offset.zero
+            ? [
+                BoxShadow(
+                  color: widget.shadowColor,
+                  offset: currentShadow,
+                  blurRadius: 0,
+                ),
+              ]
+            : null,
       ),
       child: widget.child,
     );

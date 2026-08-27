@@ -23,7 +23,7 @@ class NotificationsModal extends StatelessWidget {
       'title': 'موسم لسعات قناديل البحر المائية',
       'body': 'بلدية قاع الهامور تحذر: اللي هينزل حقول القناديل من غير خوذة هيتلسع على مسؤوليته الشخصية ومفيش تعويضات!',
       'time': 'منذ 10 دقائق',
-      'color': '0xFFFFB3C6',
+      'isAlert': 'true',
     },
     {
       'icon': '🍔',
@@ -31,7 +31,7 @@ class NotificationsModal extends StatelessWidget {
       'title': 'خصم خاص بمناسبة عيد ميلاد مستر سلطع',
       'body': 'اشترِ 5 سندوتشات سلطع برجر وادفع تمن 6 سندوتشات عشان مستر سلطع بيحب المكسب!',
       'time': 'منذ ساعة',
-      'color': '0xFFFEE12B',
+      'isAlert': 'false',
     },
     {
       'icon': '🎺',
@@ -39,7 +39,7 @@ class NotificationsModal extends StatelessWidget {
       'title': 'بلاغ إزعاج ضد سبونج بوب وبسيط',
       'body': 'شفيق حرر محضر بسبب الضحك بصوت عالي أثناء صيد الفقاعات الصابونية أمام منزله!',
       'time': 'منذ 3 ساعات',
-      'color': '0xFF00F5D4',
+      'isAlert': 'false',
     },
     {
       'icon': '🧆',
@@ -47,7 +47,7 @@ class NotificationsModal extends StatelessWidget {
       'title': 'افتتاح بوفيه شمشون المفتوح',
       'body': 'دلو الصدا يرحب بالمغامرين! وجبة سموم بحرية مجانية مع كل تأمين على الحياة.',
       'time': 'أمس',
-      'color': '0xFFE2D4F0',
+      'isAlert': 'false',
     },
   ];
 
@@ -60,16 +60,16 @@ class NotificationsModal extends StatelessWidget {
           maxHeight: MediaQuery.of(context).size.height * 0.85,
         ),
         decoration: BoxDecoration(
-          color: BikiniColors.warmSand,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          color: BikiniColors.paper,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(BikiniRadius.sheet)),
           border: Border.all(
-            color: BikiniColors.cartoonBlack,
-            width: 3.5,
+            color: BikiniColors.ink,
+            width: BikiniRadius.borderWidth,
           ),
           boxShadow: const [
             BoxShadow(
-              color: BikiniColors.cartoonBlack,
-              offset: Offset(0, -6),
+              color: BikiniColors.ink,
+              offset: Offset(0, -4),
               blurRadius: 0,
             ),
           ],
@@ -79,20 +79,20 @@ class NotificationsModal extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               // Handle Bar
-              const SizedBox(height: 10),
+              const SizedBox(height: BikiniSpacing.space12),
               Container(
                 width: 48,
-                height: 5,
+                height: 4,
                 decoration: BoxDecoration(
-                  color: BikiniColors.cartoonBlack,
-                  borderRadius: BorderRadius.circular(3),
+                  color: BikiniColors.ink,
+                  borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: BikiniSpacing.space12),
 
-              // Header Row with Expanded protection
+              // Header Row
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: BikiniRadius.screenMargin),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -102,20 +102,20 @@ class NotificationsModal extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: BikiniColors.neonPink,
+                              color: BikiniColors.support,
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: BikiniColors.cartoonBlack,
-                                width: 2.0,
+                                color: BikiniColors.ink,
+                                width: BikiniRadius.borderWidth,
                               ),
                             ),
-                            child: const Text('🪼', style: TextStyle(fontSize: 18)),
+                            child: const Text('🔔', style: TextStyle(fontSize: 18)),
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: BikiniSpacing.space8),
                           Flexible(
                             child: Text(
                               'تنبيهات ديوان القاع',
-                              style: BikiniTypography.displaySmall().copyWith(fontSize: 18),
+                              style: BikiniTypography.h2(color: BikiniColors.deep),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -123,53 +123,48 @@ class NotificationsModal extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    BikiniBadge.breaking(text: '3 غير مقروءة'),
+                    const SizedBox(width: BikiniSpacing.space8),
+                    const BikiniBadge(
+                      text: '3 غير مقروءة',
+                      backgroundColor: BikiniColors.alert,
+                      textColor: BikiniColors.card,
+                    ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 10),
-              const Divider(color: BikiniColors.cartoonBlack, thickness: 2),
+              const SizedBox(height: BikiniSpacing.space12),
+              const Divider(color: BikiniColors.line, thickness: 1.5),
 
               // Notifications List
               Flexible(
                 child: ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: BikiniRadius.screenMargin,
+                    vertical: BikiniSpacing.space8,
+                  ),
                   itemCount: notifications.length,
-                  separatorBuilder: (ctx, i) => const SizedBox(height: 10),
+                  separatorBuilder: (ctx, i) => const SizedBox(height: BikiniSpacing.space8),
                   itemBuilder: (ctx, i) {
                     final item = notifications[i];
-                    final colorHex = int.parse(item['color']!);
+                    final isAlert = item['isAlert'] == 'true';
                     return Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Color(colorHex),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: BikiniColors.cartoonBlack,
-                          width: 2.2,
-                        ),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: BikiniColors.cartoonBlack,
-                            offset: Offset(2.5, 2.5),
-                            blurRadius: 0,
-                          ),
-                        ],
+                      padding: const EdgeInsets.all(BikiniSpacing.space12),
+                      decoration: BikiniDecorations.staticCard(
+                        backgroundColor: BikiniColors.card,
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: 36,
-                            height: 36,
+                            width: 38,
+                            height: 38,
                             decoration: BoxDecoration(
-                              color: BikiniColors.pureWhite,
+                              color: BikiniColors.paper,
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: BikiniColors.cartoonBlack,
-                                width: 1.8,
+                                color: BikiniColors.ink,
+                                width: 1.5,
                               ),
                             ),
                             child: Center(
@@ -179,7 +174,7 @@ class NotificationsModal extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          const SizedBox(width: BikiniSpacing.space12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,53 +182,36 @@ class NotificationsModal extends StatelessWidget {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 6,
-                                        vertical: 2,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: BikiniColors.pureWhite,
-                                        borderRadius: BorderRadius.circular(6),
-                                        border: Border.all(
-                                          color: BikiniColors.cartoonBlack,
-                                          width: 1.2,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        item['tag']!,
-                                        style: BikiniTypography.captionBold().copyWith(
-                                          fontSize: 10,
-                                        ),
-                                      ),
+                                    BikiniBadge(
+                                      text: item['tag']!,
+                                      backgroundColor: isAlert ? BikiniColors.alert : BikiniColors.support,
+                                      textColor: isAlert ? BikiniColors.card : BikiniColors.ink,
+                                      fontSize: 11.5,
                                     ),
-                                    const SizedBox(width: 6),
+                                    const SizedBox(width: BikiniSpacing.space8),
                                     Flexible(
                                       child: Text(
                                         item['time']!,
                                         style: BikiniTypography.caption(
-                                          color: const Color(0xFF555555),
-                                        ).copyWith(fontSize: 10.5),
+                                          color: BikiniColors.muted,
+                                        ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: BikiniSpacing.space4),
                                 Text(
                                   item['title']!,
-                                  style: BikiniTypography.titleBold().copyWith(
-                                    fontSize: 14,
-                                    height: 1.2,
-                                  ),
+                                  style: BikiniTypography.h3(color: BikiniColors.deep),
                                 ),
-                                const SizedBox(height: 3),
+                                const SizedBox(height: BikiniSpacing.space4),
                                 Text(
                                   item['body']!,
-                                  style: BikiniTypography.bodyMedium(
-                                    color: const Color(0xFF222222),
-                                  ).copyWith(fontSize: 12),
+                                  style: BikiniTypography.caption(
+                                    color: BikiniColors.ink,
+                                  ),
                                 ),
                               ],
                             ),
@@ -246,12 +224,12 @@ class NotificationsModal extends StatelessWidget {
               ),
 
               Padding(
-                padding: const EdgeInsets.all(14),
+                padding: const EdgeInsets.all(BikiniSpacing.space16),
                 child: BikiniButton.primary(
                   onPressed: () => Navigator.of(context).pop(),
                   text: 'قريت كل التنبيهات خلاص 👍',
                   isFullWidth: true,
-                  height: 46,
+                  height: 48,
                 ),
               ),
             ],
@@ -261,3 +239,4 @@ class NotificationsModal extends StatelessWidget {
     );
   }
 }
+

@@ -7,8 +7,8 @@ import '../../../core/widgets/bikini_button.dart';
 /// Tawla (Backgammon) Board & Checker Models
 class TawlaPoint {
   final int id; // 0 to 23
-  int player1Checkers; // Player 1 (Cyan/White)
-  int player2Checkers; // Player 2 (Yellow/Black)
+  int player1Checkers; // Player 1 (Support / Cyan)
+  int player2Checkers; // Player 2 (Coin / Gold)
 
   TawlaPoint(this.id, {this.player1Checkers = 0, this.player2Checkers = 0});
 }
@@ -123,24 +123,27 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
     if (!_availableMoves.contains(diff)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: BikiniColors.cartoonBlack,
+          backgroundColor: BikiniColors.deep,
           duration: const Duration(seconds: 1),
-          content: Text('النقلة دي مش مطابقة لأرقام الزهر المتاحة! 🎲',
-              style: BikiniTypography.bodyMedium(color: BikiniColors.spongeYellow)),
+          content: Text(
+            'النقلة دي مش مطابقة لأرقام الزهر المتاحة! 🎲',
+            style: BikiniTypography.body(color: BikiniColors.card),
+          ),
         ),
       );
       return;
     }
 
     final targetPt = _points[targetIndex];
-    // Check if target is blocked by opponent (2+ checkers)
     if (targetPt.player2Checkers >= 2) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: BikiniColors.cartoonBlack,
+          backgroundColor: BikiniColors.deep,
           duration: const Duration(seconds: 1),
-          content: Text('الخانة دي مقفولة بحجرين للخصم! 🚫',
-              style: BikiniTypography.bodyMedium(color: BikiniColors.krabsRed)),
+          content: Text(
+            'الخانة دي مقفولة بحجرين للخصم! 🚫',
+            style: BikiniTypography.body(color: BikiniColors.alert),
+          ),
         ),
       );
       return;
@@ -149,7 +152,6 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
     setState(() {
       _points[fromIndex].player1Checkers--;
 
-      // Hit blot if 1 opponent checker
       if (targetPt.player2Checkers == 1) {
         targetPt.player2Checkers = 0;
         _player2Bar++;
@@ -169,7 +171,6 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
   void _bearOffChecker() {
     if (_selectedPointIndex == null || _availableMoves.isEmpty) return;
     final fromIndex = _selectedPointIndex!;
-    // Can bear off if in home quadrant (18-23 for P1)
     if (fromIndex < 18) return;
 
     final needed = 24 - fromIndex;
@@ -216,7 +217,6 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
         _dice1 = d1;
         _dice2 = d2;
 
-        // Bot performs a simple move
         final p2Points = _points.where((p) => p.player2Checkers > 0).toList();
         if (p2Points.isNotEmpty) {
           final from = p2Points.first;
@@ -241,18 +241,9 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: BikiniColors.pureWhite,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: BikiniColors.cartoonBlack, width: 3),
-        boxShadow: const [
-          BoxShadow(
-            color: BikiniColors.cartoonBlack,
-            offset: Offset(4, 4),
-            blurRadius: 0,
-          ),
-        ],
+      padding: const EdgeInsets.all(BikiniSpacing.space12),
+      decoration: BikiniDecorations.interactiveCard(
+        backgroundColor: BikiniColors.card,
       ),
       child: Column(
         children: [
@@ -267,19 +258,19 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: BikiniColors.spongeYellow,
+                        color: BikiniColors.paper,
                         shape: BoxShape.circle,
-                        border: Border.all(color: BikiniColors.cartoonBlack, width: 1.8),
+                        border: Border.all(color: BikiniColors.ink, width: 1.5),
                       ),
                       child: Center(
                         child: Text(widget.player2Avatar, style: const TextStyle(fontSize: 15)),
                       ),
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: BikiniSpacing.space8),
                     Expanded(
                       child: Text(
                         '${widget.player2Name} (حبس: $_player2Bar)',
-                        style: BikiniTypography.titleBold().copyWith(fontSize: 11.5),
+                        style: BikiniTypography.label(color: BikiniColors.deep),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -287,36 +278,38 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
                   ],
                 ),
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: BikiniSpacing.space8),
               BikiniBadge(
                 text: _currentTurn == 0 ? 'دورك أنت 🎲' : 'دور الخصم ⏳',
-                backgroundColor: _currentTurn == 0 ? BikiniColors.marineCyan : BikiniColors.warmSand,
-                textColor: BikiniColors.cartoonBlack,
-                fontSize: 9.5,
+                backgroundColor: _currentTurn == 0 ? BikiniColors.support : BikiniColors.paper,
+                textColor: BikiniColors.ink,
               ),
             ],
           ),
 
-          const SizedBox(height: 6),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Status Banner
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            padding: const EdgeInsets.symmetric(
+              horizontal: BikiniSpacing.space12,
+              vertical: BikiniSpacing.space8,
+            ),
             decoration: BoxDecoration(
-              color: _winnerMessage != null ? BikiniColors.spongeYellow : BikiniColors.warmSand,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: BikiniColors.cartoonBlack, width: 1.5),
+              color: BikiniColors.paper,
+              borderRadius: BorderRadius.circular(BikiniRadius.button),
+              border: Border.all(color: BikiniColors.ink, width: 1.5),
             ),
             child: Row(
               children: [
                 Text(_winnerMessage != null ? '🏆' : '🎲', style: const TextStyle(fontSize: 16)),
-                const SizedBox(width: 6),
+                const SizedBox(width: BikiniSpacing.space8),
                 Expanded(
                   child: Text(
                     _winnerMessage ?? _statusBanner ?? 'ارمي الزهر!',
-                    style: BikiniTypography.captionBold(
-                      color: _winnerMessage != null ? BikiniColors.krabsRed : BikiniColors.cartoonBlack,
-                    ).copyWith(fontSize: 11),
+                    style: BikiniTypography.caption(
+                      color: _winnerMessage != null ? BikiniColors.alert : BikiniColors.deep,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -325,20 +318,20 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Tawla Wooden Board (24 points grid)
           Container(
             height: 180,
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: const Color(0xFF8B4513), // Classic wood grain
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: BikiniColors.cartoonBlack, width: 3),
+              color: BikiniColors.deep,
+              borderRadius: BorderRadius.circular(BikiniRadius.card),
+              border: Border.all(color: BikiniColors.ink, width: BikiniRadius.borderWidth),
               boxShadow: const [
                 BoxShadow(
-                  color: BikiniColors.cartoonBlack,
-                  offset: Offset(2.5, 2.5),
+                  color: BikiniColors.ink,
+                  offset: Offset(2, 2),
                   blurRadius: 0,
                 ),
               ],
@@ -350,24 +343,29 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
 
                 // Center Bar (حبس)
                 Container(
-                  width: 22,
-                  color: const Color(0xFF5C2C16),
+                  width: 24,
+                  color: BikiniColors.deep2,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (_player1Bar > 0)
-                        Text('🤿\nx$_player1Bar',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(color: Colors.white, fontSize: 8)),
-                      const SizedBox(height: 6),
-                      const Text('BAR',
-                          style: TextStyle(
-                              color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 7)),
-                      const SizedBox(height: 6),
+                        Text(
+                          '🤿\nx$_player1Bar',
+                          textAlign: TextAlign.center,
+                          style: BikiniTypography.caption(color: BikiniColors.card).copyWith(fontSize: 8),
+                        ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'BAR',
+                        style: BikiniTypography.caption(color: BikiniColors.coin).copyWith(fontSize: 7),
+                      ),
+                      const SizedBox(height: 4),
                       if (_player2Bar > 0)
-                        Text('🦀\nx$_player2Bar',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(color: Colors.white, fontSize: 8)),
+                        Text(
+                          '🦀\nx$_player2Bar',
+                          textAlign: TextAlign.center,
+                          style: BikiniTypography.caption(color: BikiniColors.card).copyWith(fontSize: 8),
+                        ),
                     ],
                   ),
                 ),
@@ -378,7 +376,7 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: BikiniSpacing.space8),
 
           // Dice and Action Bar
           Row(
@@ -388,13 +386,13 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
               Row(
                 children: [
                   _buildDiceWidget(_dice1),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: BikiniSpacing.space8),
                   _buildDiceWidget(_dice2),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: BikiniSpacing.space8),
                   if (_availableMoves.isNotEmpty)
                     Text(
                       'متاح: ${_availableMoves.join(', ')}',
-                      style: BikiniTypography.captionBold(color: BikiniColors.krabsRed).copyWith(fontSize: 10.5),
+                      style: BikiniTypography.caption(color: BikiniColors.alert),
                     ),
                 ],
               ),
@@ -407,13 +405,13 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
                       BikiniButton.secondary(
                         onPressed: _bearOffChecker,
                         text: 'تطليع 📤',
-                        height: 36,
+                        height: 40,
                       ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: BikiniSpacing.space8),
                     BikiniButton.primary(
                       onPressed: !_hasRolled && _currentTurn == 0 ? _rollDice : null,
                       text: 'رمي الزهر 🎲',
-                      height: 36,
+                      height: 40,
                     ),
                   ],
                 ),
@@ -421,12 +419,12 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
           ),
 
           if (_winnerMessage != null) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: BikiniSpacing.space8),
             BikiniButton.primary(
               onPressed: _initTawlaBoard,
               text: 'لعب دور جديد 🎲🔄',
               isFullWidth: true,
-              height: 40,
+              height: 48,
             ),
           ],
         ],
@@ -443,7 +441,7 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
             children: topIndices.map((idx) => _buildPointColumn(idx, isTop: true)).toList(),
           ),
         ),
-        Container(height: 4, color: const Color(0xFF4A1E0D)),
+        Container(height: 4, color: BikiniColors.ink),
         // Bottom Row of points
         Expanded(
           child: Row(
@@ -471,21 +469,21 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
         child: Container(
           decoration: BoxDecoration(
             color: isSelected
-                ? BikiniColors.marineCyan.withValues(alpha: 0.5)
+                ? BikiniColors.support
                 : isOdd
-                    ? const Color(0xFFD2B48C)
-                    : const Color(0xFF5C3317),
+                    ? BikiniColors.paper
+                    : BikiniColors.deep2,
             border: isSelected
-                ? Border.all(color: BikiniColors.marineCyan, width: 2)
+                ? Border.all(color: BikiniColors.ink, width: 2)
                 : null,
           ),
           child: Column(
             mainAxisAlignment: isTop ? MainAxisAlignment.start : MainAxisAlignment.end,
             children: [
               if (pt.player1Checkers > 0)
-                _buildCheckerStack(pt.player1Checkers, color: BikiniColors.marineCyan, label: '🤿'),
+                _buildCheckerStack(pt.player1Checkers, color: BikiniColors.support, label: '🤿'),
               if (pt.player2Checkers > 0)
-                _buildCheckerStack(pt.player2Checkers, color: BikiniColors.spongeYellow, label: '🦀'),
+                _buildCheckerStack(pt.player2Checkers, color: BikiniColors.coin, label: '🦀'),
             ],
           ),
         ),
@@ -500,12 +498,12 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        border: Border.all(color: BikiniColors.cartoonBlack, width: 1.2),
+        border: Border.all(color: BikiniColors.ink, width: 1.2),
       ),
       child: Center(
         child: Text(
           count > 1 ? '$count' : label,
-          style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800),
         ),
       ),
     );
@@ -516,12 +514,12 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
       width: 32,
       height: 32,
       decoration: BoxDecoration(
-        color: BikiniColors.pureWhite,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
+        color: BikiniColors.card,
+        borderRadius: BorderRadius.circular(BikiniRadius.button),
+        border: Border.all(color: BikiniColors.ink, width: 1.5),
         boxShadow: const [
           BoxShadow(
-            color: BikiniColors.cartoonBlack,
+            color: BikiniColors.ink,
             offset: Offset(1.5, 1.5),
             blurRadius: 0,
           ),
@@ -530,11 +528,7 @@ class _TawlaGameCanvasState extends State<TawlaGameCanvas> with SingleTickerProv
       child: Center(
         child: Text(
           '$value',
-          style: const TextStyle(
-            fontWeight: FontWeight.w900,
-            fontSize: 16,
-            color: BikiniColors.cartoonBlack,
-          ),
+          style: BikiniTypography.mono(color: BikiniColors.ink),
         ),
       ),
     );
