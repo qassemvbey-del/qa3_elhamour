@@ -20,35 +20,36 @@ class CitizenOnboardingScreen extends StatefulWidget {
 class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
   final TextEditingController _nameController =
       TextEditingController(text: 'سبونج بوب سكوير بانتس');
+  final TextEditingController _handleController =
+      TextEditingController(text: 'sponge_bob');
 
   late CitizenSpeciesOption _selectedSpecies;
-  late String _selectedJob;
-  late String _selectedCrime;
-  late String _selectedBloodType;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _selectedSpecies = CitizenService.availableSpecies.first;
-    _selectedJob = CitizenService.availableJobs.first;
-    _selectedCrime = CitizenService.availableCrimes.first;
-    _selectedBloodType = CitizenService.availableBloodTypes.first;
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _handleController.dispose();
     super.dispose();
   }
 
   void _handleIssueId() async {
     final name = _nameController.text.trim();
+    final rawHandle = _handleController.text.trim();
+    final handle = rawHandle.startsWith('@') ? rawHandle.substring(1) : rawHandle;
+
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: BikiniColors.krabsRed,
           content: Text(
-            'يا باشا اكتب اسمك الأول، قاع الهامور مفيهوش مواطنين مجهولين! 🦀',
+            'يا باشا اكتب اسمك الرسمي، قاع الهامور مفيهوش مواطنين مجهولين! 🦀',
             style: BikiniTypography.bodyMedium(color: BikiniColors.pureWhite),
           ),
         ),
@@ -56,15 +57,55 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
       return;
     }
 
-    final profile = await CitizenService.instance.registerCitizen(
-      name: name,
-      species: _selectedSpecies,
-      job: _selectedJob,
-      crime: _selectedCrime,
-      bloodType: _selectedBloodType,
-    );
+    // Handle validation regex: ^[a-z0-9_]{3,20}$
+    final handleRegex = RegExp(r'^[a-z0-9_]{3,20}$');
+    if (!handleRegex.hasMatch(handle)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: BikiniColors.krabsRed,
+          content: Text(
+            'الهاندل يجب أن يحتوي على حروف إنجليزية صغيرة وأرقام و_ فقط، وبطول 3-20 حرفاً! (مثال: sponge_001)',
+            style: BikiniTypography.bodyMedium(color: BikiniColors.pureWhite),
+          ),
+        ),
+      );
+      return;
+    }
 
-    _showCelebrationDialog(profile);
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final profile = await CitizenService.instance.registerCitizen(
+        legalName: name,
+        handle: handle,
+        species: _selectedSpecies,
+      );
+
+      if (mounted) {
+        _showCelebrationDialog(profile);
+      }
+    } catch (e) {
+      if (mounted) {
+        final errorMsg = e.toString().replaceAll('Exception:', '').trim();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: BikiniColors.krabsRed,
+            content: Text(
+              'خطأ في التسجيل: $errorMsg',
+              style: BikiniTypography.bodyMedium(color: BikiniColors.pureWhite),
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   void _showCelebrationDialog(CitizenProfile profile) {
@@ -216,47 +257,29 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
               // Form: Citizen Name
               _buildNameField(),
 
+              const SizedBox(height: 10),
+
+              // Permanent Name Warning Alert
+              _buildPermanentNameAlert(),
+
+              const SizedBox(height: 18),
+
+              // Form: Citizen Handle (@handle)
+              _buildHandleField(),
+
               const SizedBox(height: 18),
 
               // Form: Species Selector
               _buildSpeciesSelector(),
 
-              const SizedBox(height: 18),
-
-              // Form: Satirical Job Selector
-              _buildJobSelector(),
-
-              const SizedBox(height: 18),
-
-              // Form: Satirical Crime Selector
-              _buildCrimeSelector(),
-
               const SizedBox(height: 24),
 
-              // Action Button to Issue ID
-              BikiniButton(
-                onPressed: _handleIssueId,
-                backgroundColor: BikiniColors.spongeYellow,
-                textColor: BikiniColors.cartoonBlack,
+              // Action Button to Issue ID (Single Primary Yellow Button on screen)
+              BikiniButton.primary(
+                onPressed: _isLoading ? null : _handleIssueId,
+                text: _isLoading ? 'جاري استخراج البطاقة وتوثيقها... ⏳' : 'استخرج بطاقة مواطن قاع الهامور 🌊',
                 isFullWidth: true,
                 height: 52,
-                customChild: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('🪪', style: TextStyle(fontSize: 20)),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        'استخرج بطاقة مواطن قاع الهامور 🌊',
-                        style: BikiniTypography.displaySmall(
-                          color: BikiniColors.cartoonBlack,
-                        ).copyWith(fontSize: 15.5),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
               ),
 
               const SizedBox(height: 30),
@@ -454,14 +477,14 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'المهنة: $_selectedJob',
+                      'المهنة: مواطن مائي 🌊',
                       style: BikiniTypography.bodyRegular(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'التهمة: $_selectedCrime',
+                      'التهمة: بدون سوابق',
                       style: BikiniTypography.bodyRegular(
                         color: BikiniColors.krabsRed,
                       ),
@@ -509,7 +532,7 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '١. اسم المواطن الرباعي في قاع الهامور ✍️',
+          '١. الاسم الرسمى للمواطن (Legal Name) ✍️',
           style: BikiniTypography.titleBold(),
         ),
         const SizedBox(height: 6),
@@ -534,10 +557,84 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
             onChanged: (_) => setState(() {}),
             style: BikiniTypography.bodyLarge(),
             decoration: InputDecoration(
-              hintText: 'اكتب اسمك البحري...',
+              hintText: 'اكتب اسمك البحري الرسمي...',
               hintStyle: BikiniTypography.inputHint(),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPermanentNameAlert() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF3CD),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: BikiniColors.cartoonBlack, width: 2),
+      ),
+      child: Row(
+        children: [
+          const Text('⚠️', style: TextStyle(fontSize: 22)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              'تنبيه هام: الاسم الرسمي ثابت مدى الحياة ولا يمكن تغييره إطلاقاً بعد التسجيل بقرار ديوان السجل المدني!',
+              style: BikiniTypography.captionBold(color: BikiniColors.cartoonBlack).copyWith(fontSize: 11.5),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHandleField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '٢. اسم المعرّف الفريد (Handle) 🏷️',
+          style: BikiniTypography.titleBold(),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          'حروف إنجليزية صغيرة وأرقام و_ فقط (من 3 إلى 20 حرفاً)',
+          style: BikiniTypography.caption(color: const Color(0xFF555555)),
+        ),
+        const SizedBox(height: 6),
+        Container(
+          decoration: BoxDecoration(
+            color: BikiniColors.pureWhite,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: BikiniColors.cartoonBlack,
+              width: 2.8,
+            ),
+            boxShadow: const [
+              BoxShadow(
+                color: BikiniColors.cartoonBlack,
+                offset: Offset(3, 3),
+                blurRadius: 0,
+              ),
+            ],
+          ),
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: TextField(
+              controller: _handleController,
+              onChanged: (_) => setState(() {}),
+              style: BikiniTypography.bodyLarge(),
+              decoration: InputDecoration(
+                prefixText: '@ ',
+                prefixStyle: BikiniTypography.titleBold(color: BikiniColors.marineCyan),
+                hintText: 'sponge_001',
+                hintStyle: BikiniTypography.inputHint(),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              ),
             ),
           ),
         ),
@@ -599,110 +696,6 @@ class _CitizenOnboardingScreenState extends State<CitizenOnboardingScreen> {
               ),
             );
           }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildJobSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '٣. المهنة / الوظيفة الساخرة 💼',
-          style: BikiniTypography.titleBold(),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-          decoration: BoxDecoration(
-            color: BikiniColors.pureWhite,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: BikiniColors.cartoonBlack,
-              width: 2.8,
-            ),
-            boxShadow: const [
-              BoxShadow(
-                color: BikiniColors.cartoonBlack,
-                offset: Offset(3, 3),
-                blurRadius: 0,
-              ),
-            ],
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              isExpanded: true,
-              value: _selectedJob,
-              icon: const Icon(Icons.arrow_drop_down_circle_rounded, color: BikiniColors.cartoonBlack),
-              items: CitizenService.availableJobs.map((job) {
-                return DropdownMenuItem<String>(
-                  value: job,
-                  child: Text(
-                    job,
-                    style: BikiniTypography.bodyMedium(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                );
-              }).toList(),
-              onChanged: (val) {
-                if (val != null) setState(() => _selectedJob = val);
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCrimeSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '٤. التهمة والفيش والتشبيه البحري ⚖️',
-          style: BikiniTypography.titleBold(),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFE5E9),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: BikiniColors.cartoonBlack,
-              width: 2.8,
-            ),
-            boxShadow: const [
-              BoxShadow(
-                color: BikiniColors.cartoonBlack,
-                offset: Offset(3, 3),
-                blurRadius: 0,
-              ),
-            ],
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              isExpanded: true,
-              value: _selectedCrime,
-              icon: const Icon(Icons.gavel_rounded, color: BikiniColors.krabsRed),
-              items: CitizenService.availableCrimes.map((crime) {
-                return DropdownMenuItem<String>(
-                  value: crime,
-                  child: Text(
-                    crime,
-                    style: BikiniTypography.bodyMedium(color: BikiniColors.cartoonBlack),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                );
-              }).toList(),
-              onChanged: (val) {
-                if (val != null) setState(() => _selectedCrime = val);
-              },
-            ),
-          ),
         ),
       ],
     );

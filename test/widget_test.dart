@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:qa3_elhamour/core/avatar/marine_avatar_config.dart';
 import 'package:qa3_elhamour/core/avatar/marine_avatar_renderer.dart';
 import 'package:qa3_elhamour/core/services/citizen_service.dart';
 import 'package:qa3_elhamour/core/services/supabase_service.dart';
@@ -38,44 +39,17 @@ void main() {
     expect(find.text('بوابة جمارك قاع الهامور'), findsOneWidget);
   });
 
-  testWidgets('AuthScreen guest bypass opens CitizenOnboardingScreen', (WidgetTester tester) async {
-    tester.view.physicalSize = const Size(400 * 2, 850 * 2);
+  testWidgets('App root loads AuthScreen first by default', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(390 * 2, 844 * 2);
     tester.view.devicePixelRatio = 2.0;
     addTearDown(tester.view.resetPhysicalSize);
 
     await tester.pumpWidget(const Qa3ElhamourApp());
     await tester.pump(const Duration(milliseconds: 200));
 
-    // Tap guest bypass button
-    final guestBtn = find.text('الدخول السريع كزائر بحري مجهول 🤿');
-    expect(guestBtn, findsOneWidget);
-    await tester.tap(guestBtn);
-    await tester.pump(const Duration(milliseconds: 200));
-
-    // Onboarding screen appears
-    expect(find.byType(CitizenOnboardingScreen), findsOneWidget);
-
-    // Scroll down to find the issue button
-    final issueBtn = find.text('استخرج بطاقة مواطن قاع الهامور 🌊');
-    await tester.scrollUntilVisible(
-      issueBtn,
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.pump(const Duration(milliseconds: 200));
-
-    expect(issueBtn, findsOneWidget);
-    await tester.tap(issueBtn);
-    await tester.pump(const Duration(milliseconds: 200));
-
-    // Dialog appears
-    expect(find.text('ادخل الجمهورية دلوقتي 🍍🚀'), findsOneWidget);
-    await tester.tap(find.text('ادخل الجمهورية دلوقتي 🍍🚀'));
-    await tester.pump(const Duration(milliseconds: 300));
-
-    // MainShell is visible
-    expect(find.byType(MainShell), findsOneWidget);
-    await tester.pumpWidget(const SizedBox());
+    expect(find.byType(Qa3ElhamourApp), findsOneWidget);
+    expect(find.byType(AuthScreen), findsOneWidget);
+    expect(find.text('بوابة جمارك قاع الهامور'), findsOneWidget);
   });
 
   testWidgets('Session persistence recovers citizen on launch / web refresh', (WidgetTester tester) async {
@@ -83,21 +57,29 @@ void main() {
     tester.view.devicePixelRatio = 2.0;
     addTearDown(tester.view.resetPhysicalSize);
 
-    // Register citizen which saves to SharedPreferences
-    await CitizenService.instance.registerCitizen(
-      name: 'سبونج بوب المصري',
-      species: CitizenService.availableSpecies.first,
-      job: CitizenService.availableJobs.first,
-      crime: CitizenService.availableCrimes.first,
+    // Register citizen which sets current profile
+    CitizenService.instance.currentProfile.value = const CitizenProfile(
+      userId: 'test-user-id',
+      nationalId: '29807100000001',
+      citizenNo: 1,
+      legalName: 'سبونج بوب المصري',
+      displayName: 'سبونج بوب',
+      handle: 'sponge_001',
+      species: 'sponge',
+      bloodType: 'كتشب سلطع',
+      residence: 'حارة الأناناسة',
+      avatarConfig: MarineAvatarConfig(),
+      jobKey: 'شيف مقرمشات',
+      shells: 100,
+      isWanted: false,
+      debtTotal: 0,
+      badges: [],
     );
-
-    // Simulate app reload / web refresh F5
-    await CitizenService.instance.init();
 
     await tester.pumpWidget(const Qa3ElhamourApp());
     await tester.pump(const Duration(milliseconds: 200));
 
-    // Should bypass auth and onboarding and directly show MainShell
+    // Should show MainShell when profile is loaded
     expect(find.byType(MainShell), findsOneWidget);
     expect(find.byType(AuthScreen), findsNothing);
     expect(find.byType(CitizenOnboardingScreen), findsNothing);
@@ -109,11 +91,22 @@ void main() {
     tester.view.devicePixelRatio = 2.0;
     addTearDown(tester.view.resetPhysicalSize);
 
-    await CitizenService.instance.registerCitizen(
-      name: 'سبونج بوب المصري',
-      species: CitizenService.availableSpecies.first,
-      job: CitizenService.availableJobs.first,
-      crime: CitizenService.availableCrimes.first,
+    CitizenService.instance.currentProfile.value = const CitizenProfile(
+      userId: 'test-user-id',
+      nationalId: '29807100000001',
+      citizenNo: 1,
+      legalName: 'سبونج بوب المصري',
+      displayName: 'سبونج بوب',
+      handle: 'sponge_001',
+      species: 'sponge',
+      bloodType: 'كتشب سلطع',
+      residence: 'حارة الأناناسة',
+      avatarConfig: MarineAvatarConfig(),
+      jobKey: 'شيف مقرمشات',
+      shells: 100,
+      isWanted: false,
+      debtTotal: 0,
+      badges: [],
     );
 
     await tester.pumpWidget(
@@ -146,12 +139,22 @@ void main() {
     tester.view.devicePixelRatio = 2.0;
     addTearDown(tester.view.resetPhysicalSize);
 
-    // Register citizen first
-    await CitizenService.instance.registerCitizen(
-      name: 'سبونج بوب المصري',
-      species: CitizenService.availableSpecies.first,
-      job: CitizenService.availableJobs.first,
-      crime: CitizenService.availableCrimes.first,
+    CitizenService.instance.currentProfile.value = const CitizenProfile(
+      userId: 'test-user-id',
+      nationalId: '29807100000001',
+      citizenNo: 1,
+      legalName: 'سبونج بوب المصري',
+      displayName: 'سبونج بوب',
+      handle: 'sponge_001',
+      species: 'sponge',
+      bloodType: 'كتشب سلطع',
+      residence: 'حارة الأناناسة',
+      avatarConfig: MarineAvatarConfig(),
+      jobKey: 'شيف مقرمشات',
+      shells: 100,
+      isWanted: false,
+      debtTotal: 0,
+      badges: [],
     );
 
     // Test MainShell
@@ -221,11 +224,22 @@ void main() {
     tester.view.devicePixelRatio = 2.0;
     addTearDown(tester.view.resetPhysicalSize);
 
-    await CitizenService.instance.registerCitizen(
-      name: 'سبونج بوب المصري',
-      species: CitizenService.availableSpecies.first,
-      job: CitizenService.availableJobs.first,
-      crime: CitizenService.availableCrimes.first,
+    CitizenService.instance.currentProfile.value = const CitizenProfile(
+      userId: 'test-user-id',
+      nationalId: '29807100000001',
+      citizenNo: 1,
+      legalName: 'سبونج بوب المصري',
+      displayName: 'سبونج بوب',
+      handle: 'sponge_001',
+      species: 'sponge',
+      bloodType: 'كتشب سلطع',
+      residence: 'حارة الأناناسة',
+      avatarConfig: MarineAvatarConfig(),
+      jobKey: 'شيف مقرمشات',
+      shells: 100,
+      isWanted: false,
+      debtTotal: 0,
+      badges: [],
     );
 
     await tester.pumpWidget(
@@ -269,11 +283,22 @@ void main() {
     tester.view.devicePixelRatio = 2.0;
     addTearDown(tester.view.resetPhysicalSize);
 
-    await CitizenService.instance.registerCitizen(
-      name: 'سبونج بوب المصري',
-      species: CitizenService.availableSpecies.first,
-      job: CitizenService.availableJobs.first,
-      crime: CitizenService.availableCrimes.first,
+    CitizenService.instance.currentProfile.value = const CitizenProfile(
+      userId: 'test-user-id',
+      nationalId: '29807100000001',
+      citizenNo: 1,
+      legalName: 'سبونج بوب المصري',
+      displayName: 'سبونج بوب',
+      handle: 'sponge_001',
+      species: 'sponge',
+      bloodType: 'كتشب سلطع',
+      residence: 'حارة الأناناسة',
+      avatarConfig: MarineAvatarConfig(),
+      jobKey: 'شيف مقرمشات',
+      shells: 100,
+      isWanted: false,
+      debtTotal: 0,
+      badges: [],
     );
 
     await tester.pumpWidget(

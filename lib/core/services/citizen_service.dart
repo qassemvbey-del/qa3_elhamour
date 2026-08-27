@@ -2,197 +2,237 @@ import 'package:flutter/foundation.dart';
 import '../avatar/marine_avatar_config.dart';
 import 'supabase_service.dart';
 
-/// Citizen Profile Data Model for "جمهورية قاع الهامور"
+/// Citizen Profile Data Model matching Supabase citizens table schema in 01-database.md
 class CitizenProfile {
-  final String id; // e.g. #0001
-  final String name;
-  final String handle; // e.g. @sponge_0001
-  final String species;
-  final String speciesEmoji;
-  final String job;
-  final String crime;
-  final String clan;
-  final String nationalNumber;
-  final String bloodType;
-  final DateTime registeredAt;
-  final MarineAvatarConfig avatarConfig;
+  final String userId; // user_id (uuid PK = auth.uid())
+  final String nationalId; // national_id (text unique, 14 digits)
+  final int citizenNo; // citizen_no (int unique, #0001)
+  final String legalName; // legal_name (text, immutable)
+  final String displayName; // display_name (text, mutable)
+  final String handle; // handle (text unique)
+  final String species; // species (sponge/starfish/squid/crab/squirrel/fish)
+  final String bloodType; // blood_type
+  final String residence; // residence
+  final MarineAvatarConfig avatarConfig; // avatar_config jsonb
+  final String jobKey; // job_key (default 'citizen')
+  final DateTime? jobChangedAt; // job_changed_at
+  final int shells; // shells (read-only)
+  final bool isWanted; // is_wanted (read-only)
+  final int debtTotal; // debt_total (read-only)
+  final List<String> badges; // badges (read-only)
+  final DateTime? lastSeenAt;
+  final DateTime? createdAt;
 
   const CitizenProfile({
-    required this.id,
-    required this.name,
+    required this.userId,
+    required this.nationalId,
+    required this.citizenNo,
+    required this.legalName,
+    required this.displayName,
     required this.handle,
     required this.species,
-    required this.speciesEmoji,
-    required this.job,
-    required this.crime,
-    required this.clan,
-    required this.nationalNumber,
     required this.bloodType,
-    required this.registeredAt,
-    this.avatarConfig = const MarineAvatarConfig(),
+    required this.residence,
+    required this.avatarConfig,
+    required this.jobKey,
+    this.jobChangedAt,
+    required this.shells,
+    required this.isWanted,
+    required this.debtTotal,
+    required this.badges,
+    this.lastSeenAt,
+    this.createdAt,
   });
 
   CitizenProfile copyWith({
-    String? id,
-    String? name,
+    String? userId,
+    String? nationalId,
+    int? citizenNo,
+    String? legalName,
+    String? displayName,
     String? handle,
     String? species,
-    String? speciesEmoji,
-    String? job,
-    String? crime,
-    String? clan,
-    String? nationalNumber,
     String? bloodType,
-    DateTime? registeredAt,
+    String? residence,
     MarineAvatarConfig? avatarConfig,
+    String? jobKey,
+    DateTime? jobChangedAt,
+    int? shells,
+    bool? isWanted,
+    int? debtTotal,
+    List<String>? badges,
+    DateTime? lastSeenAt,
+    DateTime? createdAt,
   }) {
     return CitizenProfile(
-      id: id ?? this.id,
-      name: name ?? this.name,
+      userId: userId ?? this.userId,
+      nationalId: nationalId ?? this.nationalId,
+      citizenNo: citizenNo ?? this.citizenNo,
+      legalName: legalName ?? this.legalName,
+      displayName: displayName ?? this.displayName,
       handle: handle ?? this.handle,
       species: species ?? this.species,
-      speciesEmoji: speciesEmoji ?? this.speciesEmoji,
-      job: job ?? this.job,
-      crime: crime ?? this.crime,
-      clan: clan ?? this.clan,
-      nationalNumber: nationalNumber ?? this.nationalNumber,
       bloodType: bloodType ?? this.bloodType,
-      registeredAt: registeredAt ?? this.registeredAt,
+      residence: residence ?? this.residence,
       avatarConfig: avatarConfig ?? this.avatarConfig,
+      jobKey: jobKey ?? this.jobKey,
+      jobChangedAt: jobChangedAt ?? this.jobChangedAt,
+      shells: shells ?? this.shells,
+      isWanted: isWanted ?? this.isWanted,
+      debtTotal: debtTotal ?? this.debtTotal,
+      badges: badges ?? this.badges,
+      lastSeenAt: lastSeenAt ?? this.lastSeenAt,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  // UI Backward Compatibility Getters
+  String get id => '#${citizenNo.toString().padLeft(4, '0')}';
+  String get name => displayName.isNotEmpty ? displayName : legalName;
+  String get nationalNumber => nationalId;
+  String get job => jobKey;
+  String get speciesEmoji {
+    final opt = CitizenService.availableSpecies.firstWhere(
+      (s) => s.key == species,
+      orElse: () => CitizenService.availableSpecies.first,
+    );
+    return opt.emoji;
+  }
+  String get crime => 'بدون سوابق مسجلة';
+  String get clan => 'عشيرة قاع الهامور';
+  DateTime get registeredAt => createdAt ?? DateTime.now();
+
+  factory CitizenProfile.fromMap(Map<String, dynamic> map) {
+    MarineAvatarConfig cfg = const MarineAvatarConfig();
+    if (map['avatar_config'] != null) {
+      try {
+        cfg = MarineAvatarConfig.fromJson(Map<String, dynamic>.from(map['avatar_config']));
+      } catch (_) {
+        cfg = MarineAvatarConfig.fromSpeciesName(map['species'] ?? 'sponge');
+      }
+    }
+
+    return CitizenProfile(
+      userId: map['user_id'] as String? ?? '',
+      nationalId: map['national_id'] as String? ?? '',
+      citizenNo: map['citizen_no'] as int? ?? 0,
+      legalName: map['legal_name'] as String? ?? '',
+      displayName: map['display_name'] as String? ?? '',
+      handle: map['handle'] as String? ?? '',
+      species: map['species'] as String? ?? 'sponge',
+      bloodType: map['blood_type'] as String? ?? '',
+      residence: map['residence'] as String? ?? '',
+      avatarConfig: cfg,
+      jobKey: map['job_key'] as String? ?? 'citizen',
+      jobChangedAt: map['job_changed_at'] != null
+          ? DateTime.tryParse(map['job_changed_at'].toString())
+          : null,
+      shells: map['shells'] as int? ?? 0,
+      isWanted: map['is_wanted'] as bool? ?? false,
+      debtTotal: map['debt_total'] as int? ?? 0,
+      badges: map['badges'] != null ? List<String>.from(map['badges']) : const [],
+      lastSeenAt: map['last_seen_at'] != null
+          ? DateTime.tryParse(map['last_seen_at'].toString())
+          : null,
+      createdAt: map['created_at'] != null
+          ? DateTime.tryParse(map['created_at'].toString())
+          : null,
     );
   }
 }
 
 /// Species Option
 class CitizenSpeciesOption {
+  final String key;
   final String name;
   final String emoji;
   final String defaultClan;
 
   const CitizenSpeciesOption({
+    required this.key,
     required this.name,
     required this.emoji,
     required this.defaultClan,
   });
 }
 
-/// Global Citizen Profile & Shells Economy Service with Supabase & Local Session Recovery
+/// Global Citizen Profile & Shells Economy Service with Supabase Single Source of Truth
 class CitizenService {
   static final CitizenService instance = CitizenService._internal();
   CitizenService._internal();
 
-  static int _citizenCounter = 1;
-
   final ValueNotifier<CitizenProfile?> currentProfile = ValueNotifier<CitizenProfile?>(null);
-  final ValueNotifier<int> shellsBalance = ValueNotifier<int>(100);
-  final ValueNotifier<bool> isGuestOrAuthenticated = ValueNotifier<bool>(false);
+  final ValueNotifier<int> shellsBalance = ValueNotifier<int>(0);
 
   bool get hasProfile => currentProfile.value != null;
 
-  /// Auto-restore persisted session on app launch or web refresh (F5)
+  /// Fetch profile from Supabase on app init or login
   Future<void> init() async {
     try {
-      final isBypass = await SupabaseService.instance.getGuestBypass();
-      final hasAuth = SupabaseService.instance.hasAuthSession;
-
-      final data = await SupabaseService.instance.loadCitizenProfile();
-      if (data != null) {
-        final profile = CitizenProfile(
-          id: data['id'] ?? '#0001',
-          name: data['name'] ?? 'مواطن مائي',
-          handle: data['handle'] ?? '@citizen_0001',
-          species: data['species'] ?? 'إسفنجة بحرية',
-          speciesEmoji: data['speciesEmoji'] ?? '🧽',
-          job: data['job'] ?? availableJobs.first,
-          crime: data['crime'] ?? availableCrimes.first,
-          clan: data['clan'] ?? 'عشيرة الإسفنجيات',
-          nationalNumber: data['nationalNumber'] ?? '298071000000000',
-          bloodType: data['bloodType'] ?? availableBloodTypes.first,
-          registeredAt: DateTime.tryParse(data['registeredAt'] ?? '') ?? DateTime.now(),
-          avatarConfig: data['avatarConfig'] != null
-              ? MarineAvatarConfig.fromJson(Map<String, dynamic>.from(data['avatarConfig']))
-              : MarineAvatarConfig.fromSpeciesName(data['species'] ?? 'إسفنجة'),
-        );
-
-        shellsBalance.value = (data['shells'] is int) ? data['shells'] as int : 100;
-        currentProfile.value = profile;
-        isGuestOrAuthenticated.value = true;
-
-        final numId = int.tryParse(profile.id.replaceAll('#', ''));
-        if (numId != null && numId >= _citizenCounter) {
-          _citizenCounter = numId + 1;
+      if (SupabaseService.instance.hasAuthSession) {
+        final data = await SupabaseService.instance.fetchCurrentCitizenProfile();
+        if (data != null) {
+          final profile = CitizenProfile.fromMap(data);
+          currentProfile.value = profile;
+          shellsBalance.value = profile.shells;
+        } else {
+          currentProfile.value = null;
         }
-      } else if (hasAuth || isBypass) {
-        isGuestOrAuthenticated.value = true;
+      } else {
+        currentProfile.value = null;
       }
     } catch (e) {
-      if (kDebugMode) print('CitizenService init session recovery error: $e');
+      if (kDebugMode) print('CitizenService init fetch error: $e');
     }
-  }
-
-  void setAuthenticatedOrGuest(bool val) {
-    isGuestOrAuthenticated.value = val;
-    SupabaseService.instance.setGuestBypass(val);
   }
 
   /// Deduct shells if balance is sufficient
   bool spendShells(int amount) {
     if (shellsBalance.value >= amount) {
       shellsBalance.value -= amount;
-      if (currentProfile.value != null) {
-        SupabaseService.instance.updateShellsBalance(
-          currentProfile.value!.nationalNumber,
-          shellsBalance.value,
-        );
-      }
       return true;
     }
     return false;
   }
 
-  /// Add shells (earnings, rewards, tips)
+  /// Add shells
   void addShells(int amount) {
     shellsBalance.value += amount;
-    if (currentProfile.value != null) {
-      SupabaseService.instance.updateShellsBalance(
-        currentProfile.value!.nationalNumber,
-        shellsBalance.value,
-      );
-    }
   }
 
   static const List<CitizenSpeciesOption> availableSpecies = [
     CitizenSpeciesOption(
+      key: 'sponge',
       name: 'إسفنجة بحرية',
       emoji: '🧽',
       defaultClan: 'عشيرة الإسفنجيات والأناناس',
     ),
     CitizenSpeciesOption(
+      key: 'starfish',
       name: 'نجم بحر',
       emoji: '⭐',
       defaultClan: 'عشيرة النجوم الكسلانة',
     ),
     CitizenSpeciesOption(
+      key: 'squid',
       name: 'أخطبوط مثقف',
       emoji: '🐙',
       defaultClan: 'حلف الرخويات والموسيقى الفاشلة',
     ),
     CitizenSpeciesOption(
+      key: 'crab',
       name: 'سرطان بحري',
       emoji: '🦀',
       defaultClan: 'قبيلة القشريات أصحاب الفلوس',
     ),
     CitizenSpeciesOption(
+      key: 'fish',
       name: 'سمكة بلطي بلدي',
       emoji: '🐟',
       defaultClan: 'اتحاد الأسماك الغلابة',
     ),
     CitizenSpeciesOption(
-      name: 'قنديل بحر لاسع',
-      emoji: '🪼',
-      defaultClan: 'طائفة القناديل المكهربة',
-    ),
-    CitizenSpeciesOption(
+      key: 'squirrel',
       name: 'سنجاب غطاس',
       emoji: '🐿️',
       defaultClan: 'رابطة الغواصين البرمائيين',
@@ -200,14 +240,13 @@ class CitizenService {
   ];
 
   static const List<String> availableJobs = [
-    'شيف مقرمشات وملك البرجر 🍔',
-    'مهندس فقاعات صابونية معتمد 🫧',
-    'عاطل محترف تحت الصخرة 🪨',
-    'عازف كلارينيت مزعج للجيران 🎺',
-    'صائد قناديل بحر محترف 🪼',
-    'تاجر صدف وسوق سودا مائية 🐚',
-    'سائق توكتوك غواصة متهور 🚤',
-    'جاسوس لصالح شمشون بالقطعة 🧆',
+    'شيف مقرمشات 🍔',
+    'مهندس فقاعات 🫧',
+    'عاطل محترف 🪨',
+    'عازف كلارينيت 🎺',
+    'صائد قناديل 🪼',
+    'تاجر صدف 🐚',
+    'سائق توكتوك غواصة 🚤',
   ];
 
   static const List<String> availableCrimes = [
@@ -227,63 +266,53 @@ class CitizenService {
     'زيت قلي مقرمشات',
   ];
 
-  /// Register a new citizen and assign sequential ID starting from #0001
+  /// Register a new citizen using Supabase rpc('register_citizen') ONLY
   Future<CitizenProfile> registerCitizen({
-    required String name,
+    required String legalName,
+    required String handle,
     required CitizenSpeciesOption species,
-    required String job,
-    required String crime,
-    String? customClan,
-    String? bloodType,
-    String? customHandle,
+    MarineAvatarConfig? avatarConfig,
   }) async {
-    final sequentialId = '#${_citizenCounter.toString().padLeft(4, '0')}';
-    _citizenCounter++;
+    final client = SupabaseService.instance.client;
+    if (client == null) {
+      throw Exception('خدمة الداتابيز غير متصلة حالياً!');
+    }
 
-    final now = DateTime.now();
-    final randomDigits = (100000000 + now.microsecondsSinceEpoch % 900000000).toString();
-    final nationalId = '298071$randomDigits';
+    final cleanName = legalName.trim();
+    final cleanHandle = handle.trim().startsWith('@')
+        ? handle.trim().substring(1)
+        : handle.trim();
 
-    final cleanName = name.trim().isEmpty ? 'مواطن مائي مجهول' : name.trim();
-    final autoHandle = customHandle != null && customHandle.trim().isNotEmpty
-        ? (customHandle.startsWith('@') ? customHandle.trim() : '@${customHandle.trim()}')
-        : '@${cleanName.replaceAll(' ', '_')}_${sequentialId.replaceAll('#', '')}';
+    final avatarMap = (avatarConfig ?? MarineAvatarConfig.fromSpeciesName(species.name)).toJson();
 
-    final avatar = MarineAvatarConfig.fromSpeciesName(species.name);
+    // Call RPC register_citizen strictly as specified in 01-database.md
+    await client.rpc('register_citizen', params: {
+      'p_legal_name': cleanName,
+      'p_handle': cleanHandle,
+      'p_species': species.key,
+      'p_avatar': avatarMap,
+    });
 
-    final profile = CitizenProfile(
-      id: sequentialId,
-      name: cleanName,
-      handle: autoHandle,
-      species: species.name,
-      speciesEmoji: species.emoji,
-      job: job,
-      crime: crime,
-      clan: customClan ?? species.defaultClan,
-      nationalNumber: nationalId,
-      bloodType: bloodType ?? availableBloodTypes.first,
-      registeredAt: now,
-      avatarConfig: avatar,
-    );
+    // Fetch newly created citizen row from DB
+    final data = await SupabaseService.instance.fetchCurrentCitizenProfile();
+    if (data == null) {
+      throw Exception('فشل استرجاع بيانات المواطن من الداتابيز بعد التسجيل!');
+    }
 
+    final profile = CitizenProfile.fromMap(data);
     currentProfile.value = profile;
-    isGuestOrAuthenticated.value = true;
-
-    // Persist session to local storage & sync to Supabase
-    await SupabaseService.instance.saveCitizenProfile(profile, shellsBalance.value);
+    shellsBalance.value = profile.shells;
 
     return profile;
   }
 
   void updateProfile(CitizenProfile updated) {
     currentProfile.value = updated;
-    SupabaseService.instance.saveCitizenProfile(updated, shellsBalance.value);
   }
 
   Future<void> logoutOrReset() async {
     currentProfile.value = null;
-    isGuestOrAuthenticated.value = false;
-    shellsBalance.value = 100;
+    shellsBalance.value = 0;
     await SupabaseService.instance.signOut();
   }
 }

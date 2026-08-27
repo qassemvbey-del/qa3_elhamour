@@ -24,7 +24,6 @@ class Qa3ElhamourApp extends StatelessWidget {
       title: 'جمهورية قاع الهامور',
       debugShowCheckedModeBanner: false,
       theme: BikiniTheme.themeData,
-      // Full RTL Arabic localization
       locale: const Locale('ar', ''),
       supportedLocales: const [
         Locale('ar', ''),
@@ -37,17 +36,26 @@ class Qa3ElhamourApp extends StatelessWidget {
       home: Directionality(
         textDirection: TextDirection.rtl,
         child: UnderseaBackground(
-          child: ValueListenableBuilder<bool>(
-            valueListenable: CitizenService.instance.isGuestOrAuthenticated,
-            builder: (context, isAuth, _) {
-              if (!isAuth) {
-                return const AuthScreen();
+          child: StreamBuilder(
+            stream: SupabaseService.instance.client?.auth.onAuthStateChange,
+            builder: (context, snapshot) {
+              if (!SupabaseService.instance.hasAuthSession) {
+                return AuthScreen(
+                  onAuthSuccess: () async {
+                    await CitizenService.instance.init();
+                  },
+                );
               }
+
               return ValueListenableBuilder<CitizenProfile?>(
                 valueListenable: CitizenService.instance.currentProfile,
                 builder: (context, profile, _) {
                   if (profile == null) {
-                    return const CitizenOnboardingScreen();
+                    return CitizenOnboardingScreen(
+                      onComplete: () async {
+                        await CitizenService.instance.init();
+                      },
+                    );
                   }
                   return const MainShell();
                 },
@@ -59,3 +67,4 @@ class Qa3ElhamourApp extends StatelessWidget {
     );
   }
 }
+

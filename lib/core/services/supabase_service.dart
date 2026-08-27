@@ -1,8 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'citizen_service.dart';
 
 /// Supabase Integration, Auth & Local Storage Persistence Service
 class SupabaseService {
@@ -12,10 +9,6 @@ class SupabaseService {
   static const String supabaseUrl = 'https://mxfndmnifvxvpizmbbcj.supabase.co';
   static const String supabaseAnonKey =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14Zm5kbW5pZnZ4dnBpem1iYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0NzQzNjgsImV4cCI6MjEwMzA1MDM2OH0.VY_skdcDXGd8_xiliY1HXb09RTw_ZQdhDxYgYbRzvVo';
-
-  static const String _prefKeyCitizen = 'qa3_citizen_profile_v1';
-  static const String _prefKeyShells = 'qa3_citizen_shells_v1';
-  static const String _prefKeyAuthBypass = 'qa3_auth_guest_bypass_v1';
 
   bool _initialized = false;
   bool get isInitialized => _initialized;
@@ -58,30 +51,8 @@ class SupabaseService {
   }
 
   // ==========================================
-  // Authentication Methods
+  // Authentication Methods (Google OAuth Only)
   // ==========================================
-
-  /// Sign In with Email & Password
-  Future<AuthResponse> signInWithEmail(String email, String password) async {
-    if (!_initialized || client == null) {
-      throw Exception('خدمة الجمارك المائية غير متصلة حالياً!');
-    }
-    return await client!.auth.signInWithPassword(
-      email: email.trim(),
-      password: password,
-    );
-  }
-
-  /// Sign Up with Email & Password
-  Future<AuthResponse> signUpWithEmail(String email, String password) async {
-    if (!_initialized || client == null) {
-      throw Exception('خدمة الجمارك المائية غير متصلة حالياً!');
-    }
-    return await client!.auth.signUp(
-      email: email.trim(),
-      password: password,
-    );
-  }
 
   /// Sign In with Google OAuth
   Future<bool> signInWithGoogle() async {
@@ -100,117 +71,24 @@ class SupabaseService {
     try {
       await client?.auth.signOut();
     } catch (_) {}
-    await clearCitizenProfile();
-  }
-
-  /// Guest bypass flag for fast demo and offline environments
-  Future<void> setGuestBypass(bool val) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_prefKeyAuthBypass, val);
-    } catch (_) {}
-  }
-
-  Future<bool> getGuestBypass() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getBool(_prefKeyAuthBypass) ?? false;
-    } catch (_) {
-      return false;
-    }
   }
 
   // ==========================================
-  // Citizen Profile & Economy Sync
+  // Citizen Profile Cloud Fetching
   // ==========================================
 
-  /// Save citizen profile to local storage & sync with Supabase citizens table
-  Future<void> saveCitizenProfile(CitizenProfile profile, int shells) async {
-    // 1. Local Storage (Immediate Persistence for Web refresh)
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final map = {
-        'id': profile.id,
-        'name': profile.name,
-        'handle': profile.handle,
-        'species': profile.species,
-        'speciesEmoji': profile.speciesEmoji,
-        'job': profile.job,
-        'crime': profile.crime,
-        'clan': profile.clan,
-        'nationalNumber': profile.nationalNumber,
-        'bloodType': profile.bloodType,
-        'registeredAt': profile.registeredAt.toIso8601String(),
-        'shells': shells,
-        'avatarConfig': profile.avatarConfig.toJson(),
-      };
-      await prefs.setString(_prefKeyCitizen, jsonEncode(map));
-      await prefs.setInt(_prefKeyShells, shells);
-      await prefs.setBool(_prefKeyAuthBypass, true);
-    } catch (e) {
-      if (kDebugMode) print('Local storage write error: $e');
-    }
+  /// Fetch current authenticated citizen profile row from Supabase
+  Future<Map<String, dynamic>?> fetchCurrentCitizenProfile() async {
+    final user = currentUser;
+    if (user == null || !_initialized || client == null) return null;
 
-    // 2. Cloud Supabase Sync (Non-blocking)
-    if (_initialized && enableCloudSync && client != null) {
-      client!.from('citizens').upsert({
-        'national_id': profile.nationalNumber,
-        'full_name': profile.name,
-        'handle': profile.handle,
-        'job_title': profile.job,
-        'shells_balance': shells,
-        'species': profile.species,
-        'crime': profile.crime,
-        'avatar_emoji': profile.speciesEmoji,
-      }).catchError((e) {
-        if (kDebugMode) print('Supabase citizen cloud sync error: $e');
-      });
-    }
-  }
+    final res = await client!
+        .from('citizens')
+        .select()
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-  /// Load persisted citizen profile from local storage or cloud
-  Future<Map<String, dynamic>?> loadCitizenProfile() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final str = prefs.getString(_prefKeyCitizen);
-      if (str != null && str.isNotEmpty) {
-        final decoded = jsonDecode(str) as Map<String, dynamic>;
-        final shells = prefs.getInt(_prefKeyShells) ?? decoded['shells'] ?? 100;
-        decoded['shells'] = shells;
-        return decoded;
-      }
-    } catch (e) {
-      if (kDebugMode) print('Local storage read error: $e');
-    }
-    return null;
-  }
-
-  /// Update shells balance in local storage & cloud
-  Future<void> updateShellsBalance(String nationalId, int shells) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt(_prefKeyShells, shells);
-    } catch (_) {}
-
-    if (_initialized && enableCloudSync && client != null) {
-      client!
-          .from('citizens')
-          .update({'shells_balance': shells})
-          .eq('national_id', nationalId)
-          .catchError((e) {
-        if (kDebugMode) print('Supabase update shells error: $e');
-      });
-    }
-  }
-
-  /// Clear session
-  Future<void> clearCitizenProfile() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(_prefKeyCitizen);
-      await prefs.remove(_prefKeyShells);
-      await prefs.remove(_prefKeyAuthBypass);
-    } catch (_) {}
+    return res;
   }
 
   // ==========================================
